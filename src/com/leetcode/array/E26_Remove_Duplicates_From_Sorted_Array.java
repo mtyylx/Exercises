@@ -24,15 +24,15 @@ public class E26_Remove_Duplicates_From_Sorted_Array {
     // 这两种解法都节省了一个指针，即当前数组的有效长度。因为这个长度本身的自增可以通过判断相邻元素是否相同而决定。
     static int removeDuplicate2(int[] a) {
         if (a.length < 2) return a.length;
-        int length = 2;
+        int tail = 1;   //从数组的第二个元素（idx = 1）开始判断，此时有效长度为1
         for (int i = 1; i < a.length; i++) {
             // 只有相邻元素不同时，才会把当前元素拷贝至当前数组的最后一个元素，并扩展当前数组长度。
             if (a[i] != a[i - 1]) {
-                a[length - 1] = a[i];
-                length++;
+                a[tail] = a[i];
+                tail++;
             }
         }
-        return length;
+        return tail;
     }
 
     // 逆序扫描解法，不足是去重之后的数组会乱序
