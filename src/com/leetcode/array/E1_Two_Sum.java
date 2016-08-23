@@ -24,6 +24,8 @@ public class E1_Two_Sum {
         }
     }
 
+    // 哈希表解法，o(n)
+    // 关键在于给键和值赋予什么含义：键存储补值（target - value），值存储索引。
     static int[] twoSum(int[] a, int target) {
         HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < a.length; i++) {
