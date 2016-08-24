@@ -14,7 +14,7 @@ import java.util.HashSet;
  * public boolean containsDuplicate(int[] a, int k) {...}
  *
  */
-public class E219_Contains_Duplicate {
+public class E219_Contains_Duplicate_2 {
     public static void main(String[] args) {
         int[] a = {1, 0, 1, 1};
         System.out.println("Contains Duplicate within K steps: " + containsDuplicate2(a, 1));
