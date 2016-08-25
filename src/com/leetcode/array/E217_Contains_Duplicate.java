@@ -29,6 +29,11 @@ public class E217_Contains_Duplicate {
         return false;
     }
 
+    // 先排序后扫描解法，
+    // 排序了的数组具备了非常多方便的特性，是的运算处理起来都大大简化。所以说排序很神奇，因为它真的很有用。
+    // 我发现基本上所有的数组类题目都可以使用这种思路解题，
+    // 虽然使用自带的Arrays.sort()是个偷懒的行为，而且通常并不是性能最优的解法
+    // 只要涉及到了排序，时间复杂度就至少是o(nlogn)，相比之下最优的解法一般顶多是o(n)，少数例如二分法能达到o(logn)，更有甚者则是o(1).
     static boolean containsDuplicate2(int[] a) {
         Arrays.sort(a);
         for (int i = 1; i < a.length; i++) {
