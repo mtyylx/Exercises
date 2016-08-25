@@ -22,7 +22,8 @@ public class E189_Rotate_Array {
         rotateArray(test, 3);
     }
 
-    // time: o(n). space: o(k % a.length). 需要另外建一个辅助数组。
+    // 法2 - 常规解法：用额外数组空间中转要交换的数组元素
+    // time: o(n). space: o(k % a.length)
     static void rotateArray2(int[] a, int k) {
         //将划分点右侧的部分拷贝到新数组暂存
         int step = k % a.length;
@@ -42,8 +43,8 @@ public class E189_Rotate_Array {
         print(a);
     }
 
+    // 法1 - 找规律解法：类似于矩阵旋转，旋转90度等效于先转置后逆序行或列
     // time: o(n). space: o(1). 优点是只需占用常数存储空间。
-    // 找规律（类似于矩阵旋转：旋转90度等效于先转置后逆序行或列）
     // 数组右移n位等效于先<将按n划分的两个子数组自行翻转>再<反翻转整个数组>
     // 同样的，数组左移n位是先翻转整个再各自翻转。
     static void rotateArray(int[] a, int k) {
