@@ -18,10 +18,29 @@ package com.leetcode.array;
  */
 public class M167_Two_Sum_Sorted_2 {
     public static void main(String[] args) {
-        int[] a = {1, 4, 7, 9, 10, 12};
-        int[] result = twoSumSorted(a, 10);
+        int[] a = {1,2,3,4,4,9,56,90};
+        int[] result = twoSumSorted2(a, 8);
     }
 
+
+    // 二分查找解法
+    static int[] twoSumSorted2(int[] a, int target) {
+        for (int i = 0; i < a.length; i++) {
+            int result = binarySearchRecursive(a, target - a[i], i, a.length - 1);
+            if (result != -1) return new int[] {Math.min(i, result), Math.max(i, result)};
+        }
+        return new int[] {-1, -1};
+    }
+
+    static int binarySearchRecursive(int[] a, int target, int start, int stop) {
+        if (start <= stop) {
+            int middle = (start + stop) / 2;
+            if      (target < a[middle]) return binarySearchRecursive(a, target, start, middle - 1);
+            else if (target > a[middle]) return binarySearchRecursive(a, target, middle + 1, stop);
+            else return middle;
+        }
+        else return -1;
+    }
 
     // 双指针解法，o(n)
     // 该题区别于E1的关键在于两点：
