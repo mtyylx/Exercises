@@ -22,16 +22,21 @@ public class M167_Two_Sum_Sorted_2 {
         int[] result = twoSumSorted2(a, 8);
     }
 
-
-    // 二分查找解法
+    // 二分查找解法，o(n*logn)
+    // 因为数组已排序，所以考虑使用Binary Search，
+    // 但是由于这个问题的本身特性，导致最坏情况下必须查n次Binary Search
+    // 所以计算复杂度为o(n*logn)，并没有直接双指针扫描来的快。
+    // 本质上是对数组的给定区域进行二分查找，实时查找的内容是真正target与当前扫描值之差。
     static int[] twoSumSorted2(int[] a, int target) {
+        if (a == null || a.length < 2) return new int[] {-1, -1};
         for (int i = 0; i < a.length; i++) {
-            int result = binarySearchRecursive(a, target - a[i], i, a.length - 1);
-            if (result != -1) return new int[] {Math.min(i, result), Math.max(i, result)};
+            int result = binarySearchRecursive(a, target - a[i], i + 1, a.length - 1);      // 注意这里start是i + 1.
+            if (result != -1) return new int[] {Math.min(i + 1, result + 1), Math.max(i + 1, result + 1)};
         }
         return new int[] {-1, -1};
     }
 
+    // 可以看到递归的写法总是比较优美整齐的
     static int binarySearchRecursive(int[] a, int target, int start, int stop) {
         if (start <= stop) {
             int middle = (start + stop) / 2;
