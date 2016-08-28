@@ -28,15 +28,12 @@ public class E169_Majority_Element {
     // 0 9 0 9 0 9 9 --- 前三对0和9抵消，最后一个9还是会胜出。
     // 上面这两个数组虽然元素顺序不同，但是如果使用相互抵消的角度看，其实是一样的
     static int majorityElement2(int[] a) {
-        int count = 1;
+        int count = 0;
         int major = a[0];
-        for (int i = 1; i < a.length; i++) {
-            if (count == 0)
-                major = a[i];
-            if (major == a[i])
-                count++;
-            else
-                count--;
+        for (int i = 0; i < a.length; i++) {
+            if (count == 0)     major = a[i];
+            if (major == a[i])  count++;
+            else                count--;
         }
         return major;
         // 如果数组并不不保证存在多数席位，就需要重新扫描一遍，检查major是不是真的个数多于长度的一半
