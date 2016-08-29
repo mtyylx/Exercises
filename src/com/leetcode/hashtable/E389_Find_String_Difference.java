@@ -21,10 +21,19 @@ import java.util.Set;
  */
 public class E389_Find_String_Difference {
     public static void main(String[] args) {
-        System.out.println(findDifference2("abcde", "abcdef"));
+        String a = "\uFFFE\uFFFF";
+        String b = "\uFFFF\uFFFE\u1234";
+        char result = findDifference2(a, b);
     }
 
-    // 加减解法，可以避免因为不断求和而出现的overflow
+    // 加减解法，
+    // 比我一开始想象的要复杂的多，先加后减并不能避免overflow/underflow，
+    // 运算的过程中一样会出现小于0而underflow，或大于65535而overflow
+    // 但是很绝的是即使连续overflow多次，依然可以得到正确结果！
+    // 可以说是利用了underflow和overflow
+    // 我敢说如果深究的话，其实在underflow和overflow的时候，其实运算的原理和异或一定有相似之处
+    // 但是说实话这么玩让人觉得很不可靠，所以还是能避免underflow/overflow就避免吧。
+    // 在研究的过程中复习了下char这个基础类型的知识，例如取值范围为0到65535，不存在负值。
     // time - o(n)
     // space - o(1)
     static char findDifference2(String a, String b) {
@@ -35,13 +44,14 @@ public class E389_Find_String_Difference {
         }
         return result;
     }
+
     // 比特翻转解法
     // time - o(n)
     // space - o(1)
     // 需要注意将0赋给char类型变量时，其值为'\u0000'，对应的二进制值就是全0，所以根本不需要最后异或掉初始值。
     // 如果将'0'赋给char类型变量时，其ASCII值才是48，即110000
     static char findDifference(String a, String b) {
-        char result = '0';
+        char result = 0;
         for (char x : a.toCharArray())
             result ^= x;
         for (char x : b.toCharArray())
