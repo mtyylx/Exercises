@@ -19,18 +19,81 @@ import java.util.Set;
  */
 public class E36_Valid_Soduku {
     public static void main(String[] args) {
+        char[][] matrix = new char[9][9];
+        matrix[0] = new char[]{'1', '2', '.', '.', '.', '.', '.', '.', '.'};
+        matrix[1] = new char[]{'.', '.', '9', '.', '.', '.', '.', '7', '.'};
+        matrix[2] = new char[]{'8', '.', '.', '.', '.', '5', '.', '.', '.'};
+        matrix[3] = new char[]{'.', '.', '1', '.', '.', '.', '.', '.', '.'};
+        matrix[4] = new char[]{'.', '.', '.', '7', '.', '.', '2', '.', '.'};
+        matrix[5] = new char[]{'.', '.', '.', '.', '.', '.', '4', '3', '.'};
+        matrix[6] = new char[]{'7', '.', '8', '.', '.', '.', '.', '.', '.'};
+        matrix[7] = new char[]{'.', '.', '5', '.', '6', '.', '.', '2', '.'};
+        matrix[8] = new char[]{'.', '.', '.', '.', '.', '.', '.', '.', '.'};
 
+        System.out.println(validSoduku(matrix));
     }
 
-    static boolean validSoduku(char[][] board) {
+    // o(n^2)
+    // 同样也是哈希的解法，但是把功能解耦，看上去简单多了
+    // 将问题提炼为：给定一个二维数组的某个区域范围（可以是正方形也可以是长方形区域），判断里面的元素是否重复
+    // 专门写一个处理通用二维矩阵扫描的函数
+    static boolean isMatrixValid(char[][] board, int istart, int iend, int jstart, int jend) {
+        Set<Character> set = new HashSet<>(9);
+        for (int i = istart; i < iend; i++) {
+            for (int j = jstart; j < jend; j++) {
+                if (board[i][j] != '.' && !set.add(board[i][j])) return false;
+            }
+        }
+        return true;
+    }
 
+    static boolean validSoduku2(char[][] board) {
+        // check Rule #1 and Rule #2
         for (int i = 0; i < board.length; i++) {
-            Set<Character> row = new HashSet<>(10);
-            Set<Character> col = new HashSet<>(10);
-            Set<Character> cube = new HashSet<>(10);
+            if (!isMatrixValid(board, i, i, 0, 9)) return false;    // 数独表的格式是固定的，一定是9*9的尺寸（针对1-9）
+            if (!isMatrixValid(board, 0, 9, i, i)) return false;
+            int x = (i % 3) * 3;
+            int y = (i / 3) * 3;
+            // 关键在于首的索引如何定，只要首定了，加3就是尾
+            // 找规律，发现余数和商之间的关系符合这个排列组合的特性
+            // i = 0, 1, 2 想办法输出：
+            // 0, 3, 0, 3 >> 0, 0
+            // 3, 6, 0, 3 >> 3, 0
+            // 6, 9, 0, 3 >> 6, 0
+
+            // 0, 3, 3, 6 >> 0, 3
+            // 3, 6, 3, 6 >> 3, 3
+            // 6, 9, 3, 6 >> 6, 3
+
+            // 0, 3, 6, 9 >> 0, 6
+            // 3, 6, 6, 9 >> 3, 6
+            // 6, 9, 6, 9 >> 6, 6
+            if (!isMatrixValid(board, x, x + 3, y, y + 3)) return false;
+        }
+
+        // 可以简化的部分
+//        for (int i = 0; i < board.length / 3; i++) {
+//            for (int j = 0; j < board[0].length / 3; j++) {
+//                if (!isMatrixValid(board, 3*i + 0, 3*i + 2, 3*j + 0, 3*j + 2)) return false;
+//            }
+//        }
+
+        return true;
+    }
+
+    // 哈希表解法
+    // 难点主要是如何达成Rule#3，即对二维数组进行九宫格内的元素扫描
+    static boolean validSoduku(char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            Set<Character> row = new HashSet<>(9);
+            Set<Character> col = new HashSet<>(9);
+            Set<Character> cube = new HashSet<>(9);
             for (int j = 0; j < board[i].length; j++) {
-                if (!row.add(board[i][j])) return false;
-                if (!col.add(board[j][i])) return false;
+                if (board[i][j] != '.' && !row.add(board[i][j])) return false;
+                if (board[j][i] != '.' && !col.add(board[j][i])) return false;
+                int x = 3*(i/3);
+                int y = 3*(i%3);
+                if(board[x + j/3][y + j%3]!='.' && !cube.add(board[x + j/3][y + j%3])) return false;
             }
         }
         return true;
