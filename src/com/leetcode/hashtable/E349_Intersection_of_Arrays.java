@@ -1,9 +1,6 @@
 package com.leetcode.hashtable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Michael on 2016/8/30.
@@ -28,15 +25,40 @@ public class E349_Intersection_of_Arrays {
         int[] result = intersection(a, b);
     }
 
+    // 先把两个数组都排序后用双指针扫描解法，o(nlogn)
+    // 当然也可以只让一个数组有序，然后遍历另一个数组的每个元素，边遍历边与已排序数组进行二分查找比对
+    // 所以计算量依然是n次的logn二分查找。
+    static int[] intersection2(int[] a, int[] b) {
+        Arrays.sort(a);
+        Arrays.sort(b);
+        int i = 0;
+        int j = 0;
+        Set<Integer> set = new HashSet<>();
+        while (i < a.length && j < b.length) {
+            if      (a[i] > b[j]) j++;
+            else if (a[i] < b[j]) i++;
+            else {
+                set.add(a[i]);
+                i++;
+                j++;
+            }
+        }
+        int[] result = new int[set.size()];
+        int x = 0;
+        for (int z : set)
+            result[x++] = z;
+        return result;
+    }
+
     // 常规解法，o(n)
     // 先统计数组a中独特元素都是哪些，存在HashSet中
     // 再统计数组b中有哪些元素是HashSet中有的，存在ArrayList中
     // 最后把ArrayList转化成为int数组返回
     static int[] intersection(int[] a, int[] b) {
         Set<Integer> set = new HashSet<>();
+        List<Integer> list = new ArrayList<>();
         for (int x : a)
             set.add(x);
-        List<Integer> list = new ArrayList<>();
         for (int x : b) {
             if (set.contains(x)) {
                 list.add(x);
