@@ -35,22 +35,25 @@ import java.util.Set;
  */
 public class E288_Unique_Abbreviation {
     public static void main(String[] args) {
-        E288_Unique_Abbreviation dict = new E288_Unique_Abbreviation(new String[]{"deer", "door", "cake", "card"});
+        ValidWordAbbr dict = new ValidWordAbbr(new String[]{"deer", "door", "cake", "card"});
         System.out.println(dict.isUnique("dear")); // false
         System.out.println(dict.isUnique("cart")); // true
         System.out.println(dict.isUnique("cane")); // false
         System.out.println(dict.isUnique("make")); // true
     }
 
-    // 哈希表解法，难点在于如何处理dictionary中出现多个不同的字符串具有相同pattern时如何返回false
-    // 题目没有说清楚什么时候给的word叫unique：有以下几种情况
-    // 1. word的pattern根本dictionary中就没有，即：!map.containsKey(pattern)
-    // 2. word的pattern在dictionary中有，但是dictionary中所有pattern和word一样的字符串都和word拼写一模一样。即：word.equals(map.get(pattern))
-    // 将每个字符串的pattern作为Key，原始字符串作为Value，
-    // 在扫描入库dictionary的时候就统计是否有不同Value对应一个Key的情况出现，
-    // 如果有的话，就把这个Value设为一个不可能与任何word一样的值，避免被匹配到
+}
+
+// 哈希表解法，难点在于如何处理dictionary中出现多个不同的字符串具有相同pattern时如何返回false
+// 题目没有说清楚什么时候给的word叫unique：有以下几种情况
+// 1. word的pattern根本dictionary中就没有，即：!map.containsKey(pattern)
+// 2. word的pattern在dictionary中有，但是dictionary中所有pattern和word一样的字符串都和word拼写一模一样。即：word.equals(map.get(pattern))
+// 将每个字符串的pattern作为Key，原始字符串作为Value，
+// 在扫描入库dictionary的时候就统计是否有不同Value对应一个Key的情况出现，
+// 如果有的话，就把这个Value设为一个不可能与任何word一样的值，避免被匹配到
+class ValidWordAbbr {
     private Map<String, String> map;
-    public E288_Unique_Abbreviation(String[] dictionary) {
+    public ValidWordAbbr(String[] dictionary) {
         map = new HashMap<>();
         for (String s : dictionary) {
             String pattern = getAbbr(s);
