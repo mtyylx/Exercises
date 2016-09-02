@@ -9,7 +9,7 @@ package com.leetcode.hashtable;
  */
 public class E204_Counting_Prime {
     public static void main(String[] args) {
-        System.out.println(countingPrime2(Integer.MAX_VALUE/2));
+        System.out.println(countingPrime2(100));
     }
 
     // 写法2：扫描至i * i < n，再扫描一遍
