@@ -49,7 +49,7 @@ public class M347_Top_K_Frequent_Element {
         }
 
         List<Integer> result = new ArrayList<>();
-        for (int i = bucket.length - 1; i >= 0; i++) {
+        for (int i = bucket.length - 1; i > 0; i--) {
             if (bucket[i] != null) result.addAll(bucket[i]);
             if (result.size() == k) break;
         }
