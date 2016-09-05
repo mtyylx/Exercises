@@ -34,7 +34,7 @@ public class Basic_Array_Skills {
 
         // 定义ArrayList对象，list中存的每一个元素都是Object，向list中add的任何类型数据都会被装箱为Object
         List list = new ArrayList(10);  // 10只是capacity，size依然是0
-        list.get(0);                    // 报错，数组越界（因为list对象目前size = 0）
+//        list.get(0);                    // 报错，数组越界（因为list对象目前size = 0）
         list.add(0);                    // 可以存储任何类型数据，但是存在装箱拆箱的耗费
         list.add("abc");
         list.add(new ArrayList(10));
@@ -42,11 +42,11 @@ public class Basic_Array_Skills {
         // 定义泛型ArrayList对象，listGeneric中存的每个元素类型都是指定的类型，不再需要担心装箱拆箱
         List<Integer> listGeneric = new ArrayList<>(10);
         listGeneric.add(9);
-        listGeneric.add("abc");     // 直接可看到编译错误，避免错误隐藏在运行时
+//        listGeneric.add("abc");     // 直接可看到编译错误，避免错误隐藏在运行时
 
         // Java不允许定义泛型类的数组对象。例如new List<String>[10]
         // 下面这行代码编译会报错：”generic array creation“
-        List<String>[] a = new List<String>[10];
+//        List<String>[] a = new List<String>[10];
 
         // 但Java允许定义泛型类的数组变量，并让它指向一个非泛型类（即数组成员全是Object类型的）数组。
         // 例如下面这行代码中的List<String>[] b就是一个泛型类数组变量
