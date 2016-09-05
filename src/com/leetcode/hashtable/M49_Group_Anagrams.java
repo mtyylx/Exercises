@@ -23,9 +23,11 @@ import java.util.*;
 public class M49_Group_Anagrams {
     public static void main(String[] args) {
         String[] a = {"abc", "cba", "fuck", "bca", "fcuk"};
-        List<List<String>> r = groupAnagram2(a);
+        List<List<String>> r = groupAnagram(a);
+        System.out.println(Arrays.toString(new char[]{'a', 'b', 'c', 'd'}));
     }
 
+    // 哈希表 + 排序法提取特征，事实证明排序比你一个一个计算特征统计要来的快
     static List<List<String>> groupAnagram2(String[] a) {
         Map<String, Integer> map = new HashMap<>();
         List<List<String>> result = new ArrayList<>();
@@ -57,7 +59,8 @@ public class M49_Group_Anagrams {
         int count = 0;
         for (String s : a) {
             String pattern = extractPattern(s);
-            if (map.containsKey(pattern)) result.get(map.get(pattern)).add(s);
+            if (map.containsKey(pattern))
+                result.get(map.get(pattern)).add(s);
             else {
                 List<String> newPattern = new ArrayList<>();
                 newPattern.add(s);
