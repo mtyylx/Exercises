@@ -17,18 +17,41 @@ package com.leetcode.linkedlist;
 public class E24_Swap_Nodes_In_Pairs {
     public static void main(String[] args) {
         ListNode head = ListNode.Generator(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
-        ListNode x = swapNodes(head);
+        ListNode x = swapNodes2(head);
     }
 
-    // 递归解法，o(n)
+    // 迭代解法，time - o(n), space - o(1)
+    // 难点：需要设计三个指针，prev / Node1 / Node2，以确保两两节点衔接处能够及时更新
+    // current 前的所有节点已经完成交换
+    // Node1 是一对节点的左侧那个节点
+    // Node2 是一对节点的右侧那个节点
+    /** <dummy> --> <node1> --> <node2> --> <node3> --> <node4> --> NULL */
+    static ListNode swapNodes2(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode current = dummy;           // 从第零个节点开始，一是可以保存head，二是可以保证衔接部分更新
+        ListNode n1;
+        ListNode n2;
+        while (current.next != null && current.next.next != null) {
+            n1 = current.next;              // 缓存第一个节点
+            n2 = current.next.next;         // 缓存第二个节点
+            n1.next = n2.next;              // 第一个节点改为指向第三个元素
+            current.next = n2;              // 第零个节点改为指向第二个元素
+            current.next.next = n1;         // 第二个节点改为指向第一个元素
+            current = current.next.next;    // 起始点从第零个节点改为指向第二个节点
+        }
+        return dummy.next;
+    }
+
+    // 递归解法，time - o(n), space - o(n) 递归的优点在于代码简洁优美，缺点在于需要压栈，无法做到常数空间复杂度
     // 关键将链表分隔成两两节点进行操作
     /** 难点1：在于交换完两节点之后，如何与前面的节点衔接上 */
     // 最简单的办法就是从链表尾端反向顺序来操作，而用递归恰恰能很方便实现
     // 观察到可以将问题归纳为以下几种情形：
-    // 1. --> Null
-    // 2. --> node --> Null
-    // 3. --> node --> node --> Null
-    // 4. --> node --> node --> node --> node --> Null
+    // 1. --> NULL
+    // 2. --> <node1> --> NULL
+    // 3. --> <node1> --> <node2> --> NULL
+    // 4. --> <node1> --> <node2> --> <node3> --> <node4> --> NULL
     // 前两种情况直接返回原始head即可，因为没有可交换的元素
     // 后两种情况本质上是一样的，一个是一对节点后遇到null，一个是两对节点后遇到null
     // 因此递归的逻辑应该写成：
