@@ -18,10 +18,27 @@ public class E24_Swap_Nodes_In_Pairs {
     public static void main(String[] args) {
         ListNode head = ListNode.Generator(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
         ListNode x = swapNodes2(head);
+        x = swapNodes2(null);
+    }
+
+    // 另一种类似的迭代解法，只是省略了定义第二个节点。
+    static ListNode swapNodes3(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+        ListNode first;
+        dummy.next = head;
+        while (current.next != null && current.next.next != null) {
+            first = current.next;           // 缓存第1个节点
+            current.next = first.next;      // 第0个节点指向第2个节点
+            first.next = first.next.next;   // 第1个节点指向第3个节点
+            current.next.next = first;      // 第2个节点指向第1个节点
+            current = current.next.next;    // current从第0个节点转移到第2个节点
+        }
+        return dummy.next;
     }
 
     // 迭代解法，time - o(n), space - o(1)
-    // 难点：需要设计三个指针，prev / Node1 / Node2，以确保两两节点衔接处能够及时更新
+    // 难点：需要设计三个指针，current / Node1 / Node2，以确保两两节点衔接处能够及时更新
     // current 前的所有节点已经完成交换
     // Node1 是一对节点的左侧那个节点
     // Node2 是一对节点的右侧那个节点
