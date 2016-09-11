@@ -15,21 +15,29 @@ public class E234_Palindrome_Linked_List {
         ListNode x = ListNode.Generator(new int[] {1, 2, 3, 4, 5, 4, 3, 2, 1});
         ListNode y = ListNode.Generator(new int[] {1, 2, 3, 4, 4, 3, 2, 1});
         ListNode z = ListNode.Generator(new int[] {1, 0, 1, 1});
-        System.out.println(isPalindrome3(x));
-        System.out.println(isPalindrome3(y));
-        System.out.println(isPalindrome3(z));
+        System.out.println(isPalindrome4(x));
+        System.out.println(isPalindrome4(y));
+        System.out.println(isPalindrome4(z));
     }
 
     // 递归解法，time - o(n), space - o(n)，优势在于不需要修改反转链表。
     // 一开始很纳闷，既然需要首尾指针同时移动，怎么可能用递归呢
     // 后来发现可以通过单独设一个指针，游离在递归函数之外独立变化
     // 在这里使用递归的原因，是因为递归可以逆序执行原本只能顺序执行的链表操作
+    private static ListNode pointer;
     static boolean isPalindrome4(ListNode head) {
-
+        pointer = head;
+        return recursiveScan(head);
     }
 
     static boolean recursiveScan(ListNode head) {
-
+        if (head == null) return true;
+        boolean result = recursiveScan(head.next);      // 先让head递归到链表尾端元素
+        if (result && pointer.val == head.val) {        // 然后随着每个递归的结束，逆序扫描节点，并同时更改游离于递归之外的指针
+            pointer = pointer.next;
+            return true;
+        }
+        return false;
     }
 
     // 构造新的反向链表，time - o(n), space - o(n)
