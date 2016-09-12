@@ -5,7 +5,7 @@ import java.util.Set;
 
 /**
  * Created by LYuan on 2016/9/8.
- * Given a linked list, determine if it has a cycle in it. <--- 判断链表是否是循环链表
+ * Given a linked list, determine if it has a cycle in it. <-- 判断链表是否是循环链表，比较的是节点（内存地址）是否重复，而不只是值是否重复
  *
  * Notes:
  * Can you solve it without using extra space?
@@ -32,7 +32,7 @@ public class E141_Linked_List_Cycle {
         ListNode fast = head;
         // 终止条件很容易疏忽：假设没有cycle，那么fast一定永远跑在slow的前面，因此只要fast没有遇到null那么slow一定不会遇到null
         // 假设真的有cycle，那么就更不可能遇到null
-        while (fast.next != null && fast.next.next != null) {
+        while (fast != null && fast.next != null && fast.next.next != null) {
             slow = slow.next;
             fast = fast.next.next;
             if (slow == fast) return true;
