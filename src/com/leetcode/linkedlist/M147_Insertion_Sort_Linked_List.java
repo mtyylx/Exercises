@@ -21,7 +21,7 @@ public class M147_Insertion_Sort_Linked_List {
     // 第一遍扫描获得长度
     // 第二遍扫描拷贝数组
     // 第三遍扫描覆盖链表
-    static ListNode insertionSort3(ListNode head) {
+    static ListNode insertionSort4(ListNode head) {
         ListNode node = head;
         int length = 0;
         while (node != null) {
@@ -43,18 +43,22 @@ public class M147_Insertion_Sort_Linked_List {
         return head;
     }
 
-    // 在使用各种数据结构的时候扬长避短是很重要的思路：
-    // 数组的优点在于可以以任意方式随便访问任意数组元素，正序逆序怎么着访问复杂度都是o(1)
-    // 数组的缺点在于插入和删除元素的时候，操作复杂度一定是o(n)
-    // 链表与数组的优缺点恰恰相反：
-    // 链表的优点在于插入和删除元素的复杂度是o(1)
-    // 链表的缺点在于访问元素只能通过遍历，即复杂度为o(n)，特别的，对于单链表是无法逆序遍历的。
+    /**
+     * 在使用各种数据结构的时候扬长避短是很重要的思路：
+     * 数组的优点在于可以以任意方式随便访问任意数组元素，正序逆序怎么着访问复杂度都是o(1)
+     * 数组的缺点在于插入和删除元素的时候，操作复杂度一定是o(n)
+     * 链表与数组的优缺点恰恰相反：
+     * 链表的优点在于插入和删除元素的复杂度是o(1)
+     * 链表的缺点在于访问元素只能通过遍历，即复杂度为o(n)，特别的，对于单链表是无法逆序遍历的。
+     */
 
     // 迭代解法，time - o(n^2), space - o(1)
-    // 由于传统数组的插入排序是逆序执行的（逆序平移），因此想要将数组插入排序的算法用在链表上会卡在如何逆序移动的问题上，
-    // 但是只要考虑清楚<链表的优点>在于任何地方插入节点的运算量都是o(1)，完全不用考虑逆序移动的问题
+    // 由于传统数组的插入排序是逆序执行的（逆序平移，插入至停止点），因此想要将数组插入排序的算法用在链表上会卡在如何逆序移动的问题上，
+    // 但是只要考虑清楚<链表的优点>在于任何地方插入节点的运算量都是o(1)，完全不用考虑逆序移动的问题，直接插入即可
     // 因此只要保证顺序扫描的时候保持双指针，检测到待插入节点比prev大比current小就可以插入在current的位置上了
-    // 下面的解法中，dummy和prev是已排序数组，current是待插入元素
+    // dummy和prev是已排序数组，current是待插入元素
+    // 下面算法设计的一个巧妙的地方在于让dummy和当前链表完全独立开，两者并不连在一起，dummy一开始指向null，然后不断把节点插入dummy链表
+    // 相比于所有节点都在一个链表上，这么做的好处是可以省去判断已排序节点的终点位置
     static ListNode insertionSort2(ListNode head) {
         ListNode dummy = new ListNode(0);
         ListNode prev = dummy;
@@ -62,7 +66,9 @@ public class M147_Insertion_Sort_Linked_List {
         while (current != null) {
             ListNode next = current.next;   // 缓存current.next节点，因为current有可能被修改引用插入到前面
             // current与已排序链表（从prev.next开始）一一比较大小，
-            // 如果已排序小就继续扫描已排序，如果current小就把current插入到prev与prev.next之间
+            // 如果扫描的的是第一个节点，此时dummy.next = null，已排序链表为null(prev.next = null)，就把current插入dummy与null之间
+            // 如果已排序小，就继续扫描已排序，
+            // 如果已排序大，就把current插入到prev与prev.next之间
             while (prev.next != null && prev.next.val <= current.val)
                 prev = prev.next;
             current.next = prev.next;   // current后接prev.next
