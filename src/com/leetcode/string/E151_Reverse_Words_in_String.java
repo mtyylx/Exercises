@@ -29,6 +29,7 @@ public class E151_Reverse_Words_in_String {
         String b = reverseString2(a);
         System.out.println(b);
         System.out.println(reverseString(x));
+
     }
 
     /** 处理字符串类的问题，有几种专门的思路：
@@ -47,11 +48,27 @@ public class E151_Reverse_Words_in_String {
     // 难点2：如何处理单词与单词之间的多个空格的问题
     static String reverseString2(String a) {
         char[] old = a.toCharArray();
-        // 反转整个字符串
+        // 1. 反转整个字符串
         reverseWord2(old, 0, old.length - 1);
-        // 依次反转每个单词
+        // 2. 依次反转每个单词
+        int i = 0;
+        int j = 0;
+        int l = old.length;
+        while (j < l) {
+            while (j < l && old[j] == ' ') j++;
+            i = j;
+            while (j < l && old[j] != ' ') j++;
+            reverseWord2(old, i, j - 1);
+        }
+        j = 0;
+        StringBuffer sb = new StringBuffer();
+        while (j < l) {
+            while (j < l && old[j] == ' ') j++;
+            while (j < l && old[j] != ' ') sb.append(old[j++]);
+            sb.append(' ');
+        }
 
-        return new String();
+        return sb.toString().trim();
     }
 
     // 数组反转的更好写法：使用while循环（无需关心索引）
@@ -72,39 +89,22 @@ public class E151_Reverse_Words_in_String {
         }
     }
 
-    // Remove all leading and trailing spaces.
-    private static String trim(char[] str) {
-        int i = 0;
-        while (i < str.length && str[i] == ' ') i++;
-        int j = i;
-        while (i < str.length && str[i] != ' ') j++;
-        return new String(str).substring(i, j);
-    }
-
-    // 双指针解法，同时使用了ArrayList/StringBuilder，time - o(n)，space - o(n)
-    // 显然不是最优的解法，处理的比较笨拙，需要单独处理结尾有可能带上空格的情况。
+    // 双指针解法，同时使用了ArrayList / StringBuilder / String.trim()，
+    // time - o(n)，space - o(n)
     static String reverseString(String a) {
         List<String> list = new ArrayList<>();
         int stop = 0;
         int start = 0;
-        while (stop < a.length()) {
-            while (stop < a.length() && a.charAt(stop) == ' ') {
-                stop++;
-                start = stop;
-            }
-            while (stop < a.length() && a.charAt(stop) != ' ') {
-                stop++;
-            }
-            if (start < stop) list.add(a.substring(start, stop));
+        int l = a.length();
+        while (stop < l) {
+            while (stop < l && a.charAt(stop) == ' ') stop++;   // 先跳过任何连续的空格，直到遇到字符，说明遇到了一个单词
+            start = stop;                                       // 更新单词起始点指针
+            while (stop < l && a.charAt(stop) != ' ') stop++;   // 确定单词结束的位置
+            list.add(a.substring(start, stop));                 // 将单词存入arraylist
         }
-        StringBuilder sb = new StringBuilder();
-        for (int i = list.size() - 1; i >= 0; i--) {
-            sb.append(list.get(i));
-            sb.append(' ');
-        }
-        String result = sb.toString();
-        if (result.length() > 1 && result.charAt(result.length() - 1) == ' ')
-            return result.substring(0, result.length() - 1);
-        else return sb.toString();
+        StringBuilder sb = new StringBuilder();                 // 逆序将单词输出
+        for (int i = list.size() - 1; i >= 0; i--)
+            sb.append(list.get(i) + ' ');
+        return sb.toString().trim();                            // 记得使用trim方法来移除新字符串的首尾空格
     }
 }
