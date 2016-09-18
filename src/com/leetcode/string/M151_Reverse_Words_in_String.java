@@ -22,7 +22,7 @@ import java.util.List;
  * Function Signature:
  * public String reverseString(String a) {...}
  **/
-public class E151_Reverse_Words_in_String {
+public class M151_Reverse_Words_in_String {
     public static void main(String[] args) {
         String a = "Hey guess what! I got my iPhone7 just now and I just keep coding this!";
         String x = "a";
