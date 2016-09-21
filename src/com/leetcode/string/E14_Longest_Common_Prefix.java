@@ -9,8 +9,22 @@ package com.leetcode.string;
  */
 public class E14_Longest_Common_Prefix {
     public static void main(String[] args) {
-        String[] str = {"abc", "abcde", "abcdefg"};
-        System.out.println(longestPrefix(str));
+        String[] str = {"abc", "abcde", ""};
+        System.out.println(longestPrefix2(str));
+    }
+
+    // 利用String.indexOf()这个API来简化代码
+    // 假设第一个字符串就是prefix，依次遍历其他字符串，
+    // 只要当前字符串中不包含第一个字符串或者包含第一个字符串但是不是打头的，就把prefix缩小一位
+    // 需要注意indexOf(String)的用法：如果不存在String，那么返回-1，如果存在多个，那么返回起始Index最小值。
+    static String longestPrefix2(String[] str) {
+        if (str == null || str.length == 0) return "";
+        String prefix = str[0];
+        for (int i = 1; i < str.length; i++) {
+            while (str[i].indexOf(prefix) != 0)
+                prefix = prefix.substring(0, prefix.length() - 1);
+        }
+        return prefix;
     }
 
     // 常规解法，依次扫描字符串数组每个字符串的第i个元素，直到有的字符串与其他字符串不一样或长度耗尽就停止。
