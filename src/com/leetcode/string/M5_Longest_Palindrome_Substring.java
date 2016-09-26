@@ -11,7 +11,27 @@ package com.leetcode.string;
  * */
 public class M5_Longest_Palindrome_Substring {
     public static void main(String[] args) {
-        System.out.println(longestPalindromeSubstring2("ab"));
+        System.out.println(longestPalindromeSubstring3("abcabcbace"));
+    }
+
+    // 动态规划解法，构造二维真值表
+    // 尚未理解
+    public static String longestPalindromeSubstring3(String s) {
+        int n = s.length();
+        String res = null;
+
+        boolean[][] dp = new boolean[n][n];
+
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i; j < n; j++) {
+                dp[i][j] = s.charAt(i) == s.charAt(j) && (j - i < 3 || dp[i + 1][j - 1]);
+
+                if (dp[i][j] && (res == null || j - i + 1 > res.length())) {
+                    res = s.substring(i, j + 1);
+                }
+            }
+        }
+        return res;
     }
 
     // 寻找回文的两种方式：
@@ -20,6 +40,7 @@ public class M5_Longest_Palindrome_Substring {
     // 可以看到，第二种方法比第一种好实现的多，因为中点扩张方式只需要找不等的时候退出，而缩小逼近则需要先判断相等，再判断不等或重叠，比较麻烦
 
     // 中点扩张方式（Expand Around Center）
+    // time - o(n^2), space - o(1)
     private static int maxStart = 0;
     private static int maxLen = 1;
     static String longestPalindromeSubstring2(String a) {
@@ -40,9 +61,9 @@ public class M5_Longest_Palindrome_Substring {
         }
     }
 
-    // 缩小逼近方式
+    // Brute Force 缩小逼近方式，time - o(n^3)，space - o(1)
     // 由于最大回文可能出现在字符串的任何区间，因此双指针的首尾都需要动态扫描，遇到了首尾指针一样的情况，需要辨认是否这个子字符串内部是回文
-    // 所以双层for循环加上额外的回文判断循环，时间复杂度是o(n^3)
+    // 所以双层for循环加上额外的回文判断循环，是n的三次方
     static String longestPalindromeSubstring(String a) {
         String result = a.substring(0, 1);
         for (int i = 0; i < a.length(); i++) {
