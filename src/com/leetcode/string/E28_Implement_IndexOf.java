@@ -17,7 +17,9 @@ public class E28_Implement_IndexOf {
     }
 
     // Another Shorter Version of Brute Force Solution
-    // 该写法巧妙的把判断条件也写进了for循环的循环条件里，这样可以确保，当
+    // 该写法巧妙的把判断条件也写进了for循环的循环条件里，这样可以省略for循环中再嵌套if语句
+    // 另外该算法也考虑到如果needle是空字符串的时候，应该返回0的
+    // 还要考虑到当haystack比needle长度还要短的时候应直接返回-1
     static int indexOf2(String needle, String haystack) {
         if (needle.length() == 0) return 0;
         for (int i = 0; i <= haystack.length() - needle.length(); i++) {
