@@ -18,7 +18,7 @@ public class Basic_Merge_Sort {
         System.out.println(Arrays.toString(a));
     }
 
-    /** 解法1 */
+    /** 迭代解法 - 直接合并 */
     // 直接合并 - BottomUp Iterative：相当于省略了递归方法不断除二分解将数组分段的过程，
     // 直接指定最小比较区段就是1，1比完了比2，2比完了比3，一直比到数组长度N
     // 外循环控制区段长度，内循环用区段长度扫描并按区段长度merge整个数组
@@ -38,7 +38,7 @@ public class Basic_Merge_Sort {
                 merge(a, j, j + i - 1, Math.min(j + 2 * i - 1, a.length - 1));
     }
 
-    /** 解法2 */
+    /** 递归解法 - 先分解再合并 */
     static void MergeSort_Recursive(int[] a) {
         MergeSortRecursive(a, 0, a.length - 1);
     }

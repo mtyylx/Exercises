@@ -6,7 +6,8 @@ import java.util.Arrays;
  * Created by LYuan on 2016/9/27.
  *
  * Basic Algorithm: Heap Sort
- *
+ * Time - o(n * log n)
+ * Space - o(1)
  */
 public class Basic_Heap_Sort {
     public static void main(String[] args) {

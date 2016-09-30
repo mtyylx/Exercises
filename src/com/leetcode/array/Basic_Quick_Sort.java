@@ -11,8 +11,8 @@ import java.util.Queue;
  * Created by Michael on 2016/9/28.
  *
  * Basic Algorithm: Quick Sort
- * Time - o(n * log n)
- * Space - o(？)
+ * Time - o(n * log n), worst o(n^2)
+ * Space - o(1)
  */
 public class Basic_Quick_Sort {
     public static void main(String[] args) {
