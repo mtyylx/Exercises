@@ -13,31 +13,42 @@ import java.util.Arrays;
  */
 public class Basic_Counting_Sort {
     public static void main(String[] args) {
-        int[] a = {1, 1, 4, 2, 4, 2, 1, 4, 2, 2, 1, 5, 65, 4, 1, 2, 4};
+        int[] a = {Integer.MAX_VALUE, Integer.MIN_VALUE};
         CountingSort(a);
         System.out.println(Arrays.toString(a));
-        bulkTest();
+        //bulkTest();
     }
 
-    // 思想就是Value-as-index解法，用元素值作为计数数组的索引值，在计数数组里面存索引值出现次数
-    // 再从小到大顺序扫描计数数组，根据出现次数原位修改原数组即可。
+    /** 计数排序的最大软肋是对未排序数组的元素取值范围有要求。*/
+    // 基本思想：Value-as-Index，将原数组的元素值作为新数组的索引，原数组元素值出现的个数作为新数组的元素值。
+    // 虽然计数排序不属于比较排序，因此不存在比较排序时间复杂度o(nlogn)的下限，理论上可以比任何比较排序的速度都要快。
+    // 但是，只要其元素取值的最大值和最小值差值很大，即使未排序数组的元素个数很少，其排序速度依然将会非常慢（比较类排序则完全不会有这种问题）
+    // 特别的，计数排序对于取值范围超过Integer.MAX_VALUE的数组是无法排序的。
+    // 例如一个只有两个元素的数组[2147483647, -2147483648]的取值范围是4294967296，而由于Java数组的索引值必须是整型，因此索引会整型溢出，索引值将会是负值
     static void CountingSort(int[] a) {
+        if (a == null || a.length < 2) return;
         int max = a[0];
+        int min = a[0];
         for (int x : a) {
             if (x > max) max = x;
+            else if (x < min) min = x;
         }
-        int[] count = new int[max + 1];
+        int[] count = new int[max - min + 1];
         for (int x : a) {
-            count[x]++;
+            count[x - min]++;
         }
-        int idx = 0;
+        int current = 0;
         for (int i = 0; i < count.length; i++) {
-            while (count[i] != 0) {
-                a[idx] = i;
+            while (count[i] > 0) {
+                a[current] = i + min;
+                current++;
                 count[i]--;
-                idx++;
             }
         }
+    }
+
+    static void CountingSortX(int[] a) {
+
     }
 
     public static void bulkTest() {
