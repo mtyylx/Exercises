@@ -13,10 +13,9 @@ import java.util.Arrays;
  */
 public class Basic_Counting_Sort {
     public static void main(String[] args) {
-        int[] a = {Integer.MAX_VALUE, Integer.MIN_VALUE};
-        CountingSort(a);
-        System.out.println(Arrays.toString(a));
-        //bulkTest();
+        int[] a = {1, 4, 2, 3, 4, 3, 1};
+        System.out.println(Arrays.toString(CountingSort2(a)));
+        bulkTest();
     }
 
     /** 计数排序的最大软肋是对未排序数组的元素取值范围有要求。*/
@@ -47,8 +46,28 @@ public class Basic_Counting_Sort {
         }
     }
 
-    static void CountingSortX(int[] a) {
-
+    // 官方解法：使用直方图处理的Counting Sort
+    // 使用两个辅助数组，b数组代表原数组a元素值的分布情况，由a数组和b数组得到排序后的新数组c。
+    static int[] CountingSort2(int[] a) {
+        if (a == null || a.length < 2) return a;
+        int max = a[0];
+        int min = a[0];
+        for (int x : a) {
+            if (x > max) max = x;
+            else if (x < min) min = x;
+        }
+        int[] b = new int[max - min + 1];
+        for (int x : a) {
+            b[x - min]++;
+        }
+        for (int i = 1; i < b.length; i++) {
+            b[i] += b[i - 1];
+        }
+        int[] c = new int[a.length];
+        for (int i = a.length - 1; i >= 0; i--) {
+            c[--b[a[i] - min]] = a[i];
+        }
+        return c;
     }
 
     public static void bulkTest() {
@@ -56,7 +75,7 @@ public class Basic_Counting_Sort {
             for (int i = 1; i < 100; i++) {
                 int[] x = randGen(i, j);
                 System.out.println("Original: " + Arrays.toString(x));
-                CountingSort(x);
+                x = CountingSort2(x);
                 if (!isSorted(x)) {
                     System.out.println("Failed at: " + Arrays.toString(x));
                     return;
