@@ -1,6 +1,8 @@
 package com.leetcode.array;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by LYuan on 2016/9/13.
@@ -11,10 +13,10 @@ import java.util.Arrays;
  */
 public class Basic_Insertion_Sort {
     public static void main(String[] args) {
-        int[] a = {2, 1, 2};
-        InsertionSort(a);
+        int[] a = {1, 4, 5, 7, 8, 3, 4, 51, 3, 41, 4, 9};
+        InsertionSort4(a);
         System.out.println(Arrays.toString(a));
-        bulkTest();
+        //bulkTest();
     }
 
     /** 基本思路：将未排序元素依次插入已排序区间的合适位置。用平移。*/
@@ -74,12 +76,27 @@ public class Basic_Insertion_Sort {
         }
     }
 
+    // 使用ArrayList实现插入排序，只要待排序元素小于已排序元素，就把待排序元素插入到已排序元素的位置，然后已排序元素及其后面都自动后移。
+    static void InsertionSort4(int[] a) {
+        List<Integer> list = new ArrayList<>(a.length);
+        for (int x : a) {
+            int i;
+            for (i = 0; i < list.size(); i++) {
+                if (list.get(i) > x) break;
+            }
+            list.add(i, x);
+        }
+        for (int i = 0; i < a.length; i++) {
+            a[i] = list.get(i);
+        }
+    }
+
     public static void bulkTest() {
         for (int j = 2; j < 100; j += 2) {
             for (int i = 1; i < 100; i++) {
                 int[] x = randGen(i, j);
                 System.out.println("Original: " + Arrays.toString(x));
-                InsertionSort3(x);
+                InsertionSort4(x);
                 if (!isSorted(x)) {
                     System.out.println("Failed at: " + Arrays.toString(x));
                     return;
