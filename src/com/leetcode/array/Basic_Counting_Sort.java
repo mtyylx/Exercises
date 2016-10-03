@@ -6,7 +6,11 @@ import java.util.Arrays;
  * Created by Michael on 2016/9/29.
  *
  * Basic Algorithm: Counting Sort.
- * 特点：不是比较型排序，但是对于待排序数组的元素取值特性挑剔。
+ * 适用条件：待排序数组是整型数组，或可以按整型类型的Key对数组进行排序。
+ * 特点：因为根本思路在于Value-as-Index，所以对于数组的元素取值非常挑剔：
+ * 1. 数组元素取值最好均匀分布在一个区间内，
+ * 2. 取值必须是整数，
+ * 3. 取值范围不宜过大，取值范围不能超过整型最大值
  *
  * Time - o(n)
  * Space - o(MAX_VALUE - MIN_VALUE + 1),
@@ -17,10 +21,21 @@ public class Basic_Counting_Sort {
     public static void main(String[] args) {
         int[] a = {-5, -3, -5, -3, 1, 1, -2};
         System.out.println(Arrays.toString(CountingSort2(a)));
-        //bulkTest();
+        bulkTest();
     }
 
+    /** Counting Sort的核心思路：<Value-As—Index> */
     // 计数排序的<最大软肋>是对未排序数组的元素取值范围有要求。
+    // 不管是下面的解法1还是解法2，都需要依靠Value-As-Index的方式，而Java的数组Index类型限制了Value必须也得是整型，
+    // 这就导致了Counting Sort有一定的局限性，不能对<小数数组>进行排序，不能对<取值范围过大的数组>进行排序。
+    // (虽然对于元素有负数的数组严格来说也不行，但是可以用offset平移整个数组元素至正数，所以依然可以用Counting Sort)
+    // 对于小数数组，以及取值范围过大的数组，具有十分类似思路的Bucket Sort可以解决问题。详见Bucket Sort.
+    // 其实Bucket Sort的解决方案是缩放，和Counting Sort中使用的负数平移十分类似，但Bucket和Counting的核心区别在于：
+    // Counting Sort的Count数组每个元素里只能存放<相同元素>的<个数>，但是，
+    // Bucket Sort的每个Bucket里却可以放一个子区间内的<不同元素>的<实体>，这使得Bucket Sort可以用缩放来处理任何取值范围内的任何元素。
+    // 当Bucket Sort的每个Bucket都放的是相同元素时(或每个桶长度都为1)，Bucket Sort就退化成为了Counting Sort
+    // 当Bucket Sort只有一个Bucket的时候，Bucket Sort就退化成为了Insertion Sort
+    // 当Bucket Sort只有两个Bucket的时候，Bucket Sort就退化成了Merge Sort
 
     /** 为什么有解法1和解法2，以及什么情况下该用哪个？ */
     // 解法一只统计原数组的元素出现频率，然后顺序遍历频率表<直接生成>数组，不涉及把原数组元素拷贝至新数组的过程。
@@ -29,7 +44,7 @@ public class Basic_Counting_Sort {
     // 这源自于对特殊数组的排序需求，现实中，想要把计数排序用在其他排序中作为子过程，或者要排序的是数组元素对应的Key值，
     // 那么就需要即按照Key的出现频率统计，最后又需要操作原数组元素排序，而不是仅将Key自己排序好就够了。第二个解法的拷贝特性满足了这个需求。
 
-    /** 解法1：针对<纯数值数组>进行计数排序 */
+    /** 解法1：针对<纯整型数组>进行计数排序 */
     // 基本思想：Value-as-Index，将原数组的元素值作为新数组的索引，原数组元素值出现的个数作为新数组的元素值。
     // 得到频率分布数组（即count数组）后，遍历该数组的同时，复写原数组，count数组的每个元素值是多少，就写多少个元素在原数组里。
     // 虽然计数排序不属于比较排序，因此不存在比较排序时间复杂度o(nlogn)的下限，理论上可以比任何比较排序的速度都要快。
@@ -48,17 +63,25 @@ public class Basic_Counting_Sort {
         for (int x : a) {
             count[x - min]++;
         }
-        int current = 0;
-        for (int i = 0; i < count.length; i++) {
-            while (count[i] > 0) {
-                a[current] = i + min;
-                current++;
-                count[i]--;
-            }
-        }
+
+        // 写为双for循环更简洁
+        int idx = 0;
+        for (int i = 0; i < count.length; i++)
+            for (int j = 0; j < count[i]; j++)
+                a[idx++] = i + min;
+
+//        // 写为for-while循环
+//        int current = 0;
+//        for (int i = 0; i < count.length; i++) {
+//            while (count[i] > 0) {
+//                a[current] = i + min;
+//                current++;
+//                count[i]--;
+//            }
+//        }
     }
 
-    /** 解法2：针对<数组元素并非数值但每个元素都对应一个数值类型的Key>，根据Key值进行进行计数排序（官方解法）*/
+    /** 解法2：针对<数组元素并非整型但每个元素都对应一个整型类型的Key>，根据这个整型的Key值进行计数排序（官方解法）*/
     // 基本思想：Value-as-index + Cumulative Histogram，后者是这个解法的独特之处。解法1只用到了一般的Histogram (Frequency Table).
     // 使用两个辅助数组，b数组代表原数组a元素值的分布情况，由a数组和b数组得到排序后的新数组c。
     // 和第一个解法一样使用offset构造b数组，以处理a数组元素为负值的情况，
@@ -102,7 +125,7 @@ public class Basic_Counting_Sort {
             for (int i = 1; i < 100; i++) {
                 int[] x = randGen(i, j);
                 System.out.println("Original: " + Arrays.toString(x));
-                x = CountingSort2(x);
+                CountingSort(x);
                 if (!isSorted(x)) {
                     System.out.println("Failed at: " + Arrays.toString(x));
                     return;
