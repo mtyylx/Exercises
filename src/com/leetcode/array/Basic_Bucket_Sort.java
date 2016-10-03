@@ -1,10 +1,7 @@
 package com.leetcode.array;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Michael on 2016/10/2.
@@ -17,8 +14,8 @@ import java.util.List;
  */
 public class Basic_Bucket_Sort {
     public static void main(String[] args) {
-        float[] a = {-6, 4, -3, 2, -7, 4, 1, 9};
-        BucketSort(a, 100);
+        float[] a = {1, 7, -88, 44, 22, 77};
+        BucketSort2(a, 100);
         System.out.println(Arrays.toString(a));
         bulkTest();
     }
@@ -71,19 +68,24 @@ public class Basic_Bucket_Sort {
         }
     }
 
-    // 与上面的解法几乎完全一样，只是bucket使用泛型数组实现（被Java所禁止的一种方式）
-    // 可以看到，其实在这里使用泛型数组没有任何好处，因为即使定义泛型数组，还是需要把每个元素都初始化一遍。
-    // 一般非用数组而不用List的情况是因为数组一旦定义好长度那么所有元素就都已经初始化完毕了，比List初始化完之后长度为0要方便很多
-    // 但是要知道这仅限于数组元素是基础类型，对于装满了list引用变量的数组，依然需要和List<List<>>一样遍历所有元素以初始化。
+    // 与上面的解法几乎完全一样，只是bucket使用泛型数组实现（被Java所禁止的一种方式），且插入排序自己用LinkedList在放入桶的同时就完成。（第二步和第三步结合在一起）
     static void BucketSort2(float[] a, int n) {
+
+        // 1. 初始化桶
         // 根据Effective Java里面介绍的方法避免Generic Array Creation编译错误
         // 我需要的是一个每个元素都是指向一个独特ArrayList的数组，但是Java并不允许直接定义这种数组，
         // 因此需要先定义一个装满Object类型元素的数组（因为这么做并不违反Java的规定）
         // Java只禁止定义泛型类的数组，但是并不禁止你定义泛型类的数组引用变量，因此我们再定义一个我们想要的泛型类数组引用变量，
         // 然后加强制类型转换，让这个引用变量指向这个原本是Object类型的数组，就曲线的完成了“定义泛型类数组”的目的。
+        // 可以看到，其实在这里使用泛型数组没有任何好处，因为即使定义泛型数组，还是需要把每个元素都初始化一遍。
+        // 一般非用数组而不用List的情况是因为数组一旦定义好长度那么所有元素就都已经初始化完毕了，比List初始化完之后长度为0要方便很多
+        // 但是要知道这仅限于数组元素是基础类型，对于装满了list引用变量的数组，依然需要和List<List<>>一样遍历所有元素以初始化。
         @SuppressWarnings("unchecked")
-        List<Float>[] bucketlist = (List<Float>[]) new ArrayList[n];
+        List<Float>[] bucketlist = (List<Float>[]) new LinkedList[n];
+        for (int i = 0; i < n; i++)
+            bucketlist[i] = new LinkedList<>();
 
+        // 1. 确定取值范围
         float max = a[0];
         float min = a[0];
         for (float x : a) {
@@ -91,17 +93,17 @@ public class Basic_Bucket_Sort {
             min = Math.min(x, min);
         }
 
-        for (int i = 0; i < n; i++)
-            bucketlist[i] = new ArrayList<>();
-
+        // 2 & 3. 将元素放入合适的桶，放入桶的时候就确保有序的插入
         for (float x : a) {
             int bucketID = (int) ((x - min) * n / (max - min + 1));
-            bucketlist[bucketID].add(x);
+            int i = 0;
+            while (bucketlist[bucketID].size() != 0 && bucketlist[bucketID].get(i) < x) i++;    // 插入位置是有序的
+            bucketlist[bucketID].add(i, x);
         }
 
+        // 4. 合并所有的非空桶
         int idx = 0;
         for (List<Float> bucket : bucketlist) {
-            Collections.sort(bucket);
             for (float x : bucket) {
                 a[idx++] = x;
             }
