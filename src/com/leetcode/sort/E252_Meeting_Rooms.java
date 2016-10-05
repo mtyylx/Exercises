@@ -21,12 +21,27 @@ import java.util.Comparator;
  */
 public class E252_Meeting_Rooms {
     public static void main(String[] args) {
-        Interval[] intervals = new Interval[] {new Interval(19, 25), new Interval(15, 20), new Interval(10, 15)};
-        System.out.println(canAttendAllMeetings2(intervals));
+        Interval[] intervals = new Interval[] {new Interval(5, 8), new Interval(6, 8)};
+        System.out.println(canAttendAllMeetings4(intervals));
     }
 
     // 此题的关键在于要按照start成员变量值对interval对象排序，再依次判断每个interval对象的end成员变量值是否交叉。
-    // 尝试分别用Counting Sort和Bucket Sort来排序。
+    // 思路1：可以直接尝试分别用Counting Sort和Insertion Sort来排序。
+    // 思路2：直接修改Interval类，使其实现Comparable接口以直接使用Arrays.sort方法
+    // 思路3：由于可以确保每个interval都是有效的，因此可以对interval数组的所有start和end单独排序，无需按interval对象分析了。
+    static boolean canAttendAllMeetings4(Interval[] intervals) {
+        int[] start = new int[intervals.length];
+        int[] end = new int[intervals.length];
+        for (int i = 0; i < intervals.length; i++) {
+            start[i] = intervals[i].start;
+            end[i] = intervals[i].end;
+        }
+        Arrays.sort(start);
+        Arrays.sort(end);
+        for (int i = 1; i < intervals.length; i++)
+            if (start[i] < end[i - 1]) return false;
+        return true;
+    }
 
     // Counting Sort解法: Get Max -> Get Histo -> Get Accumulative Histo -> Sorted -> Check Validity
     // Time - o(n), space - o(n)
@@ -48,8 +63,20 @@ public class E252_Meeting_Rooms {
         return true;
     }
 
+    // Insertion Sort解法：
+    // Time - o(n^2), Space - o(1)
     static boolean canAttendAllMeetings2(Interval[] intervals) {
-
+        int i, j;
+        Interval current;
+        for (i = 0; i < intervals.length; i++) {
+            current = intervals[i];
+            for (j = i - 1; j >= 0 && intervals[j].start >= current.start; j--)
+                intervals[j + 1] = intervals[j];
+            intervals[j + 1] = current;
+        }
+        for (i = 1; i < intervals.length; i++)
+            if (intervals[i].start < intervals[i - 1].end) return false;
+        return true;
     }
 
     // 直接使用Arrays.sort方法比较任何的Interval对象
