@@ -1,4 +1,4 @@
-package com.leetcode.array;
+package com.leetcode.sort;
 
 import com.sun.xml.internal.bind.v2.model.annotation.Quick;
 

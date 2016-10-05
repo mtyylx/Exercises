@@ -1,4 +1,4 @@
-package com.leetcode.array;
+package com.leetcode.sort;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -68,7 +68,7 @@ public class Basic_Bucket_Sort {
         }
     }
 
-    // 与上面的解法几乎完全一样，只是bucket使用泛型数组实现（被Java所禁止的一种方式），且插入排序自己用LinkedList在放入桶的同时就完成。（第二步和第三步结合在一起）
+    // 与上面的解法几乎完全一样，使用泛型数组实现桶（被Java所禁止的一种方式），且插入排序用LinkedList在放入桶的同时就完成。（第二步和第三步结合在一起）
     static void BucketSort2(float[] a, int n) {
 
         // 1. 初始化桶
