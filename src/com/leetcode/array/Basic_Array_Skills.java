@@ -11,7 +11,9 @@ import java.util.List;
  */
 public class Basic_Array_Skills {
     public static void main(String[] args) {
-        test1();
+        System.out.println(int2str(1234567));
+        System.out.println(str2int("12345"));
+        //test1();
     }
 
     static void test1 () {
@@ -61,5 +63,27 @@ public class Basic_Array_Skills {
         System.out.println(info);
     }
 
+    // int -> String: digit extraction.
+    // 从低位向高位依次提取每一位的数值。%10用于提取当前最低一位，/10用于砍掉当前最低一位。
+    public static String int2str(int x) {
+        StringBuilder sb = new StringBuilder();
+        while (x > 0) {
+            int digit = x % 10;
+            x = x / 10;
+            sb.insert(0, digit);
+        }
+        return sb.toString();
+    }
+
+    // String -> int: sum.
+    // 从低位向高位扫描，上次的sum乘10加上当前位的数值。
+    public static int str2int(String x) {
+        int sum = 0;
+        for (int i = 0; i < x.length(); i++) {
+            int val = x.charAt(i) - '0';
+            sum = sum * 10 + val;
+        }
+        return sum;
+    }
 
 }
