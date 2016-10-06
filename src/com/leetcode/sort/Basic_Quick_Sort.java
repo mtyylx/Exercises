@@ -12,7 +12,10 @@ import java.util.Queue;
  *
  * Basic Algorithm: Quick Sort
  * Time - o(n * log n), worst o(n^2)
- * Space - o(1)
+ * Space - o(logn)
+ * 快排的空间复杂度始终是o(logn)，这是因为快排必须要使用额外的空间存储每次分区的分界点位置。
+ * 如果使用递归实现，这个分界点位置被隐式的使用在函数堆栈上，
+ * 如果使用迭代实现，则分界点位置必须使用栈自己存储起来，因此不管使用递归还是迭代，快排都需要o(logn)额外空间，无法做到o(1)。
  */
 public class Basic_Quick_Sort {
     public static void main(String[] args) {
