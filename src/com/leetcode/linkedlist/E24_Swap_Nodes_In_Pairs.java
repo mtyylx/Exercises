@@ -92,20 +92,3 @@ public class E24_Swap_Nodes_In_Pairs {
         return newHead;
     }
 }
-
-class ListNode {
-    int val;
-    ListNode next;
-    ListNode(int x) { val = x; }
-
-    // Generate a LinkedList from a given array
-    static ListNode Generator(int[] array) {
-        ListNode head = new ListNode(array[0]);
-        ListNode pointer = head;
-        for (int i = 1; i < array.length; i++) {
-            pointer.next = new ListNode(array[i]);
-            pointer = pointer.next;
-        }
-        return head;
-    }
-}
