@@ -22,7 +22,10 @@ import java.util.List;
 public class M94_Binary_Tree_Inorder_Traversal {
     public static void main(String[] args) {
         TreeNode root = TreeNode.Generator(new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11});
-        List<Integer> result = inorder(root);
+        List<Integer> result;
+        result = inorder2(root);
+        for (int x : result) System.out.print(x + ", ");
+        result = inorder3(root);
         for (int x : result) System.out.print(x + ", ");
     }
 
@@ -72,6 +75,28 @@ public class M94_Binary_Tree_Inorder_Traversal {
             current = stack.pop();
             result.add(current.val);
             current = current.right;
+        }
+        return result;
+    }
+
+    // 上面写法的变体，将不断向左下移动的内嵌while循环改为if...else结构，打散由外循环while代替实现
+    // 逻辑也相应的解释为：
+    // 如果当前结点不为空，说明还能继续向左下移动，所以将当前结点压栈，并移动至其左子树（即使其左子树是null也移动）
+    // 如果当前结点是空，说明触底，需要从栈中领取新的节点（这个节点可能是当前结点的父节点），导出新节点并访问其右子树
+    static List<Integer> inorder3(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode current = root;
+        while (current != null || !stack.isEmpty()) {
+            if (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+            else {
+                current = stack.pop();
+                result.add(current.val);
+                current = current.right;
+            }
         }
         return result;
     }
