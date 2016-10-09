@@ -24,7 +24,7 @@ import java.util.List;
 public class M144_Binary_Tree_Preorder_Traversal {
     public static void main(String[] args) {
         TreeNode root = TreeNode.Generator(new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11});
-        List<Integer> preorder = preOrder3(root);
+        List<Integer> preorder = preOrder4(root);
     }
 
     /** 二叉树的前、中、后序遍历都是针对root而言的。
@@ -70,6 +70,22 @@ public class M144_Binary_Tree_Preorder_Traversal {
             result.add(current.val);    // 前序：访问子节点前先把根输出。
             if (current.right != null) stack.push(current.right);
             if (current.left != null) stack.push(current.left);
+        }
+        return result;
+    }
+
+    // 这是类似于Inorder和Postorder解法的if...else结构的Preorder版本，但是并没有上面的解法直观。
+    static List<Integer> preOrder4(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode current = root;
+        while (current != null || !stack.isEmpty()) {
+            if (current != null) {
+                result.add(current.val);
+                if (current.right != null) stack.push(current.right);
+                current = current.left;
+            }
+            else  current = stack.pop();
         }
         return result;
     }
