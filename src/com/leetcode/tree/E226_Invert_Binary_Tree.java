@@ -30,8 +30,10 @@ public class E226_Invert_Binary_Tree {
         root = invertTree2(root);
     }
 
-    // 由于题目只涉及到交换节点的左右子节点，因此其实任何顺序遍历树的节点都是可以的
+    // 由于题目只涉及到交换节点的左右子节点，因此其实以深度优先还是广度优先都是无所谓的（从下到上交换和从上到下交换）
     // 这就是使用DFS和BFS都可以的前提。
+    // 可以看到，对于这种DFS和BFS都可以使的情况，一般一上来就有三个解法：DFS递归、DFS迭代用栈、BFS迭代用队列
+    // 按理说应该还有一个BFS递归，但是由于递归的本质是用栈，而BFS的本质又是队列，所以BFS递归这个搭配不work。
 
     /** DFS + Stack: Recursive */
     // 逆序递归（前序遍历root-left-right）、正序递归（后序遍历left-right-root）都可以
@@ -43,7 +45,7 @@ public class E226_Invert_Binary_Tree {
         invertTree(root.right);
 
         TreeNode temp = root.left;
-        root.left = root.right;3
+        root.left = root.right;
         root.right = temp;
 
         return root;
