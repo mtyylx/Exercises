@@ -142,10 +142,12 @@ public class E101_Symmetric_Tree {
     }
 
     /** BFS + Queue: Level Order Traversal 迭代解法 */
-    // 本质是Level Order Traversal问题，只需要确保每一层都是对称的即可。
-    // 难点：在于如何处理缺位的节点
+    // 最初的解法，比较臃肿。想法是转变成为Level Order Traversal问题，只需要确保每一层都是对称的即可。
+    // 难点：在于如何处理缺位的节点。因为ArrayDeque不能接受null元素。
     // 如果不处理，那么将会误判：例如有一层如果原本应有4个节点，但是实际是null,2,null,2，如果简化成[2, 2]则会以为是对称的。
-    // 这里要注意，Deque是不接受null元素的，而List则可以接受null元素。
+    // 这里要搞清楚，Deque这个接口提供了多种方法，其本身并不是完全禁止null元素的，真正其决定性作用的是到底用什么实现。
+    // 如果用ArrayDeque实现，那么必须不能有null元素添加。
+    // 如果用LinkedList实现，那么就可以。
     static boolean isSymmetric(TreeNode root) {
         Deque<TreeNode> queue = new ArrayDeque<>();
         if (root == null) return true;
