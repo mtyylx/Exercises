@@ -19,7 +19,7 @@ import java.util.*;
 public class H145_Binary_Tree_Postorder_Traversal {
     public static void main(String[] args) {
         TreeNode root = TreeNode.Generator(new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11});
-        List<Integer> result = postOrderx(root);
+        List<Integer> result = postOrderx2(root);
     }
 
     // 递归解法
@@ -111,6 +111,37 @@ public class H145_Binary_Tree_Postorder_Traversal {
                     prev = stack.pop();
                 }
                 else current = peek.right;                          // 更新current，向右下移动一步，再进入下个循环的if块向左一直到底
+            }
+        }
+        return result;
+    }
+
+    /** 解法1.3：也是真正的后序遍历的迭代写法，但是借助了额外的<HashSet>作为判断是否已访问的工具 */
+    // 由于哈希表最终需要记录所有节点，所以空间复杂度是Space - o(2n)
+    // 基本逻辑是：如果当前节点没有子节点，或者所有子节点都访问过，就记录当前节点在哈希表中，并同时输出该元素。
+    // 如果当前节点的子节点还没有访问过，那么就得先压栈等待访问。
+    // 灵感来源于E110判断是否balanced的迭代解法。
+    static List<Integer> postOrderx2(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        Set<TreeNode> set = new HashSet<>();
+        if (root == null) return result;
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode current = stack.peek();
+            if (current.left == null && current.right == null ||
+                current.left == null && set.contains(current.right) ||
+                current.right == null && set.contains(current.left) ||
+                set.contains(current.left) && set.contains(current.right))
+            {
+                set.add(current);
+                result.add(current.val);
+                stack.pop();
+            }
+            else {
+                if (current.left != null && !set.contains(current.left))
+                     stack.push(current.left);
+                else stack.push(current.right);
             }
         }
         return result;
