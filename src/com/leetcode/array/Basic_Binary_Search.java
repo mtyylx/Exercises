@@ -46,18 +46,34 @@ public class Basic_Binary_Search {
      *
      * 该算法设计的一个小的困难在于i和j的更新需要middle+/-1，而不仅仅是更新为middle
      * 因为当i和j越来越接近的直至相邻的时候，如果不加减1就会陷入死循环，永远等不到i=j的时候
+     *
+     *  易疏忽点1：求中点的加法有可能会整型溢出，所以最好使用先减后加的方式。
+     *  易疏忽点2：while循环条件应包含左右指针重合的情况，只有左右指针位置交错才退出。
+     *  易疏忽点3：即使没有找到，target的理想位置也就刚好等于退出while循环后的left指针位置。
      */
+    // Example: 证明left刚好处于待插入位置。
+    // target = -1. [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4]     应插入至left所在位置
+    //               ↑     ↑     ↑    ↑  ↑             ↑              ↑ ↑
+    //               l     m     r   l,m r           l,m,r            r l
+    //
+    // target = 5.  [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], [0, 1, 2, 3, 4]     应插入至left所在位置
+    //               ↑     ↑     ↑             ↑  ↑                ↑                ↑ ↑
+    //               l     m     r            l,m r              l,m,r    move l    r l
+    //
+    // target = 7.  [0, 2, 4, 6, 8], [0, 2, 4, 6, 8], [0, 2, 4, 6, 8], [0, 2, 4, 6, 8]     应插入至left所在位置
+    //               ↑     ↑     ↑             ↑  ↑                ↑              ↑ ↑
+    //               l     m     r            l,m r              l,m,r   move r   r l
     static int binarySearchIterative(int[] a, int target) {
         if (a == null) return -1;
         int i = 0;
         int j = a.length - 1;
         int middle;
         while (i <= j) {
-            middle = (i + j) / 2;
+            middle = i + (j - i) / 2;
             if      (target > a[middle]) i = middle + 1;
             else if (target < a[middle]) j = middle - 1;
             else return middle;
         }
-        return -1;
+        return i;
     }
 }
