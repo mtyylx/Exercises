@@ -20,9 +20,10 @@ package com.leetcode.math;
  * 相同类型题目汇总：
  * E258 - 9进制 (1-9)
  * E168 - 26进制 (1-26)
+ * E171 - 26进制
  *
  */
-public class E168_Excel_Sheet_Column {
+public class E168_Excel_Column_Title {
     public static void main(String[] args) {
         for (int i = 1; i < 1000; i++) {
             System.out.println(i + ": " + columnToTitle2(i));
