@@ -23,7 +23,7 @@ public class E7_Reverse_Integer {
     public static void main(String[] args) {
         System.out.println(-9/10);
         System.out.println(reverseInt(-2147483648));
-        System.out.println(reverseInt3(-123456789));
+        System.out.println(reverseInt3(Integer.MIN_VALUE));
     }
 
     /** math这个分类下的题目大多是与任何数据结构都没什么太大关系（连数组都用不到），仅仅围绕一个Number出的题目。
@@ -72,11 +72,13 @@ public class E7_Reverse_Integer {
         return (int) rev;
     }
 
-    // 使用字符串
+    /** 字符串解法，不太优雅 */
     static int reverseInt3(int org) {
-        return org < 0 ?
-                -Integer.parseInt(new StringBuilder(String.valueOf(-org)).reverse().toString()) :
-                Integer.parseInt(new StringBuilder(String.valueOf(org)).reverse().toString());
+        long x = org < 0 ? -org : org;
+        long result = Long.parseLong(new StringBuilder(String.valueOf(Math.abs(x))).reverse().toString());
+        result = org < 0 ? -result : result;
+        if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) return 0;
+        return (int) result;
     }
 
 }
