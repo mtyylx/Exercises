@@ -10,7 +10,7 @@ package com.leetcode.math;
  */
 public class E9_Palindrome_Number {
     public static void main(String[] args) {
-        System.out.println(isPalindromeNumber2(12343211));
+        System.out.println(isPalindromeNumber0(1234321));
     }
 
     /** 数值反转解法，经典 */
@@ -83,5 +83,13 @@ public class E9_Palindrome_Number {
             a /= 10;
         }
         return sb.toString().equals(sb.reverse().toString());
+    }
+
+    /** 转化为字符串解法，利用String.valueOf这个API直接获取数字对应的字符串 */
+    static boolean isPalindromeNumber0(int a) {
+        char[] str = String.valueOf(a).toCharArray();
+        for (int i = 0; i < str.length / 2; i++)
+            if (str[i] != str[str.length - i - 1]) return false;
+        return true;
     }
 }
