@@ -10,29 +10,29 @@ import java.util.regex.Pattern;
 public class Basic_Grammar {
     public static void main(String[] args) {
 //        quantifier_Test();
-        branching_Test();
-        grouping_Test();
+//        branching_Test();
+//        grouping_Test();
 //        escapeCharacter_Test();
 //        contentMatcher_Test();
 //        boundaryMatcher_Test();
 //        characterMatcher_Test();
-//        nonMatcher_Test();
+//        negationMatcher_Test();
     }
 
     /**
      *  目录：
-     *  1. 数量限定: Quantification
-     *  2. 分支: Branch
-     *  3. 分组: Group
+     *  1. 数量限定: Quantifier
+     *  2. 分支: Branching
+     *  3. 分组: Grouping
      *  4. 转义: Escape
      *  5. 内容限定: Content-Matcher
      *  6. 位置限定: Boundary-Matcher
      *  7. 字符限定: Character-Matcher
-     *  8. 反义: Non-Matcher
+     *  8. 反义: Negation
      *
      */
 
-    /** Quantification: 数量限定符，限定前面出现的单独这个字符<允许出现的次数>。只有出现次数在规定范围内才算匹配。*/
+    /** Quantifier: 数量限定符，限定前面出现的单独这个字符<允许出现的次数>。只有出现次数在规定范围内才算匹配。*/
     static void quantifier_Test() {
         /** Greedy 贪婪模式（默认）：<尽可能多>的匹配 */
         // 不加: 出现次数 == 1 (1)  如果字符后面没有跟数量限定符，那么就说明这个字符"有且仅能"出现1次。
@@ -49,6 +49,16 @@ public class Basic_Grammar {
         find("Fu{3}ck", "Fck Fuck Fuuuck");     // u可以出现：3次
         find("Fu{2,}ck", "Fuck Fuuck Fuuuck");  // u可以出现：大于等于2次
         find("Fu{2,3}ck", "Fuck Fuuck Fuuuck"); // u可以出现：2次，3次
+        // 注意，贪婪模式下，会试图一上来匹配的时候就吃下整个字符串，不匹配的话则会不断从右侧缩小字符串长度，直到匹配成功，或无法再缩小。
+        // 特别的，每次匹配成功之后，如果当前匹配的字符串只是整体字符串的一部分，则会将剩下未匹配的字符串作为新的吃下去的字符串，直至未匹配区域为0.
+        // 例如正则表达式"[af]+"匹配字符串"afaf0a0ff"。
+        // 将会首先吃下"afaf0a0ff"，直到收缩至"afaf"。匹配成功一次。
+        // 然后接着吃下"0a0ff"，收缩至""。匹配失败。
+        // 接着吃下"a0ff"，收缩至"a"。匹配成功一次。
+        // 接着吃下"0ff"，收缩至""。匹配失败。
+        // 接着吃下"ff"，直接匹配成功。
+        // 因此整个匹配的返回结果是："afaf", "a", "ff"
+        find("[af]++", "afaf0a0ff");
 
         /** Reluctant(Lazy) 懒惰模式（数量限定符后添加?号）：<尽可能少>的匹配 */
         // 注意正则表达式扫描matcher字符串只会扫描一次，在扫描的过程中判断是否匹配，已经扫描且匹配的区间不会成为一个更大的匹配结果的一部分。
@@ -67,7 +77,7 @@ public class Basic_Grammar {
         find("(Fuck)+?", "FuckFuck");   // 懒惰，只要找到一个满足的就返回，因此有两个匹配结果：Fuck at (0,4) (4, 8) (没有FuckFuck)
     }
 
-    /** Branching：分支条件，使用|号。经常结合Grouping使用 */
+    /** Branching：分支，使用|号。经常结合Grouping使用 */
     // 分支条件是从左向右顺序判定的，只要遇到一个分支匹配成功就算匹配了一次，且此时这个分支后面的分支将不会执行，并重新开始从第一个分支开始判定。
     static void branching_Test() {
         // 用"|"号结合小括号，等效于[ui]，详见字符限定章节。
@@ -92,6 +102,12 @@ public class Basic_Grammar {
         find("gr(a|e)y", "grey gray");      // |分支运算被限制于括号内。返回匹配结果为"grey", "gray".
         find("gra|ey", "gray");             // 相比之下，如果没有使用小括号，则变成了匹配gra或ey的表达式了。返回匹配结果为"gra"
         find("(Shit)*X", "ShitShitX");      // *号作用于小括号内的整体，"Shit"被看作一个字符对待。
+
+        // 组号：用斜杠"\"搭配数字。每个小括号都是一个分组，并自左向右依次获得一个组号，从1开始计数。
+        // "\组号"就表示第一个分组所匹配得到的内容。
+        // 例如下面的表达式中，\1指的是组号1的匹配结果，这里是a，\2指的是组号2的匹配结果，这里是c
+        // 所以表达式等效于匹配两个重复的单词。
+        find("(a|b)(c|d)\\1\\2", "acac");       // 匹配结果为"acac".
 
         /** 综合练习：提取字符串中的所有合法IPv4地址（注：IP地址前面补0是合法的） */
 
@@ -237,7 +253,7 @@ public class Basic_Grammar {
     }
 
     /** 反义：匹配<不满足特定条件>的字符 */
-    static void nonMatcher_Test() {
+    static void negationMatcher_Test() {
         /** [^...]: "^"号搭配中括号使用，依然表示匹配一个字符，但表示除了中括号中字符都匹配。*/
         find("[^aeiou]", "cake");           // 匹配除了元音字母之外的任何字符。匹配结果："c", "k".
         find("[aeiou]", "cake");            // 只匹配原音字母。2个匹配结果："a", "e".
@@ -248,6 +264,9 @@ public class Basic_Grammar {
         // \S: 匹配除空白字符之外的任意一个字符。
         find("\\W\\W", " af92\t\ta91_");    // 匹配除了单词之外的字符，匹配结果："\t\t".
         find("\\w\\w", " af92\t\ta91_");    // 匹配单词，匹配结果："af92", "a91_".
+
+        /** [^...] 搭配字符集限定符使用 */
+        find("[a-z&&[^hov]]", "abhiodvz");  // 即使用了字符集限定，又同时给出了需要刨除的例外情况。之匹配a到z中除h/o/v之外的任意字符。
     }
 
     static void stringMatchesAPI_Test() {
