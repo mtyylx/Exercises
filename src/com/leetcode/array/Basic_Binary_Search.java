@@ -13,8 +13,8 @@ package com.leetcode.array;
 public class Basic_Binary_Search {
     public static void main(String[] args) {
         int[] a = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20};
-        System.out.println(binarySearchIterative(a, 20));
-        System.out.println(binarySearchRecursive(a, 20));
+        System.out.println(binarySearchIterative(a, 19));
+        System.out.println(binarySearchRecursive(a, 2));
     }
 
     /**
@@ -72,6 +72,22 @@ public class Basic_Binary_Search {
             middle = i + (j - i) / 2;
             if      (target > a[middle]) i = middle + 1;
             else if (target < a[middle]) j = middle - 1;
+            else return middle;
+        }
+        return i;
+    }
+
+    // 下面的解法只是改变了while循环的条件（i<=j 变成 i<j）以及区段划分j = middle，
+    // 但是不如上面解法的地方在于，如果没有查找到的话它不能正确的返回插入位置。所以不建议。
+    static int binarySearchIterative2(int[] a, int target) {
+        if (a == null) return -1;
+        int i = 0;
+        int j = a.length - 1;
+        int middle;
+        while (i < j) {
+            middle = i + (j - i) / 2;
+            if      (target > a[middle]) i = middle + 1;
+            else if (target < a[middle]) j = middle;
             else return middle;
         }
         return i;
