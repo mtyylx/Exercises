@@ -1,6 +1,9 @@
 package com.leetcode.array;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Michael on 2016/8/22.
@@ -18,10 +21,9 @@ import java.util.HashMap;
 public class E1_Two_Sum {
     public static void main(String[] args) {
         int[] a = new int[] {0, 1, 2, 7, 10};
-        int[] result = twoSum(a, 8);
-        for (int x : result) {
-            System.out.print(x + ",");
-        }
+        int[] result = twoSum2(a, 9);
+        System.out.println(Arrays.toString(result));
+        List<List<Integer>> results = twoSum3(new int[] {1, 2, 2, 3, 4, 5, 6, 6, 7}, 8);
     }
 
     // 哈希表解法，o(n)
@@ -34,4 +36,43 @@ public class E1_Two_Sum {
         }
         return new int[] {-1};
     }
+
+    // 双指针解法，排序需要o(nlogn)，但是寻找两个值本身的操作依然是o(n)。
+    // 利用了已排序数组的性质。
+    static int[] twoSum2(int[] a, int target) {
+        Arrays.sort(a);
+        int left = 0;
+        int right = a.length - 1;
+        while (left < right) {
+            int sum = a[left] + a[right];
+            if      (sum < target) left++;
+            else if (sum > target) right--;
+            else return new int[] {left, right};
+        }
+        return new int[] {};
+    }
+
+    // 进一步扩展，使用双指针处理解不为一的情况，同时避免重复解的记录。
+    // 修改接口，并且直接记录元素值本身。
+    static List<List<Integer>> twoSum3(int[] a, int target) {
+        Arrays.sort(a);
+        List<List<Integer>> result = new ArrayList<>();
+        int left = 0;
+        int right = a.length - 1;
+        while (left < right) {
+            int sum = a[left] + a[right];
+            if (sum < target) left++;
+            else if (sum > target) right--;
+            else {
+                List<Integer> set = Arrays.asList(a[left], a[right]);
+                result.add(set);
+                left++;
+                right--;
+                while (left < right && a[left] == a[left - 1]) left++;
+                while (left < right && a[right] == a[right + 1]) right--;
+            }
+        }
+        return result;
+    }
+
 }
