@@ -17,6 +17,14 @@ import java.util.List;
  *
  * Function Signature:
  * public int[] twoSum(int[] a, int target) {...}
+ *
+ * <K-Sum系列问题>
+ * E1  - Two Sum
+ * M15 - Three Sum
+ * M18 - Four Sum
+ * M167 - Two Sum Sorted
+ * E170 - Two Sum Data Structure
+ *
  */
 public class E1_Two_Sum {
     public static void main(String[] args) {
