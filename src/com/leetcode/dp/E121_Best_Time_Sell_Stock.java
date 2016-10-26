@@ -1,4 +1,4 @@
-package com.leetcode.array;
+package com.leetcode.dp;
 
 /**
  * Created by LYuan on 2016/8/24.
