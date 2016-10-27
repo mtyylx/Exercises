@@ -57,8 +57,8 @@ public class E198_House_Robber {
         int[] state = new int[a.length];
         for (int i = 0; i < a.length; i++) {
             if      (i == 0) state[i] = a[i];
-            else if (i == 1) state[i] = Math.max(state[i - 1], a[i]);
-            else             state[i] = Math.max(state[i - 2] + a[i], a[i - 1]);
+            else if (i == 1) state[i] = Math.max(a[i - 1], a[i]);
+            else             state[i] = Math.max(state[i - 2] + a[i], state[i - 1]);
         }
         return state[a.length - 1];
     }
