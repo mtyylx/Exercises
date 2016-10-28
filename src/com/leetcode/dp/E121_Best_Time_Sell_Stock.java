@@ -26,10 +26,31 @@ public class E121_Best_Time_Sell_Stock {
         System.out.println(bestTimeSellStock2(a));
     }
 
+    /** DP解法, Memoization, Bottom-Up, Iterative */
+    // 初始利润为0
+    // 第i天的利润，可能有这么两种情况：
+    // Case 1: 第i天本身带来的利润(a[i] - minBuy)小于记录下来的利润最大值(profit)，因此第i天的最大利润还是之前的利润，即profit
+    // Case 2: 第i天本身带来的利润(a[i] - minBuy)大于了profit，因此更新profit。
+    // 所以每个循环除了确定第i天的利润，还要在其后更新当前扫描的所有天中的最低买入值(minBuy)，如果第i天比有记录的最低买入值还小，那么就更新minBuy。
+    // 所以相比之下，Fibonacci或HouseRobber等题的状态转移是<相邻节点的状态转移> <= 第i个点的状态(抢劫收益)由第i-1和第i-2个点的状态决定，
+    // 而这里的状态转移，是由前面所有点的最大值和最小值决定 <= 第i个点的状态(利润)由前面所有点的最大值和最小值决定。
+    static int bestTimeSellStock3(int[] a) {
+        if (a == null || a.length == 0) return 0;
+        int minBuy = Integer.MAX_VALUE;
+        int profit = 0;
+        for (int i = 0; i < a.length; i++) {
+            profit = Math.max(profit, a[i] - minBuy);       // 状态转移
+            minBuy = Math.min(minBuy , a[i]);               // 状态转移
+        }
+        return profit;
+    }
+
+
     // 简化版，无需定义max这个变量
     // 因为实际上我真正需要关心的只是当前元素与min的差会不会刷新profit的值，让profit更大而已
     // 所以只需要比较profit和a[i] - min谁更大。
     static int bestTimeSellStock2(int[] a) {
+        if (a == null || a.length == 0) return 0;
         int min = a[0];
         int profit = 0;
         for (int i = 0; i < a.length; i++) {
@@ -45,7 +66,7 @@ public class E121_Best_Time_Sell_Stock {
     // 3. 如果当前元素比max还大，就更新max为当前元素
     // 4. 检查扫描完当前元素后，profit是否能够比当前利润最大（这样可以确保在扫描过程中只留下最大利润的结果）
     static int bestTimeSellStock(int[] a) {
-        if (a.length == 0) return 0;
+        if (a == null || a.length == 0) return 0;
 
         int min = a[0];
         int max = a[0];
