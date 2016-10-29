@@ -21,19 +21,13 @@ public class M53_Maximum_Subarray {
 
     static int maxSubarray2(int[] a) {
         if (a == null || a.length == 0) return 0;
-        if (a.length == 1) return a[0];
-        if (a.length == 2) return Math.max(Math.max(a[0], a[1]), Math.max(a[1], a[0] + a[1]));
-        int prevMax = Math.max(Math.max(a[0], a[1]), Math.max(a[1], a[0] + a[1]));
-        int disconnect = 0;
-        int connect = 0;
-        int prevConn = a[0] + a[1];
-        for (int i = 2; i < a.length; i++) {
-            disconnect = Math.max(prevMax, a[i]);
-            connect = Math.max(prevMax, prevConn + a[i]);
-            prevConn = connect;
-            prevMax = Math.max(connect, disconnect);
+        int maxInclude = a[0];
+        int max = a[0];
+        for (int i = 1; i < a.length; i++) {
+            maxInclude = Math.max(maxInclude + a[i], a[i]);
+            max = Math.max(max, maxInclude);
         }
-        return prevMax;
+        return max;
     }
 
     static int maxSubarray(int[] a) {
