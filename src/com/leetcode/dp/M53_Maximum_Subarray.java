@@ -17,6 +17,7 @@ public class M53_Maximum_Subarray {
     public static void main(String[] args) {
         System.out.println(maxSubarray(new int[] {-32,-54,-36,62,20,76}));
         System.out.println(maxSubarray2(new int[] {-32,-54,-36,62,20,76}));
+        System.out.println(maxSubarray3(new int[] {-32,-54,-36,62,20,76}));
     }
 
     /** DP解法, Iterative，Time - o(n), Space - o(1) */
@@ -46,7 +47,40 @@ public class M53_Maximum_Subarray {
         return max;
     }
 
+    /** 分治法，Recursive，类似Binary Search，逆序递归，先分解问题再处理问题，Time - o(nlogn)，Space - o(n) */
+    static int maxSubarray3(int[] a) {
+        return divideAndConquer(a, 0, a.length - 1);
+    }
 
+    // Divide：首先分解问题规模，递归处理左右子块，直至子块长度为1，返回子块的值本身（作为找到的最大子数组值返回）
+    // Conquer：然后将当前左右分区合并处理，处理方法是从分界点分别向首尾扫描，记录子数组不断扩张过程中达到的最大值（因为有可能先变大后变小）
+    // 最后判断，是左分区返回的结果最大(leftOnlyMax)，还是右分区返回的结果最大(rightOnlyMax)，还是穿过左右分区的区域的最大值(crossMax)最大。
+    // 这时候返回的结果又会在递归上升之后被上层递归视作左右分区之一的最大值结果。循环往复。
+    // ---Left Part--- | ---Right Part---
+    // ****@@@@******* | **@@@@@*********
+    // **********@@@@@@@@@@@@************
+    // 示意图：@代表属于最大子数组范围的元素，*表示不属于的元素，可以看到每个递归最后要解决的问题就是上面三段中的@@@@值谁最大。
+    static int divideAndConquer(int[] a, int left, int right) {
+        if (left == right) return a[left];
+        int mid = left + (right - left) / 2;
+        int leftOnlyMax = divideAndConquer(a, left, mid);
+        int rightOnlyMax = divideAndConquer(a, mid + 1, right);
+        int leftPartialMax = a[mid];
+        int rightPartialMax = a[mid + 1];
+        int sum = 0;
+        for (int i = mid; i >= left; i--) {
+            sum += a[i];
+            if (sum > leftPartialMax) leftPartialMax = sum;
+        }
+        sum = 0;
+        for (int i = mid + 1; i <= right; i++) {
+            sum += a[i];
+            if (sum > rightPartialMax) rightPartialMax = sum;
+        }
+        int crossMax = leftPartialMax + rightPartialMax;
+        // Determine which is the max: leftOnly, rightOnly, crossMax
+        return Math.max(Math.max(leftOnlyMax, rightOnlyMax), crossMax);
+    }
 
     /** Naive穷举遍历法, Time - o(n^2), Space - o(1) */
     static int maxSubarray(int[] a) {
