@@ -25,11 +25,16 @@ import java.util.Arrays;
  */
 public class M338_Counting_Bits {
     public static void main(String[] args) {
+        for(int i = -200; i < 200; i++) {
+            int x = i >> 1;
+            System.out.println(x + ", " + i / 2);
+            if (x != i / 2) System.out.println(false);
+        }
         System.out.println(Arrays.toString(countBits2(16)));
     }
 
     /** DP解法，Iterative，Time - o(n) */
-    // 状态的转移体现在循环周期的变化上，下一个range一定是上一个range*2，而元素内容则一定是同位置上一range的值加1。
+    // 状态的转移体现在循环周期的变化上，range长度从1开始，以2的幂次扩张，而元素内容则一定是同位置上一range的值加1。
     // 0 # 1
     // 0 1 # 1 2
     // 0 1 1 2 # 1 2 2 3
@@ -40,21 +45,39 @@ public class M338_Counting_Bits {
         int range = 1;
         int i = 1;
         while (i <= n) {
-            for (int j = 0; j < range && i <= n; j++, i++) result[i] = result[j] + 1;
+            for (int j = 0; j < range && i <= n; j++, i++)
+                result[i] = result[j] + 1;
             range *= 2;
         }
         return result;
     }
 
-    // 利用2进制特性
-    // 0 1 2 3 4 5 6 7 8
-    // 0 1 1 2 1 2 2 3 1
+    /** 利用除2和模2在二进制数值上的特性 */
+    // 性质一：对于正数，i / 2 == i >> 1
+    // 1000 / 2 = 0100，1001 / 2 = 0100
+    // 因此任何比特位的1都等效于平移至最低位的1的个数
+    // 1000 = 0100 = 0010 = 0001
+    // 性质二：i % 2 == i的最低位值
+    // 1011 % 2 = 1，1010 % 2 = 0
+    // 同时由于任何数模2只会有0和1的可能，回复被除2过程忽视掉的最低为1
+    // 除2会消除原数值的最低位1：例如011/2后等效于001，但是实际上应该比001多一个1，这个1在除的过程中被右移清理了。
+    // 结合除2和模2的特性，就可以得到任何数值所含的1bit个数了。
     static int[] countBits2(int n) {
         int[] result = new int[n + 1];
         for(int i = 1; i <= n; i++){
             result[i] = result[i / 2];
             if(i % 2 == 1) result[i]++;
         }
+        return result;
+    }
+
+    /** Bit Manipulation，使用比特反转法达到上面解法同样的效果 */
+    // i >>> 1 等效于 i / 2
+    // i & 1   等效于 i % 2
+    static int[] countBits3(int n) {
+        int[] result = new int[n + 1];
+        for (int i = 1; i <= n; i++)
+            result[i] = result[i >>> 1] + (i & 1);
         return result;
     }
 }
