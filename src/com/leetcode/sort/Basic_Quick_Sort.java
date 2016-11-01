@@ -82,10 +82,10 @@ public class Basic_Quick_Sort {
 
     /** 递归写法1：pivot选在首个元素，使用right作为分区点 */
     static void QuickSort1(int[] a, int start, int end) {
-        if (start >= end) return;
+        if (start >= end) return;       // 必须的递归终止条件，只要分区长度为1或更小，就不做相向扫描和进一步的递归。
         int left = start;
         int right = end;
-        int pivot = a[start];   // 由于pivot选在第一个元素，因此left指针一定会停在pivot上并被交换至right右侧区域，也就是说最后pivot一定在右侧。
+        int pivot = a[start];           // 选择打头元素作为基准，双指针相向扫描完成后，pivot一定在右侧分区
         while (true) {
             while (a[left] < pivot) left++;     // left指针的左边[start, left - 1]应该都小于pivot，指针会停止在遇到的第一个不小于pivot的元素
             while (a[right] > pivot) right--;   // right指针的右边[right + 1, end]应该都大于pivot，指针会停止在遇到的第一个不大于pivot的元素
@@ -99,7 +99,7 @@ public class Basic_Quick_Sort {
             else break;
         }
         System.out.println("start = " + start + ", left = " + left + ", right = " + right + ", end = " + end);
-        QuickSort1(a, start, right);
+        QuickSort1(a, start, right);        // 用right作为分区点，是因为相向扫描完成时，right一定可以确保停在最靠右的一个不大于pivot的位置
         QuickSort1(a, right + 1, end);
     }
 
@@ -213,4 +213,35 @@ public class Basic_Quick_Sort {
             stack.push(end);
         }
     }
+
+    /** Quick Sort递归解法细节分析：为什么要这么写，而不是那么写。 */
+    // 为什么没有看到对i和j的越界保护却可以做到永远不会越界：每次交换完的值隐式的确保了i和j一定会在越界前停下来。
+    // j每次负责把小于等于pivot的值移动到前面，而被移动的这个值本身，可以确保如果j再次遇到这个值时，依然会停下来，这时i和j一定已经交叉，因此会直接结束。
+    // 举例：
+    // [2, 1] -> [1, 2]  pivot = 2，交换以后1可以确保j一定不会越过这个元素，因为j只有在遇到大于等于pivot的值是才会移动，而
+    // ↑i  ↑j    ↑j  ↑i             同样的，一开始被i交换到后面去的元素2，也可以确保i再次遇到它的时候，依然会停下来等待交换或退出判定。
+
+    static void Partition(int[] a, int left, int right) {
+        // 递归终止条件：只要分区长度为1或更小，就停止相向扫描和进一步的递归。否则将会递归函数栈溢出。
+        if (left >= right) return;
+        int pivot = a[left];
+        int i = left;
+        int j = right;
+        while (true) {              // 为什么是无限循环而不直接用i < j做终止条件，因为需要让最后退出时的指针有一个能永远确保分区正确。
+            while (a[i] < pivot) i++;   // 为什么是小于而不是小于等于，为了把pivot放在右侧分区。经过了这个while，i的位置一定是一个大于等于pivot的元素。
+            while (a[j] > pivot) j--;   // 为什么i和j永远不会越界：因为每次通过交换纠正首尾两个数的值可以充当sentinel以确保i和j在越界前停下来。
+            if (i < j) {            // 只有i在j前才交换，如果已经交叉就直接结束，说明分区点找到了。
+                int temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+                i++;        // 交换完必须手动将两个指针相向移动一步，否则将可能死循环。
+                j--;        // 即使移动完之后交叉了，下个循环的双while依然会确保让指针移动到正确的边界位置。
+            }
+            else break;     // 如果i已经在j后，就直接终止。
+        }
+        Partition(a, left, j);          // 为什么用j而不是i：因为不论任何情况，j最后停止的位置，一定是最后一个小于pivot的位置
+        Partition(a, j + 1, right);     // 也就是说j的位置就是左侧分区的最后一个元素，因此可以安全的划分为left~j，以及j+1~right区间
+    }
 }
+
+
