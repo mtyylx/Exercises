@@ -16,7 +16,7 @@ package com.leetcode.dp;
  */
 public class M96_Unique_Binary_Search_Tree {
     public static void main(String[] args) {
-        System.out.println(uniqueBST(4));
+        System.out.println(uniqueBST2(4));
     }
 
     // BST的基本性质：任何一个节点的左子树中的所有子节点都小于这个节点，任何一个节点的右子树上的所有节点都大于这个节点。
@@ -26,6 +26,10 @@ public class M96_Unique_Binary_Search_Tree {
     // 研究了那么多树的问题，其实应该想到树区别于其他数据结构的一个最大特色就是树的根节点和子节点之间的自相似性，特别适合递归。
     // 因此寻找状态转移的规律上，应该在子树上入手。如果子树的特性符合之前计算过的n的特性，那么就可以直接加以利用。
 
+    /** DP解法，Memoization，Iterative，Time - o(n), Space - o(n)
+     *  空间复杂度为o(n)因为当前轮与之前所有轮都有关系。 */
+    // 从下面的列举中，可以看到，其实i在不断增长的过程中，每一轮的状态可能性都是之前所有轮的状态的组合（左子树状态可能性乘以右子树状态可能性）
+    // 因此只要维护一个数组，步步为营的以初始状态值（n=0和n=1）推导出每一轮的所有可能状态组合，并继续被后面的轮所复用。依然是Memoization。
     // 先从0开始列举，找规律：
     // n = 0: 按理说应该是0，但是后面频繁需要用到左子树或右子树为空的情况，即dp[0]，为了相乘不为0，需要把dp[0]强制赋值为1.
     // n = 1:      1                                                (1)
@@ -69,5 +73,16 @@ public class M96_Unique_Binary_Search_Tree {
             }
         }
         return dp[n];
+    }
+
+    /** Catalan: 使用一种叫做Catalan数的特性解决问题, Time - o(n), Space - o(1) */
+    // 这个数广泛用于组合数学中，刚好也能用在二叉树的形状上。很神奇。
+    // Catalan数的递推公式是Cn+1 = Cn * (4n + 2) / (n + 2)
+    static int uniqueBST2(int n) {
+        long x = 1;
+        for (int i = 1; i < n; i++) {
+            x = x * (4 * i + 2) / (i + 2);
+        }
+        return (int) x;
     }
 }
