@@ -2,10 +2,7 @@ package com.leetcode.sort;
 
 import com.sun.xml.internal.bind.v2.model.annotation.Quick;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by Michael on 2016/9/28.
@@ -21,6 +18,7 @@ public class Basic_Quick_Sort {
     public static void main(String[] args) {
         int[] a = {1, 0, 1};
         QuickSort_Iterative(a);
+        QuickSort_Randomized(a);
         System.out.println(Arrays.toString(a));
         bulkTest();
     }
@@ -30,7 +28,7 @@ public class Basic_Quick_Sort {
             for (int i = 1; i < 100; i++) {
                 int[] x = randGen(i, j);
                 System.out.println("Original: " + Arrays.toString(x));
-                QuickSort_Iterative(x);
+                QuickSort_Randomized(x);
                 if (!isSorted(x)) {
                     System.out.println("Failed at: " + Arrays.toString(x));
                     return;
@@ -212,6 +210,36 @@ public class Basic_Quick_Sort {
             stack.push(right + 1);
             stack.push(end);
         }
+    }
+
+    /** Randomized Pivot QuickSort */
+    // 区别在于需要先随机选一个元素，这个元素的值作为pivot，为了避免越界和死循环，需要把这个元素和首元素交换，就转化为与上面解法相同的场景了。
+    // 随机数对象在方法之外生成，避免每次起始一样。
+    static Random rand = new Random();
+    static void QuickSort_Randomized(int[] a) {
+        QuickSort5(a, 0, a.length - 1);
+    }
+    static void QuickSort5(int[] a, int left, int right) {
+        if (left >= right) return;
+        int idx = left + rand.nextInt(right - left + 1);      // nextInt(x)生成的是0至x-1的范围值，不包括x本身。
+        int pivot = a[idx];         // 既要保存pivot的值，也要保存pivot的索引本身。这样交换元素后pivot的值依然是未交换前的值。
+        swap(a, idx, left);
+        int i = left;
+        int j = right;
+        while (true) {
+            while (a[i] < pivot) i++;
+            while (a[j] > pivot) j--;
+            if (i >= j) break;
+            swap(a, i++, j--);      // swap之后记得移动双指针。
+        }
+        QuickSort5(a, left, j);
+        QuickSort5(a, j + 1, right);
+    }
+
+    static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
     }
 
     /** Quick Sort递归解法细节分析：为什么要这么写，而不是那么写。 */
