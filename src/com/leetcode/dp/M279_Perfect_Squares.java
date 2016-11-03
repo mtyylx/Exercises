@@ -1,5 +1,8 @@
 package com.leetcode.dp;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * Created by LYuan on 2016/11/3.
  * Given a positive integer n,
@@ -12,8 +15,7 @@ package com.leetcode.dp;
  */
 public class M279_Perfect_Squares {
     public static void main(String[] args) {
-        System.out.println((int)Math.sqrt(63));
-        System.out.println(minComb(43));
+        System.out.println(minComb3(12));
     }
 
     /** DP解法，Memoization，Iterative，Time - o(n*sqrt(n)), Space - o(n) */
@@ -70,5 +72,34 @@ public class M279_Perfect_Squares {
             min = Math.min(min, count);
         }
         return min;
+    }
+
+    /** BFS解法，将问题转化为一个树结构（但并非二叉树） */
+    // 效率比上面的DP解法更高。因为从1到n的DP中有一部分是没有用上的。
+    //                            12
+    //                   /1       |4       \9
+    //                  11        8         3
+    //               /1 |4 \9    /1 \4      |1
+    //             10   7   2   7   4       2
+    //           / | \ /\   |  /\   |4      |1
+    //          9  6 1 6 3  1  6 3  0       1
+    //                              ↑ 找到最短path，结束搜索。
+    static int minComb3(int n) {
+        Deque<Integer> queue = new ArrayDeque<>();
+        queue.add(n);
+        int depth = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();    // 需要按层扫描，为的是记录层高。（一般的广度遍历其实并不需要记录这个，只需要不断从队列取任务即可。）
+            for (int j = 0; j < size; j++) {
+                int current = queue.remove();
+                int range = (int) Math.sqrt(current);
+                for (int i = range; i > 0; i--) {           // 用逆序而不是正序扫描，是因为用大的平方数分解更容易min。（例如8=4+4而不是1+1+...)
+                    if (current - i * i == 0) return depth; // 只要节点为0，就说明已经找到了一条最短路径。应该立即结束其他分支无用的计算。
+                    queue.add(current - i * i);
+                }
+            }
+            depth++;
+        }
+        return depth;
     }
 }
