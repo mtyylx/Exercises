@@ -20,7 +20,7 @@ public class M64_Min_Path_Sum {
         System.out.println(minPathSum3(grid));
     }
 
-    /** DP解法，Bottom-Up，Memoization (更改原有矩阵数值), Time - o(n*m), Space - o(1)
+    /** DP解法1，Bottom-Up，Memoization (更改原有矩阵数值), Time - o(n*m), Space - o(1)
      * 状态转移方程：dp[i][j] = Min{ dp[i - 1][j], dp[i][j - 1] } + a[i][j] */
     //   状态转移图     (i - 1, j)
     //                    ↓
@@ -41,6 +41,8 @@ public class M64_Min_Path_Sum {
     // 1 → - 10 - 11 - 12 - 13  对于中间的节点，左和上两个子树都有值，因此需要选择两者之中更小的那个叠加。
     //        |    |    |    |
     // 2 → - 20 - 21 - 22 - 23  整个矩阵扫描完成后，右下角元素的值就是最小值。
+    // 问题2：不是树的结构么？那为什么可以直接用顺序的行列扫描就得到结论呢？而不是斜着一片一片的扫描呢？
+    // 因为本质上，矩阵的递推关系（即只能向右 或 向下运动）决定了每个最小单位只要按照由左及右,由上及下的顺序就能完全搞定。
     static int minPathSum(int[][] grid) {
         if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
         int row = grid.length;
@@ -69,7 +71,7 @@ public class M64_Min_Path_Sum {
         return grid[row - 1][col - 1];
     }
 
-    /** DP解法，Memoization (使用额外空间)，Time - o(n*m), Space - o(n) */
+    /** DP解法2，Memoization (使用额外空间)，Time - o(n*m), Space - o(n) */
     // 由于状态转移可以看到其实每一刻的状态只与之前的一行和左边的部分有关。
     // 猛一看会以为要使用额外空间的话，必须得用矩阵，用一个数组不够，因为不仅需要上面一行，还要需要左边的部分。
     // 但是仔细分析会发现，并不是需要上面一整行，上面一行所需要的那一部分刚好可以和左边部分拼成完整的一行！所以使用一个数组即可。
