@@ -21,7 +21,8 @@ package com.leetcode.dp;
  */
 public class M322_Coin_Change {
     public static void main(String[] args) {
-        System.out.println(minCoinComb(new int[] {1, 2, 5}, 11));
+        for (int i = 1; i < 100; i++)
+            System.out.println(minCoinComb2(new int[] {1, 2, 5}, i));
     }
 
     /** DP解法，相当经典的动归题。Memoization, Iterative, Bottom-Up (From 0 to target)
@@ -49,4 +50,26 @@ public class M322_Coin_Change {
         return dp[target];
     }
 
+    /** DP解法，递归形式，TopDown (target to 0, 但通过备忘重用，将时间复杂度从o(n!)降低至o(n) */
+    // 如果下面的代码中忘写了if (dp[target] != 0) return dp[target]这句话，那么这个解法的复杂度立刻就变成了o(n!)
+    // 这会导致即使coin = {1, 2, 5}, target = 100，计算起来都是天文数字的时间。原因就在于复用！！！
+    // 不重用的话，那么从100分解至1完整算一遍dp[]，接着从99分解至1，仍然需要再算一遍...
+    // 由于状态转移过程不仅仅取决于前一个状态，而是根据coin的不同取决于前几个状态，因此如果用递归的方式，依然需要额外数组来备忘。
+    static int minCoinComb2(int[] coins, int target) {
+        int[] dp = new int[target + 1];
+        return minCoinComb_Recursive(coins, target, dp);
+    }
+
+    static int minCoinComb_Recursive(int[] coins, int target, int[] dp) {
+        if (target < 0) return -1;                  // 递归终止条件
+        if (target == 0) return 0;                  // 递归终止条件
+        if (dp[target] != 0) return dp[target];     /** 动态规划的核心：只要计算过，就重用。而不是再计算一次。比一般的递归多了一个终止条件。*/
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < coins.length; i++) {
+            int ans = minCoinComb_Recursive(coins, target - coins[i], dp);
+            if (ans >= 0) min = Math.min(min, 1 + ans);
+        }
+        dp[target] = (min == Integer.MAX_VALUE) ? -1 : min;
+        return dp[target];
+    }
 }
