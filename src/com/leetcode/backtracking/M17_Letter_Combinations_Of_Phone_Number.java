@@ -22,14 +22,42 @@ import java.util.*;
  *
  * Function Signature:
  * public List<String> letterComb(String s) {...}
+ *
+ * 这道题并不能很好的体现回溯法的优点。
  */
 public class M17_Letter_Combinations_Of_Phone_Number {
     public static void main(String[] args) {
-        List<String> result = letterComb("21319");
+        List<String> result = letterComb3("23");
     }
 
-    /** 回溯法（DFS），递归方式，Top-Down，Time - o(n), Space - o(n) */
-    // 由于问题本质上就是要求穷举，因此用回溯法递归的实现从左到右的扫描。
+    /** 最传统的穷举法 Time - o(3^n), Space - o(1)*/
+    // 在每一轮，都把上一轮的全部解追加上当前轮的数字对应的解集。
+    // s = "234"
+    // {abc}    {def}         {ghi}
+    //   a      ad ae af      adg aeg afg  adh aeh afh  adi aei afi
+    //   b  ->  bd be bf  ->  bdg beg bfg  bdh beh bfh  bdi bei bfi
+    //   c      cd ce cf      cdg ceg cfg  cdh ceh cfh  cdi cei cfi
+    static List<String> letterComb3(String s) {
+        List<String> prev = new ArrayList<>();
+        if (s == null || s.length() == 0) return prev;
+        String[] map = new String[] {"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"}; // 简化了0，1
+        // Init result.
+        prev.add("");
+
+        for (int i = 0; i < s.length(); i++) {
+            List<String> cur = new ArrayList<>();
+            for (String path : prev)
+                for (char c : map[s.charAt(i) - '0'].toCharArray())
+                    cur.add(path + c);
+            prev = cur;
+        }
+        return prev;
+    }
+
+
+    /** 回溯法（DFS），递归方式，Top-Down，Time - o(3^n), Space - o(n) */
+    // 由于问题本质上就是要求穷举，因此这里用回溯法还是朴素的穷举法其实性能都一样。
+    // 由于每个数字差不多对应3个解，因此整体时间复杂度就是3^n，n是数字长度（n的全排列）
     static List<String> letterComb(String s) {
         List<String> result = new ArrayList<>();
         if (s == null || s.length() == 0) return result;
@@ -70,7 +98,7 @@ public class M17_Letter_Combinations_Of_Phone_Number {
             for (char c : map[key].toCharArray()) {                    // 对其他数字的字符集，更新path，并递归下个数字。
                 sb.append(c);                                          // 追加内容
                 letterComb_Recursive2(s, level + 1, result, sb, map);
-                sb.deleteCharAt(sb.length() - 1);                      // 递归结束回来时要恢复原sb值。
+                sb.deleteCharAt(sb.length() - 1);                      // 递归结束记得恢复sb值
             }
         }
     }
