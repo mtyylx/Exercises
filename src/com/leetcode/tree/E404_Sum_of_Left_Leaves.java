@@ -29,9 +29,30 @@ public class E404_Sum_of_Left_Leaves {
         System.out.println(sumLeftLeaves(root));
         System.out.println(sumLeftLeaves2(root));
         System.out.println(sumLeftLeaves3(root));
+        System.out.println(sumLeftLeaves4(root));
     }
 
-    /** 迭代 + 栈 */
+    // 分析这道题的时候可以发现，这个问题可以通过树的遍历完全搞定。
+    // 而且最关键的是，不管我以什么方式遍历树，都可以用同样的逻辑（是叶子结点，而且在左侧）达到问题的要求。
+    // 有了上述结论后，就不难发现该问题可以用所有我们学过的树遍历算法来解决。
+    // 因此就有了下面的四种方法，概括下来，无非是BFS和DFS。由于这里对于访问顺序没有要求，因此前序中序后续遍历用不到。
+
+    /** 迭代 + 队列 (BFS) */
+    static int sumLeftLeaves4(TreeNode root) {
+        if (root == null) return 0;
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        int sum = 0;
+        while (!queue.isEmpty()) {
+            TreeNode current = queue.remove();
+            if (current.left != null && current.left.left == null && current.left.right == null) sum += current.left.val;
+            if (current.left != null) queue.push(current.left);
+            if (current.right != null) queue.push(current.right);
+        }
+        return sum;
+    }
+
+    /** 迭代 + 栈 (DFS) */
     // 逻辑完全一样，只不过压栈前需要判空。
     static int sumLeftLeaves3(TreeNode root) {
         if (root == null) return 0;
@@ -47,7 +68,7 @@ public class E404_Sum_of_Left_Leaves {
         return sum;
     }
 
-    /** 递归解法2，直接解决 */
+    /** 递归解法2，直接解决 (DFS) */
     // 由于已经有递归终止条件的保护，因此我们可以专门寻找左节点存在且左节点是叶子节点的情况，记录左节点的值。
     static int sumLeftLeaves2(TreeNode root) {
         if (root == null) return 0;
@@ -57,7 +78,7 @@ public class E404_Sum_of_Left_Leaves {
         return sum;
     }
 
-    /** 递归解法1，需要辅助方法 */
+    /** 递归解法1，需要辅助方法 (DFS) */
     // 判断是否要记录节点值的依据是：该节点没有左右孩子 + 该节点在左分支上
     // 所以最简单的思路就是直接在递归的时候告诉下面的节点自己处于左分支还是右分支。
     // 递归终止条件：节点本身为空。
