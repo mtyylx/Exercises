@@ -32,8 +32,11 @@ public class M79_Word_Search {
         System.out.println(wordSearch(map, "AAAAAAAAAAAA"));
     }
 
-    /** 回溯法，无效路径剪枝，time - o(n^2), space - o(n) */
+    /** 回溯法，无效路径剪枝，time - o((nm)^2), space - o(nm), 会修改原矩阵 */
+    /** 从树的角度，也可以算是DFS，因为遍历每个点的最深路径，一旦所有路径都宣告失败，就换个点重新开始。 */
     // 针对map上的每一个点，如果当前点match，就递归扩展至其4个可能方向，排除已访问的所有点，排除越界。
+    // 如果想要不修改原矩阵，那么就需要额外定义一个和原矩阵一样尺寸的矩阵，将已经访问的节点标记为true，并且在递归结束后最后恢复为false。
+    // 如果想要用迭代形式写法，就需要额外定义一个栈来存储这些状态信息。
     static boolean wordSearch(char[][] map, String word) {
         if (word == null || word.length() == 0) return true;            // early exit.
         if (word.length() > map.length * map[0].length) return false;   // early exit.
@@ -53,7 +56,7 @@ public class M79_Word_Search {
         // 能走到这，说明这条路起码到现在还是有效的，因此有必要继续。
         char temp = map[row][col];      // 为了避免回环，因此把所有匹配成功的元素都缓存，并临时修改为一个不可能再被匹配到的值。
         map[row][col] = ' ';
-        if (wordSearch_Recursive(map, word, row + 1, col, idx + 1)) return true;    // 递归四个可能方向。
+        if (wordSearch_Recursive(map, word, row + 1, col, idx + 1)) return true;    // 递归四个可能方向。也可以写成一长串或语句，执行逻辑一样。
         if (wordSearch_Recursive(map, word, row, col + 1, idx + 1)) return true;
         if (wordSearch_Recursive(map, word, row - 1, col, idx + 1)) return true;
         if (wordSearch_Recursive(map, word, row, col - 1, idx + 1)) return true;
