@@ -16,10 +16,11 @@ import java.util.*;
  */
 public class H140_Word_Break_2 {
     public static void main(String[] args) {
-        Set<String> dict = new HashSet<>(Arrays.asList("a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa"));
-        List<String> result = wordBreak("aaaaaaaaaaaa", dict);
+        Set<String> dict = new HashSet<>(Arrays.asList("a", "aa", "aaa", "aaaa"));
+        List<String> result = wordBreak2("aaaaaa", dict);
     }
 
+    /** 回溯法，穷举所有的划分可能，每次分区都作为之后分区的基础。 */
     // s可以出现重复的词典单词，只要走到死路上（无论怎么分段也匹配），就应该换条路。
     // 窗口从第一个字符开始扩张，直到找到一个匹配点，从该点后再开一个窗口继续扩张。每个窗口都要扫描至结尾才能停止。
     static List<String> wordBreak(String s, Set<String> dict) {
@@ -40,5 +41,26 @@ public class H140_Word_Break_2 {
             if (dict.contains(section))                 // 只有在当前分区有解时才继续递归剩下的部分。
                 wordBreak_Recursive(s, dict, result, i + 1, path + section + " ");
         }
+    }
+
+    /** DP解法，Memoization，避免重复计算。 */
+    // 针对重复字符很多的情况，回溯法的重复计算率很高
+    // aaaaaa, [a, aa, aaa, aaaa]
+    // a 只有一种拆法
+    private static Map<String, List<String>> dp = new HashMap<>();
+    static List<String> wordBreak2(String s, Set<String> dict) {
+        List<String> result = new ArrayList<>();
+        if (s == null || s.length() == 0) return result;
+        if (dp.containsKey(s)) return dp.get(s);
+        if (dict.contains(s)) result.add(s);
+
+        for (int i = 1; i < s.length(); i++) {
+            String rest = s.substring(i);
+            if (!dict.contains(rest)) continue;
+            List<String> cur_result = wordBreak2(s.substring(0, i), dict);
+            for (String entry : cur_result) result.add(entry + " " + rest);
+        }
+        dp.put(s, result);
+        return result;
     }
 }
