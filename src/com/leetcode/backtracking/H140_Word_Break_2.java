@@ -64,7 +64,7 @@ public class H140_Word_Break_2 {
     //     "abab" -> [ab a b, a b a b]
     // "abab" -> [ab ab, a b ab, ab a b, a b a b]
     private static Map<String, List<String>> dp = new HashMap<>();
-    static List<String> wordBreak3(String s, Set<String> dict) {
+    static List<String> wordBreak2(String s, Set<String> dict) {
         List<String> result = new ArrayList<>();            // 每个递归方法中都有一个自己的result，这个result是局部的result，返回给上层接在一起用。
         if (s == null || s.length() == 0) return result;
         if (dp.containsKey(s)) return dp.get(s);            // 只要发现当前要分解的字符串已经被解过，就直接返回对应的结果，而不再继续。
@@ -73,7 +73,7 @@ public class H140_Word_Break_2 {
         for (int i = 1; i < s.length(); i++) {
             String rest = s.substring(i);       // 表示从i开始一直到字符串结尾的部分。
             if (dict.contains(rest)) {
-                List<String> partial = wordBreak3(s.substring(0, i), dict);
+                List<String> partial = wordBreak2(s.substring(0, i), dict);
                 for (String entry : partial)
                     result.add(entry + " " + rest);
             }
