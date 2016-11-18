@@ -16,8 +16,8 @@ import java.util.*;
  */
 public class H140_Word_Break_2 {
     public static void main(String[] args) {
-        Set<String> dict = new HashSet<>(Arrays.asList("a", "aa", "aaa", "aaaa"));
-        List<String> result = wordBreak2("aaaaaa", dict);
+        Set<String> dict = new HashSet<>(Arrays.asList("a", "b", "ab"));
+        List<String> result = wordBreak2("abab", dict);
     }
 
     /** 回溯法，穷举所有的划分可能，每次分区都作为之后分区的基础。 */
@@ -43,24 +43,44 @@ public class H140_Word_Break_2 {
         }
     }
 
-    /** DP解法，Memoization，避免重复计算。 */
-    // 针对重复字符很多的情况，回溯法的重复计算率很高
-    // aaaaaa, [a, aa, aaa, aaaa]
-    // a 只有一种拆法
-    private static Map<String, List<String>> dp = new HashMap<>();
-    static List<String> wordBreak2(String s, Set<String> dict) {
-        List<String> result = new ArrayList<>();
-        if (s == null || s.length() == 0) return result;
-        if (dp.containsKey(s)) return dp.get(s);
-        if (dict.contains(s)) result.add(s);
 
+    /** DP, Top-Down不断分解字符串，Memoization，工作原理看懂了，但是还是搞不懂怎么写出来的。*/
+    // 针对重复字符很多的情况，回溯法的重复计算率很高。很可能重复遇到的pattern之前已经得到了对应的局部result了，但是每次都要重复计算。
+    // s = abab, dict = {a, b, ab}
+    //     a [bab]
+    //     ab [ab] -> matched
+    //                s = ab  result = [ab] ------------------------
+    //                    a [b] -> matched                         |
+    //                             s = a  result = [a]             |
+    //                             "a" -> [a]                      |
+    //                    "ab" -> [ab, a b]                        |
+    //     "abab" -> [ab ab, a b ab]                               |
+    //     aba [b] -> matched                                      |
+    //                s = aba                                      |
+    //                    a [ba]                                   |
+    //                    ab [a] -> matched                        |
+    //                              s = ab -> [ab, a b] 避免重复计算<-
+    //                    "aba" -> [ab a, a b a]
+    //     "abab" -> [ab a b, a b a b]
+    // "abab" -> [ab ab, a b ab, ab a b, a b a b]
+    private static Map<String, List<String>> dp = new HashMap<>();
+    static List<String> wordBreak3(String s, Set<String> dict) {
+        List<String> result = new ArrayList<>();            // 每个递归方法中都有一个自己的result，这个result是局部的result，返回给上层接在一起用。
+        if (s == null || s.length() == 0) return result;
+        if (dp.containsKey(s)) return dp.get(s);            // 只要发现当前要分解的字符串已经被解过，就直接返回对应的结果，而不再继续。
+        if (dict.contains(s)) result.add(s);
+        // 如果分解后的s长度已经等于1，就直接记录进dp并且返回result。
         for (int i = 1; i < s.length(); i++) {
-            String rest = s.substring(i);
-            if (!dict.contains(rest)) continue;
-            List<String> cur_result = wordBreak2(s.substring(0, i), dict);
-            for (String entry : cur_result) result.add(entry + " " + rest);
+            String rest = s.substring(i);       // 表示从i开始一直到字符串结尾的部分。
+            if (dict.contains(rest)) {
+                List<String> partial = wordBreak3(s.substring(0, i), dict);
+                for (String entry : partial)
+                    result.add(entry + " " + rest);
+            }
         }
-        dp.put(s, result);
+        dp.put(s, result);  // 每次递归结束把当前字符串对应的结果存入哈希表，以备不时之需。
         return result;
     }
+
+
 }
