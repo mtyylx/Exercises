@@ -25,6 +25,7 @@ public class M77_Combinations {
     public static void main(String[] args) {
         List<List<Integer>> result = combination(20, 16);
         List<List<Integer>> result2 = combination2(20, 16);
+        List<List<Integer>> result3 = combination3(20, 16);
     }
 
     /** DP解法，Bottom-Up（积少成多），不知道为什么性能反而没有回溯法快。 */
@@ -49,6 +50,25 @@ public class M77_Combinations {
                     path.add(x);
                     temp.add(new ArrayList<>(path));
                     path.remove(path.size() - 1);
+                }
+            }
+            result = temp;
+        }
+        return result;
+    }
+
+    // 同样是DP解法，与上面的写法稍有不同。节省了一步new新对象的操作，同时也避免了反复增删元素。
+    static List<List<Integer>> combination3(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        result.add(new ArrayList<>());
+        for (int i = 0; i < k; i++) {                               // iterate depth
+            List<List<Integer>> temp = new ArrayList<>();
+            for (List<Integer> path : result) {                     // iterate previous result set
+                int start = path.size() == 0 ? 1 : path.get(path.size() - 1) + 1;   // 确定扫描解空间的起始位置：start
+                for (int x = start; x <= n; x++) {                  // iterate 解空间
+                    List<Integer> newPath = new ArrayList<>(path);  // 必须拷贝至新对象中才能修改，否则会导致ConcurrentModification错误。
+                    newPath.add(x);
+                    temp.add(newPath);
                 }
             }
             result = temp;
