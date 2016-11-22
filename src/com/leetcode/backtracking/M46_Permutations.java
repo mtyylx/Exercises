@@ -65,7 +65,10 @@ public class M46_Permutations {
 
 
     /** 回溯法，通过判断待添加值是否已经在path中来剪枝，Time - o(n^2), Space - o(n) */
-    // 使用ArrayList作为缓存，并且排除当前path中出现的所有元素。
+    // 每次递归都需要让解空间不断缩小，排除所有之前选取的元素。
+    // 容易卡在如何实现上，一开始不知道如何做到排除已访问元素，只想到可以靠传递已经访问元素的数组进去，添加前检查是否在里面再添加。
+    // 但其实只需靠当前path就知道哪些需要排除了，用!path.contains(a[i])来做检查。
+    // 缓存当前path，排除path已经包含的所有元素。
     // 1    1   X
     //      2   3
     //      3   2
@@ -88,7 +91,7 @@ public class M46_Permutations {
             result.add(new ArrayList<>(path)); // 易错点：写成result.add(current)就错了。因为result里面只存了current的引用。
             return;                            // 一旦current被修改，那么result里的结果也被一同修改了。
         }
-        for (int i = 0; i < a.length; i++) {
+        for (int i = 0; i < a.length; i++) {   // 每一层的扫描都要从0开始，且只有判定path中没有用过才递归下一层。
             if (!path.contains(a[i])) {        // 是的你没看错，ArrayList也是可以用contains()这个方法的，虽然复杂度是o(n).
                 path.add(a[i]);
                 permute_your_ass(result, path, a);
