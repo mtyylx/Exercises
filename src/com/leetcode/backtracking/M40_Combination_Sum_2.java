@@ -23,7 +23,9 @@ import java.util.*;
  * Function Signature:
  * public List<List<Integer>> combSum(int[] a, int target) {...}
  *
- * 和M39的唯一区别是每个元素只能用一回。
+ * M39  Combination Sum 1: 给定Candidate数字集合a，以及目标值target，每个Candidate可用多次。
+ * M40  Combination Sum 2: 给定Candidate数字集合a，以及目标值target，每个Candidate仅用一次。
+ * M216 Combination Sum 3: 给定Candidate数字集合为{1-9}，以及目标值n和个数k，每个Candidate仅用一次。
  */
 public class M40_Combination_Sum_2 {
     public static void main(String[] args) {
@@ -35,11 +37,11 @@ public class M40_Combination_Sum_2 {
         List<List<Integer>> result = new ArrayList<>();
         if (a == null || a.length == 0) return result;
         Arrays.sort(a);
-        combinationSum_Recursive(a, target, result, new ArrayList<>(), 0);
+        backtrack(a, target, result, new ArrayList<>(), 0);
         return result;
     }
 
-    static void combinationSum_Recursive(int[] a, int target, List<List<Integer>> result, List<Integer> current, int i) {
+    static void backtrack(int[] a, int target, List<List<Integer>> result, List<Integer> current, int i) {
         if (target < 0) return;
         if (target == 0) {
             result.add(new ArrayList<>(current));
@@ -47,10 +49,40 @@ public class M40_Combination_Sum_2 {
         }
         while (i < a.length) {
             current.add(a[i]);
-            combinationSum_Recursive(a, target - a[i], result, current, i + 1);  // 唯一的区别就是这里传给下一层递归的起始索引是i+1而不是i了。
+            backtrack(a, target - a[i], result, current, i + 1);  // 唯一的区别就是这里传给下一层递归的起始索引是i+1而不是i了。
             current.remove(current.size() - 1);
             i++;
             while (i < a.length && a[i] == a[i - 1]) i++;
+        }
+    }
+
+    // 用for循环实现同样的逻辑。
+    static void backtrack2(int[] a, int target, List<List<Integer>> result, List<Integer> current, int start) {
+        if (target < 0) return;
+        if (target == 0) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+        for (int i = start; i < a.length; i++) {
+            current.add(a[i]);
+            backtrack2(a, target - a[i], result, current, i + 1);  // 唯一的区别就是这里传给下一层递归的起始索引是i+1而不是i了。
+            current.remove(current.size() - 1);
+            while (i + 1 < a.length && a[i + 1] == a[i]) i++;
+        }
+    }
+
+    // 用continue循环实现同样的逻辑。
+    static void backtrack3(int[] a, int target, List<List<Integer>> result, List<Integer> current, int start) {
+        if (target < 0) return;
+        if (target == 0) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+        for (int i = start; i < a.length; i++) {
+            if (i > 0 && a[i] == a[i - 1]) continue;
+            current.add(a[i]);
+            backtrack3(a, target - a[i], result, current, i + 1);  // 唯一的区别就是这里传给下一层递归的起始索引是i+1而不是i了。
+            current.remove(current.size() - 1);
         }
     }
 }

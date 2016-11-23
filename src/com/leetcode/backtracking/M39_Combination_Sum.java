@@ -21,6 +21,10 @@ import java.util.*;
  *
  * Function Signature:
  * public List<List<Integer>> combSum(int[] a, int target) {...}
+ *
+ * M39  Combination Sum 1: 给定Candidate数字集合a，以及目标值target，每个Candidate可用多次。
+ * M40  Combination Sum 2: 给定Candidate数字集合a，以及目标值target，每个Candidate仅用一次。
+ * M216 Combination Sum 3: 给定Candidate数字集合为{1-9}，以及目标值n和个数k，每个Candidate仅用一次。
  */
 public class M39_Combination_Sum {
     public static void main(String[] args) {
@@ -58,16 +62,15 @@ public class M39_Combination_Sum {
         return result;
     }
 
-    static void backtrack(int[] a, int target, List<List<Integer>> result, List<Integer> current, int i) {
+    static void backtrack(int[] a, int target, List<List<Integer>> result, List<Integer> current, int start) {
         // 递归终止条件：要不然无解，要不然找到完整解立即返回，要不然接着递归。
         if (target < 0) return;
         if (target == 0) {result.add(new ArrayList<>(current)); return;}    // 拷贝当前路径的值存入result，而不是直接添加。
-        while (i < a.length) {      // 不从0开始遍历，而是只遍历上个访问的candidate位置的右侧部分。
-            current.add(a[i]);                                       // 依然是先添后删。
+        for (int i = start; i < a.length; i++) {                    // 避免重复：不从0开始尝试，而是从上一层访问位置的右侧开始尝试
+            current.add(a[i]);                                      // 依然是先添后删
             backtrack(a, target - a[i], result, current, i);
             current.remove(current.size() - 1);
-            i++;
-            while (i < a.length && a[i] == a[i - 1]) i++;
+            while (i + 1 < a.length && a[i + 1] == a[i]) i++;       // 避免Candidate中有重复元素。
         }
     }
 
