@@ -1,6 +1,7 @@
 package com.leetcode.backtracking;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,7 +32,8 @@ import java.util.List;
  */
 public class H51_N_Queens {
     public static void main(String[] args) {
-        List<List<String>> result = nQueens(15);
+        List<List<String>> result = nQueens(8);
+        List<List<String>> result2 = nQueens2(8);
     }
 
     // 科普时间：
@@ -47,13 +49,13 @@ public class H51_N_Queens {
     // 但是在实际放置每一个Queen的时候，其实只用考虑八个方向中的三个：左上，上，右上！
     // 因为Queen所在行以及其下面的全部区域都是自由的，只有上方已经填上了其他的Queen，需要检查。
 
-    /** 关键点2：多查少改。 */
-    // 因为字符串是immuatable的，修改很麻烦，应该尽量避免
+    /** 关键点2：多查少改 */
+    // 因为字符串是immutable的，修改很麻烦，应该尽量避免
     // 其实一开始的想法是每放一个Queen，都更新整个矩阵的非法位置，但是这样的性能很低
     // 不如采用每放一个Queen之前都查一下这个位置的所有非法位置是否已经有了其他Queen来的简单。
     // 前者以修改矩阵为主，后者以查阅矩阵为主，当然是后者性能好。
 
-    /** 回溯法，路径增删法，递归写法。*/
+    /** (最初解法) 回溯法，路径增删法，递归写法。*/
     static List<List<String>> nQueens(int n) {
         List<List<String>> result = new ArrayList<>();
         List<String> matrix = new ArrayList<>();
@@ -71,7 +73,7 @@ public class H51_N_Queens {
         }
         String current = matrix.get(row);                   // 缓存当前层将会修改的那行
         for (int i = 0; i < n; i++) {
-            if (isValid(matrix, row, i)) {                  // 只有有效位置才继续递归下一层，否则什么都不做。
+            if (isValid(matrix, row, i, n)) {                  // 只有有效位置才继续递归下一层，否则什么都不做。
                 updateMatrix(matrix, row, i);               // 修改当前行
                 backtrack(n, row + 1, result, matrix);  // 递归下一层
                 matrix.set(row, current);                   // 复原当前行
@@ -80,14 +82,14 @@ public class H51_N_Queens {
     }
 
     // 只扫描[↖ ↑ ↗]这三个方向上是否有其他Queen在。
-    static boolean isValid(List<String> matrix, int row, int col) {
-        for (int i = 0; i < row; i++)                                               // ↑
+    static boolean isValid(List<String> matrix, int row, int col, int n) {
+        for (int i = 0; i < row; i++)                                       // ↑
             if (matrix.get(i).charAt(col) == 'Q') return false;
 
-        for (int x = row - 1, y = col - 1; x >= 0 && y >= 0; x--, y--)              // ↖
+        for (int x = row - 1, y = col - 1; x >= 0 && y >= 0; x--, y--)      // ↖
             if (matrix.get(x).charAt(y) == 'Q') return false;
 
-        for (int x = row - 1, y = col + 1; x >= 0 && y < matrix.size(); x--, y++)   // ↗
+        for (int x = row - 1, y = col + 1; x >= 0 && y < n; x--, y++)       // ↗
             if (matrix.get(x).charAt(y) == 'Q') return false;
 
         return true;
@@ -99,5 +101,51 @@ public class H51_N_Queens {
         matrix.set(row, new String(modified));
     }
 
+    /** (优化后的解法) 依然是回溯法 */
+    // 优化1：不在一开始就创建整个棋盘，而是不断的为棋盘添加包含试探解的行。
+    // 优化2：找到左右对角线元素坐标值的特性，简化位置判定逻辑。
+    // 示例：如以(2,1)为中心向外辐射，可以看到：
+    //  左对角线上所有元素横纵坐标的共同特点是row - col的值相同。
+    //  右对角线上所有元素横纵坐标的共同特点是row + col的值相同。
+    //  用这两个值作为标识，判定对角线元素。
+    //  ---  ---  ---  0,3  ---
+    //  1,0  ---  1,2  ---  ---
+    //  ---  2,1  ---  ---  ---
+    //  3,0  ---  3,2  ---  ---
+    //  ---  ---  ---  4,3  ---
+    static List<List<String>> nQueens2(int n) {
+        List<List<String>> result = new ArrayList<>();
+        backtrack2(n, 0, result, new ArrayList<>());
+        return result;
+    }
+
+    static void backtrack2(int n, int row, List<List<String>> result, List<String> matrix) {
+        if (row == n) {
+            result.add(new ArrayList<>(matrix));
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            if (isValid2(matrix, row, i, n)) {
+                char[] current = new char[n];
+                Arrays.fill(current, '.');      // 添加全点行，然后添加试探解
+                current[i] = 'Q';
+                matrix.add(new String(current));
+                backtrack2(n, row + 1, result, matrix);
+                matrix.remove(matrix.size() - 1);   // 试探结束后恢复棋盘
+            }
+        }
+    }
+
+    // 更简单的位置有效性判定：直接遍历上方所有元素，如果发现元素值为Q且位于同一列或同一左右对角线，就说明位置冲突，退出。
+    // j == col 表示该位置与试探位置在同一列
+    // row - col == i - j 表示该位置和试探位置在同一条左对角线
+    // row + col == i + j 表示该位置和试探位置在同一条右对角线
+    static boolean isValid2(List<String> matrix, int row, int col, int n) {
+        for (int i = 0; i < row; i++)
+            for (int j = 0; j < n; j++)
+                if (matrix.get(i).charAt(j) == 'Q' && (j == col || row - col == i - j || row + col == i + j))
+                    return false;
+        return true;
+    }
 
 }
