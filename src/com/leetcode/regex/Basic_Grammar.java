@@ -34,6 +34,11 @@ public class Basic_Grammar {
 
     /** Quantifier: 数量限定符，限定前面出现的单独这个字符<允许出现的次数>。只有出现次数在规定范围内才算匹配。*/
     static void quantifier_Test() {
+        // 数量限定符仅作用于左侧相邻单字符。
+        find("ifu*ck", "ifck, ifuck, ifuuck, ifuuuck");         // * 仅作用于 u
+        find("i(fu)*ck", "ick, ifuck, ifufuck, ifufufuck");     // * 仅作用于 (fu)
+        find("i[fu]*ck", "ick,ifffck, ifuufck, iuuuuck");       // * 仅作用于 [fu]
+
         /** Greedy 贪婪模式（默认）：<尽可能多>的匹配 */
         // 不加: 出现次数 == 1 (1)  如果字符后面没有跟数量限定符，那么就说明这个字符"有且仅能"出现1次。
         // *: 出现次数 >= 0 (0, 1, n)
