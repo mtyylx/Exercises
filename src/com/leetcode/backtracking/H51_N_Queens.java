@@ -34,6 +34,7 @@ public class H51_N_Queens {
     public static void main(String[] args) {
         List<List<String>> result = nQueens(8);
         List<List<String>> result2 = nQueens2(8);
+        List<List<String>> result3 = nQueens3(8);
     }
 
     // 科普时间：
@@ -146,6 +147,35 @@ public class H51_N_Queens {
                 if (matrix.get(i).charAt(j) == 'Q' && (j == col || row - col == i - j || row + col == i + j))
                     return false;
         return true;
+    }
+
+    /** (最优美的解法) 使用三个boolean数组标记Queen可能出现的区域 */
+    // 详细分析见H52. 非常有意思。
+    static List<List<String>> nQueens3(int n) {
+        List<List<String>> result = new ArrayList<>();
+        backtrack3(n, 0, result, new ArrayList<>(), new boolean[n], new boolean[n * 2], new boolean[n * 2]);
+        return result;
+    }
+
+    static void backtrack3(int n, int row, List<List<String>> result, List<String> matrix,
+                           boolean[] column, boolean[] leftdiag, boolean[] rightdiag) {
+        if (row == n) {
+            result.add(new ArrayList<>(matrix));
+            return;
+        }
+        for (int col = 0; col < n; col++) {
+            int left = row - col + n;
+            int right = row + col;
+            if (column[col] | leftdiag[left] | rightdiag[right]) continue;       // 跳过不合适的位置
+            column[col] = true; leftdiag[left] = true; rightdiag[right] = true;  // 更新Queen标记地图
+            char[] line = new char[n];
+            Arrays.fill(line, '.');
+            line[col] = 'Q';
+            matrix.add(new String(line));                                         // 构造新的一行
+            backtrack3(n, row + 1, result, matrix, column, leftdiag, rightdiag);
+            matrix.remove(matrix.size() - 1);                               // 恢复棋盘形态
+            column[col] = false; leftdiag[left] = false; rightdiag[right] = false;   // 恢复Queen标记地图
+        }
     }
 
 }
