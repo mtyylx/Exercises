@@ -12,7 +12,8 @@ package com.leetcode.backtracking;
  */
 public class H52_N_Queens_2 {
     public static void main(String[] args) {
-        System.out.println(nQueensCount(4));
+        System.out.println(nQueensCount(8));
+        System.out.println(nQueensCount2(8));
     }
 
     // 对于只计算解个数而不计算具体解是什么，那么算法在哪块儿能够优化呢？
@@ -61,11 +62,12 @@ public class H52_N_Queens_2 {
 
     /** 上面方法的细微修改版：把count集成在递归方法中的版本 */
     static int nQueensCount2(int n) {
-        return backtrack2(n, 0, new boolean[n], new boolean[n * 2], new boolean[n * 2], 0);
+        return backtrack2(n, 0, new boolean[n], new boolean[n * 2], new boolean[n * 2]);
     }
 
-    static int backtrack2(int n, int row, boolean[] column, boolean[] leftDiag, boolean[] rightDiag, int count) {
-        if (row == n) count++;          // 可以不写return，因为超过最后一行之后，每一列就都有Queen了，因此一定会退出。
+    static int backtrack2(int n, int row, boolean[] column, boolean[] leftDiag, boolean[] rightDiag) {
+        int count = 0;
+        if (row == n) return 1;
         for (int col = 0; col < n; col++) {
             int left = row - col + n;
             int right = row + col;
@@ -73,7 +75,7 @@ public class H52_N_Queens_2 {
             column[col] = true;         // Update Queen Map
             leftDiag[left] = true;
             rightDiag[right] = true;
-            count += backtrack2(n, row + 1, column, leftDiag, rightDiag, 0);     // Recurse next row
+            count += backtrack2(n, row + 1, column, leftDiag, rightDiag);     // Recurse next row
             column[col] = false;        // Reverse Queen Map
             leftDiag[left] = false;
             rightDiag[right] = false;
