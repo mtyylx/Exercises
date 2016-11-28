@@ -31,8 +31,10 @@ public class M39_Combination_Sum {
     public static void main(String[] args) {
         List<List<Integer>> result = combSumDP(new int[]{1, 2, 3}, 4);
         List<List<Integer>> result2 = combSumDP2(new int[]{2, 3, 5}, 8);
-        List<List<Integer>> result3 = combSum(new int[]{1, 2, 3}, 4);
-        List<List<Integer>> result4 = combSum2(new int[]{1, 2, 3}, 4);
+        List<List<Integer>> result3 = combSumDP3(new int[]{2, 3, 5}, 8);
+        List<List<Integer>> result4 = combSumDP4(new int[]{2, 3, 5}, 8);
+        List<List<Integer>> result5 = combSum(new int[]{1, 2, 3}, 4);
+        List<List<Integer>> result6 = combSum2(new int[]{1, 2, 3}, 4);
     }
 
     /** DP解法，Bottom-Up（依次计算target = 1到n的所有解集），迭代方式，Memoization避免重复计算。思路感觉非常强大！ */
@@ -82,8 +84,21 @@ public class M39_Combination_Sum {
         return dp.get(target);
     }
 
-    /** 不计算重复解的解法1，通过先排序candidate数组，并限制插入位置来避免重复。[1,1,2][1,2,1][2,1,1]视为1个解 */
+    /** 如何不计算重复解：即视[1,1,2] [1,2,1] [2,1,1]为 1个解 */
+    // 我们可以通过观察解的构成来避免重复：4 = 1 + 1 + 2 = 1 + 2 + 1 = 2 + 1 + 1，如何只计算这三者之一呢？
+    // 这里，顺序起到了很重要的作用。
+    // 如果我们只按顺序插入，每次要向path中放candidate之前，先查看旧path的首元素值或尾元素值，和candidate相比之后再决定是否插入，在什么位置插入。
+    // 方案一：当前candidate与旧path的首元素相比，小于等于首元素时，把candidate插入旧path头部，整体作为新path，否则跳过。
+    // 方案二：当前candidate与旧path的尾元素相比，大于等于尾元素时，把candidate追加在旧path尾部，整体作为xinpath，否则跳过。
+    // 上面这两个方案频繁使用在Combination Sum系列的4道题目中。
+    // 下面的<解法1和2>用的就是方案一。if(candidate <= path.get(0)) then add candidate, then add old path.
+    // 下面的<解法3>用的就是方案二，其他的Recursive解法用的也大都是方案二，每次递归传给下层扫描的起始位置，也是尾端插入。
+    // 即要不然是 if (candidate >= path.get(path.size() - 1)) then add old path，then add candidate
+    // 要不然是 for (int i = start to n).
+
+    /** 不计算重复解，<解法1>，通过先排序candidate数组，并限制插入位置来避免重复。 */
     // 独特之处：在dp中创建一个初始的种子解集dp[0]，用来递归时方便被其他dp调用。
+    // 去重方式为首端插入。
     static List<List<Integer>> combSumDP2(int[] a, int target) {
         List<List<List<Integer>>> dp = new ArrayList<>();
         List<List<Integer>> result = new ArrayList<>();
@@ -110,8 +125,9 @@ public class M39_Combination_Sum {
         return dp.get(target);
     }
 
-    /** 不计算重复解的解法2，通过先排序candidate数组，并限制插入位置来避免重复。[1,1,2][1,2,1][2,1,1]视为1个解 */
+    /** 不计算重复解，<解法2>，通过先排序candidate数组，并限制插入位置来避免重复。[1,1,2][1,2,1][2,1,1]视为1个解 */
     // 独特之处：没有定义初始种子，因此一旦遇到subproblem = 0的时候，就直接把对应的candidate元素本身封装为一个List添加进当前解集中。
+    // 去重方式为首端插入。
     static List<List<Integer>> combSumDP3(int[] a, int target) {
         Arrays.sort(a);
         List<List<List<Integer>>> dp = new ArrayList<>();
@@ -125,10 +141,37 @@ public class M39_Combination_Sum {
                     continue;
                 }
                 for (List<Integer> path : dp.get(sub - 1)) {            // index need to shift left by 1
-                    if (candidate <= path.get(0)) {
+                    if (candidate <= path.get(0)) {                     // 与首元素比较，小于等于才插入candidate至开头位置。
                         List<Integer> new_path = new ArrayList<>();
                         new_path.add(candidate);
                         new_path.addAll(path);
+                        current.add(new_path);
+                    }
+                }
+            }
+            dp.add(current);
+        }
+        return dp.get(target - 1);
+    }
+
+    /** 不计算重复解，<解法3>，通过先排序candidate数组，并限制插入位置来避免重复。[1,1,2][1,2,1][2,1,1]视为1个解 */
+    // 独特之处：去重方式为尾端追加。
+    static List<List<Integer>> combSumDP4(int[] a, int target) {
+        Arrays.sort(a);
+        List<List<List<Integer>>> dp = new ArrayList<>();
+        for (int i = 1; i <= target; i++) {
+            List<List<Integer>> current = new ArrayList<>();
+            for (int candidate : a) {
+                int sub = i - candidate;
+                if (sub < 0) break;
+                if (sub == 0) {                                         // Subproblem = 0 means the path contain only one candidate.
+                    current.add(Arrays.asList(candidate));              // create path using this single candidate.
+                    continue;
+                }
+                for (List<Integer> path : dp.get(sub - 1)) {            // index need to shift left by 1
+                    if (candidate >= path.get(path.size() - 1)) {       // 与尾元素比较，大于等于才在尾部追加candidate
+                        List<Integer> new_path = new ArrayList<>(path);
+                        new_path.add(candidate);
                         current.add(new_path);
                     }
                 }
