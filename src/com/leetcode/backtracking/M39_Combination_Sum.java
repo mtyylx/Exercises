@@ -29,12 +29,16 @@ import java.util.*;
  */
 public class M39_Combination_Sum {
     public static void main(String[] args) {
-        List<List<Integer>> result = combSumDP(new int[]{1, 2, 3}, 4);
-        List<List<Integer>> result2 = combSumDP2(new int[]{2, 3, 5}, 8);
-        List<List<Integer>> result3 = combSumDP3(new int[]{2, 3, 5}, 8);
-        List<List<Integer>> result4 = combSumDP4(new int[]{2, 3, 5}, 8);
-        List<List<Integer>> result5 = combSum(new int[]{1, 2, 3}, 4);
-        List<List<Integer>> result6 = combSum2(new int[]{1, 2, 3}, 4);
+        // DP test
+        List<List<Integer>> result = combSumDP_BottomUp_Duplicate(new int[]{1, 2, 3}, 4);
+        List<List<Integer>> result2 = combSumDP_BottomUp(new int[]{2, 3, 5}, 8);
+        List<List<Integer>> result3 = combSumDP_BottomUp2(new int[]{2, 3, 5}, 8);
+        List<List<Integer>> result4 = combSumDP_BottomUp3(new int[]{2, 3, 5}, 8);
+        List<List<Integer>> result5 = combSumDP_TopDown(new int[]{2, 3, 5}, 8);
+
+        // BK test
+        List<List<Integer>> result11 = combSum_BK2(new int[]{1, 2, 3}, 4);
+        List<List<Integer>> result12 = combSum_BK(new int[]{1, 2, 3}, 4);
     }
 
     /** DP解法，Bottom-Up（依次计算target = 1到n的所有解集），迭代方式，Memoization避免重复计算。思路感觉非常强大！ */
@@ -48,7 +52,8 @@ public class M39_Combination_Sum {
     // target = 1  0
     //        /
     //       0 {{}}
-    // 还米有想出来。UPDATE 11/28: 想粗来鸟！就用M377的思路即可。
+    // 还米有想出来。
+    // UPDATE 11/28: 想粗来鸟！就用M377的思路即可。
 
     /** 计算重复解的解法（即扫描candidate数组总是从0开始，[1,1,2][1,2,1][2,1,1]视为3个解。*/
     // Bottom-Up的递推公式应该着眼于target，而不是a的长度。即dp数组的索引值含义应该对应于target的值。
@@ -62,7 +67,7 @@ public class M39_Combination_Sum {
     // dp[3] = dp[3-1] add 1 + dp[3-2] add 2 + dp[3-3] add 3 = dp[2] + dp[1] + dp[0] = {{1,1,1},{2,1}} + {{1,2}} + {{3}}
     // dp[4] = dp[4-1] add 1 + dp[4-2] add 2 + dp[4-3] add 3 = {{1,1,1,1},{2,1,1},{1,2,1},{3,1}} + {{1,1,2},{2,1}} + {1,3}
     // 另外这里dp用的是三重List，而不是一个装List<List<Integer>>的数组，这是为了避免出现Generic Array Creation的错误。
-    static List<List<Integer>> combSumDP(int[] a, int target) {
+    static List<List<Integer>> combSumDP_BottomUp_Duplicate(int[] a, int target) {
         List<List<List<Integer>>> dp = new ArrayList<>();
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> seed = new ArrayList<>();
@@ -99,7 +104,7 @@ public class M39_Combination_Sum {
     /** 不计算重复解，<解法1>，通过先排序candidate数组，并限制插入位置来避免重复。 */
     // 独特之处：在dp中创建一个初始的种子解集dp[0]，用来递归时方便被其他dp调用。
     // 去重方式为首端插入。
-    static List<List<Integer>> combSumDP2(int[] a, int target) {
+    static List<List<Integer>> combSumDP_BottomUp(int[] a, int target) {
         List<List<List<Integer>>> dp = new ArrayList<>();
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> seed = new ArrayList<>();
@@ -128,7 +133,7 @@ public class M39_Combination_Sum {
     /** 不计算重复解，<解法2>，通过先排序candidate数组，并限制插入位置来避免重复。[1,1,2][1,2,1][2,1,1]视为1个解 */
     // 独特之处：没有定义初始种子，因此一旦遇到subproblem = 0的时候，就直接把对应的candidate元素本身封装为一个List添加进当前解集中。
     // 去重方式为首端插入。
-    static List<List<Integer>> combSumDP3(int[] a, int target) {
+    static List<List<Integer>> combSumDP_BottomUp2(int[] a, int target) {
         Arrays.sort(a);
         List<List<List<Integer>>> dp = new ArrayList<>();
         for (int i = 1; i <= target; i++) {
@@ -156,7 +161,7 @@ public class M39_Combination_Sum {
 
     /** 不计算重复解，<解法3>，通过先排序candidate数组，并限制插入位置来避免重复。[1,1,2][1,2,1][2,1,1]视为1个解 */
     // 独特之处：去重方式为尾端追加。
-    static List<List<Integer>> combSumDP4(int[] a, int target) {
+    static List<List<Integer>> combSumDP_BottomUp3(int[] a, int target) {
         Arrays.sort(a);
         List<List<List<Integer>>> dp = new ArrayList<>();
         for (int i = 1; i <= target; i++) {
@@ -181,6 +186,42 @@ public class M39_Combination_Sum {
         return dp.get(target - 1);
     }
 
+    /** DP解法，Top-Down方式，递归写法。 */
+    // 关键点1：递归方法需要返回值传递下一层递归返回的解集。
+    // 注意这里的递归每一层含义与回溯的递归每一层含义完全不同。
+    // 回溯法中使用的递归，其每一层是在试探解的每一个部分。
+    // 例如给定a=[1 2 3],target=4，然后回溯过程中通过递归得到一个试探解（path）为[1 1 2]，则获得过程是第1层和第二层递归都选择1，第三层递归选择2。
+    // 而动归解法的Top-down方式使用递归，其每一层是在削减问题的规模，每一层得到的（不管是生算还是查dp）都是这层target值对应的完整解集。
+    // 简而言之，回溯的递归层是每个解的一部分，动归的递归层则是一个个解集。
+    static List<List<Integer>> combSumDP_TopDown(int[] a, int target) {
+        List<List<List<Integer>>> dp = new ArrayList<>(target);
+        Arrays.sort(a);
+        for (int i = 0; i <= target; i++) dp.add(null);
+        return subProblem(a, target, dp);
+    }
+    // 每层递归首先检查是否已经计算过，target小于0和等于0的情况在上一层就处理。
+    static List<List<Integer>> subProblem(int[] a, int target, List<List<List<Integer>>> dp) {
+        if (dp.get(target) != null) return dp.get(target);      // 此问题已经计算过，直接返回解集。
+        List<List<Integer>> current = new ArrayList<>();        // 此问题还没计算过，需要生成一个空的新解集current，等待下面的添加。
+        for (int candidate : a) {
+            if (target - candidate < 0) break;      // 子问题不存在，再加上已经排序，所以后面的子问题也不可能存在，所以直接终止循环。
+            if (target - candidate == 0) {          // 子问题就是candidate本身，所以生成一个只含candidate的path即可，再添加到current解集中。
+                List<Integer> single = new ArrayList<>(Arrays.asList(candidate));
+                current.add(single);
+                continue;
+            }
+            List<List<Integer>> old = subProblem(a, target - candidate, dp);    // 子问题存在，递归下一层
+            for (List<Integer> path : old) {                                          // 把子问题的解集全都加上candidate即可加入current解集。
+                if (candidate > path.get(0)) continue;
+                List<Integer> new_path = new ArrayList<>();         // 首端插入，避免重复，和上面的解法都一样。
+                new_path.add(candidate);
+                new_path.addAll(path);
+                current.add(new_path);
+            }
+        }
+        dp.set(target, current);    // 此问题的解集已经算出来了，更新到dp备忘，供以后直接取用。
+        return dp.get(target);
+    }
 
     /** 优化穷举法，先排序后干活，通过禁止回退来避免重复。 */
     // 避免重复路径 技巧1：
@@ -191,21 +232,21 @@ public class M39_Combination_Sum {
     // 避免重复路径 技巧2：
     // 如果数组a中包含重复元素，虽然很坑爹，但是为了避免生成重复路径，需要跳过这些重复的元素。
     // 由于candidate已经排序，所以只需要检查相邻元素是否相等即可。
-    static List<List<Integer>> combSum2(int[] a, int target) {
+    static List<List<Integer>> combSum_BK2(int[] a, int target) {
         List<List<Integer>> result = new ArrayList<>();
         if (a == null || a.length == 0) return result;
         Arrays.sort(a);     // 确保Candidate按顺序排号，避免记录重复路径（技巧1 + 技巧2）
-        backtrack(a, target, result, new ArrayList<>(), 0);
+        backtrack2(a, target, result, new ArrayList<>(), 0);
         return result;
     }
 
-    static void backtrack(int[] a, int target, List<List<Integer>> result, List<Integer> current, int start) {
+    static void backtrack2(int[] a, int target, List<List<Integer>> result, List<Integer> current, int start) {
         // 递归终止条件：要不然无解，要不然找到完整解立即返回，要不然接着递归。
         if (target < 0) return;
         if (target == 0) {result.add(new ArrayList<>(current)); return;}    // 拷贝当前路径的值存入result，而不是直接添加。
         for (int i = start; i < a.length; i++) {                    // 避免重复：不从0开始尝试，而是从上一层访问位置的右侧开始尝试
             current.add(a[i]);                                      // 依然是先添后删
-            backtrack(a, target - a[i], result, current, i);
+            backtrack2(a, target - a[i], result, current, i);
             current.remove(current.size() - 1);
             while (i + 1 < a.length && a[i + 1] == a[i]) i++;       // 避免Candidate中有重复元素。
         }
@@ -215,14 +256,14 @@ public class M39_Combination_Sum {
      * Time - o(n^m) n为candidate的个数，m为层高。*/
     // 为了避免重复，例如 {2, 2, 3} {2, 3, 2} {3, 2, 2}
     // 可以先把所有找到的path都存到Set里面，最后再把Set导出为ArrayList返回。
-    static List<List<Integer>> combSum(int[] a, int target) {
+    static List<List<Integer>> combSum_BK(int[] a, int target) {
         Set<List<Integer>> result = new HashSet<>();
         if (a == null || a.length == 0) return new ArrayList<>(result);
-        combSum_Recursive(a, target, result, new ArrayList<>());
+        backtrack(a, target, result, new ArrayList<>());
         return new ArrayList<>(result);
     }
     // 特别要注意递归中来回传递当前访问路径必须拷贝一份，而不是直接使用传入的引用，这样会导致你添加进result的路径在之后会被修改。
-    static void combSum_Recursive(int[] a, int target, Set<List<Integer>> result, List<Integer> path) {
+    static void backtrack(int[] a, int target, Set<List<Integer>> result, List<Integer> path) {
         List<Integer> current_path = new ArrayList<>(path);     // 完全拷贝，避免原path被修改。
         if (target < 0) return;
         if (target == 0) {
@@ -232,7 +273,7 @@ public class M39_Combination_Sum {
         }
         for (int x : a) {
             current_path.add(x);                                        // 先添加上
-            combSum_Recursive(a, target - x, result, current_path);
+            backtrack(a, target - x, result, current_path);
             current_path.remove(current_path.size() - 1);               // 递归完把path恢复到之前的状态，以供下个循环尝试添加。
         }
     }
