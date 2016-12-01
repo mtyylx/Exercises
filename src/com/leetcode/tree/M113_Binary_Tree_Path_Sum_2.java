@@ -25,6 +25,12 @@ import java.util.List;
  *
  * Function Signature:
  * public List<List<Integer>> pathSum(TreeNode root, int target) {...}
+ *
+ * 系列问题：
+ * E112 Path Sum 1: 给定树和目标值，<判断是否存在>树根一直到叶子节点之和为目标值的路径。
+ * M113 Path Sum 2: 给定树和目标值，求解树根一直到叶子节点之和等于目标值的<所有路径>。
+ * E437 Path Sum 3: xxxxxxxxxxx
+ *
  */
 public class M113_Binary_Tree_Path_Sum_2 {
     public static void main(String[] args) {
