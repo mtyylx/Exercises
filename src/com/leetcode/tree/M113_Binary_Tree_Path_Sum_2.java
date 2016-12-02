@@ -1,8 +1,6 @@
 package com.leetcode.tree;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Michael on 2016/12/1.
@@ -34,8 +32,9 @@ import java.util.List;
  */
 public class M113_Binary_Tree_Path_Sum_2 {
     public static void main(String[] args) {
-        TreeNode root = TreeNode.Generator(new int[] {5, 4, 8, 11, 19, 13, 4, 7, 2, 99, 99, 99, 99, 5, 1});
-        List<List<Integer>> result = pathSum(root, 22);
+        TreeNode root = TreeNode.Generator(new int[] {1, 2, 3, 4, 5});
+        List<List<Integer>> result = pathSum(root, 8);
+        List<List<Integer>> result2 = pathSum2(root, 8);
     }
 
     /** DFS, 递归写法，感觉很像回溯法常用的路径增删法。让我试一下。 */
@@ -64,5 +63,40 @@ public class M113_Binary_Tree_Path_Sum_2 {
         if (node.left != null) backtrack(node.left, target - node.val, result, current);
         if (node.right != null) backtrack(node.right, target - node.val, result, current);
         current.remove(current.size() - 1);   // 路径删
+    }
+
+    /** DFS + Stack，迭代写法。用了三个栈，分别存访问节点，当前路径结果，target值。比较傻，应该可以优化。*/
+    static List<List<Integer>> pathSum2(TreeNode root, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) return result;
+
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        Deque<List<Integer>> path = new ArrayDeque<>();
+        Deque<Integer> sum = new ArrayDeque<>();
+        path.push(new ArrayList<>(Arrays.asList(root.val)));
+        stack.push(root);
+        sum.push(target - root.val);
+
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            List<Integer> current = new ArrayList<>(path.pop());
+            int new_target = sum.pop();
+            if (node.left == null && node.right == null && new_target == 0)
+                result.add(new ArrayList<>(current));
+            if (node.left != null) {
+                current.add(node.left.val);
+                stack.push(node.left);
+                path.push(new ArrayList<>(current));
+                sum.push(new_target - node.left.val);
+                current.remove(current.size() - 1);
+            }
+            if (node.right != null) {
+                current.add(node.right.val);
+                stack.push(node.right);
+                sum.push(new_target - node.right.val);
+                path.push(new ArrayList<>(current));
+            }
+        }
+        return result;
     }
 }
