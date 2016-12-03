@@ -24,7 +24,11 @@ import java.util.List;
 public class M144_Binary_Tree_Preorder_Traversal {
     public static void main(String[] args) {
         TreeNode root = TreeNode.Generator(new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11});
-        List<Integer> preorder = preOrder4(root);
+        System.out.println(preOrder(root));
+        System.out.println(preOrder2(root));
+        System.out.println(preOrder3(root));
+        System.out.println(preOrder_iterative(root));
+        System.out.println(preOrder_iterative2(root));
     }
 
     /** 二叉树的前、中、后序遍历都是针对root而言的。
@@ -36,7 +40,10 @@ public class M144_Binary_Tree_Preorder_Traversal {
      *  对于<递归方式>的遍历，节点缓存的工作被隐式的通过函数调用栈完成。
      *  对于<迭代方式>的遍历，则必须构造额外的栈或队列来辅助才能完成。*/
 
-    // 递归解法1：每次递归都创建新List，返回时用addAll()方法将新List合并入最后的结果中。
+    /** 递归解法 1：每次递归都创建新List，返回时用addAll()方法将新List合并入最后的结果中。 */
+    // 为什么要用addAll而不是add：就是为了写递归方式直接一个方法省事。
+    // 因为一般要递归的话，都需要给递归方法添加一些传入参数，这就与给定的解题方法签名不同了，因此一般都是一个wrapper方法搭配真正的递归方法。
+    // 这里为了保持给定的解题方法接口签名不变，就需要每次递归都返回该层高度的树所记录的遍历信息，最后汇总到一起返回。
     static List<Integer> preOrder(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         if (root != null) {
@@ -47,7 +54,7 @@ public class M144_Binary_Tree_Preorder_Traversal {
         return result;
     }
 
-    // 递归解法2：设立一个类的成员变量，游离于递归方法之外，避免每次递归都创建新List。
+    /** 递归解法 2：使用成员变量游离于递归方法之外，避免每次递归都创建新List。 */
     static List<Integer> result = new ArrayList<>();
     static List<Integer> preOrder2(TreeNode root) {
         if (root != null) {
@@ -58,9 +65,24 @@ public class M144_Binary_Tree_Preorder_Traversal {
         return result;
     }
 
-    // 迭代解法：使用栈辅助
-    // 注意：栈不能接受null元素。因此所有push前都要先做null check。
+    /** 递归解法 3：标准解法。使用Wrapper + 递归方法。 */
     static List<Integer> preOrder3(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        preOrder_Recursive(root, result);
+        return result;
+    }
+
+    static void preOrder_Recursive(TreeNode node, List<Integer> result) {
+        if (node != null) {
+            result.add(node.val);
+            preOrder_Recursive(node.left, result);
+            preOrder_Recursive(node.right, result);
+        }
+    }
+
+    /** 迭代解法 1：标准解法，使用栈辅助。 */
+    // 注意：栈不能接受null元素。因此所有push前都要先做null check。
+    static List<Integer> preOrder_iterative(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         Deque<TreeNode> stack = new ArrayDeque<>();
         if (root == null) return result;
@@ -74,8 +96,9 @@ public class M144_Binary_Tree_Preorder_Traversal {
         return result;
     }
 
+    /** 迭代解法 2：同样使用栈的另一种写法。 */
     // 这是类似于Inorder和Postorder解法的if...else结构的Preorder版本，但是并没有上面的解法直观。
-    static List<Integer> preOrder4(TreeNode root) {
+    static List<Integer> preOrder_iterative2(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         Deque<TreeNode> stack = new ArrayDeque<>();
         TreeNode current = root;
