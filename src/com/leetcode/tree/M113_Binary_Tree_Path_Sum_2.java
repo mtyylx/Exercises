@@ -1,5 +1,7 @@
 package com.leetcode.tree;
 
+import sun.reflect.generics.tree.Tree;
+
 import java.util.*;
 
 /**
@@ -33,8 +35,9 @@ import java.util.*;
 public class M113_Binary_Tree_Path_Sum_2 {
     public static void main(String[] args) {
         TreeNode root = TreeNode.Generator(new int[] {1, 2, 3, 4, 5});
-        List<List<Integer>> result = pathSum(root, 8);
-        List<List<Integer>> result2 = pathSum2(root, 8);
+        System.out.println(preOrderTraversal(root));
+        List<List<Integer>> result2 = preOrderPathSum(root, 8);
+
     }
 
     /** DFS, 递归写法，感觉很像回溯法常用的路径增删法。让我试一下。 */
@@ -47,25 +50,55 @@ public class M113_Binary_Tree_Path_Sum_2 {
     // 然后在递归方法内：首尾分别增删当前节点值，在此基础上对当前结点的情况就事论事：
     // 1. 如果当前节点是叶子节点，那么检查target减当前结点值是否为0，是就存储result退出。
     // 2. 如果当前节点不是叶子节点，那么仅对他真正有的儿子进行递归。确保不会递归null节点即可。
-    static List<List<Integer>> pathSum(TreeNode root, int target) {
+    static List<List<Integer>> preOrderPathSum(TreeNode root, int target) {
         List<List<Integer>> result = new ArrayList<>();
-        if (root == null) return result;
-        backtrack(root, target, result, new ArrayList<>());
+        preOrderPathSum(root, target, result, new ArrayList<>());
         return result;
     }
 
-    static void backtrack(TreeNode node, int target, List<List<Integer>> result, List<Integer> current) {
-        current.add(node.val);                      // 路径增
-        // 当前节点为叶子结点
-        if (node.left == null && node.right == null)
-            if (target - node.val == 0) result.add(new ArrayList<>(current));
-        // 当前节点不是叶子节点
-        if (node.left != null) backtrack(node.left, target - node.val, result, current);
-        if (node.right != null) backtrack(node.right, target - node.val, result, current);
-        current.remove(current.size() - 1);   // 路径删
+    static void preOrderPathSum(TreeNode node, int target, List<List<Integer>> result, List<Integer> current) {
+        if (node == null) return;
+        current.add(node.val);
+        target -= node.val;
+        if (node.left == null && node.right == null && target == 0) result.add(new ArrayList<>(current));
+        preOrderPathSum(node.left, target, result, current);
+        preOrderPathSum(node.right, target, result, current);
+        current.remove(current.size() - 1);
     }
 
-    /** DFS + Stack，迭代写法。用了三个栈，分别存访问节点，当前路径结果，target值。比较傻，应该可以优化。*/
+    static List<Integer> preOrderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        preOrderTraversal(root, result);
+        return result;
+    }
+
+    static void preOrderTraversal(TreeNode node, List<Integer> result) {
+        if (node != null) {
+            result.add(node.val);
+            preOrderTraversal(node.left, result);
+            preOrderTraversal(node.right, result);
+        }
+    }
+
+    /** 关于 <实体树结构的问题> 和 <逻辑上具有树结构特征的问题> 在处理上的不同 */
+    // “实体树结构”是指要解决的问题给的直接就是树状数据结构对象，每个节点都具有值/左右子树引用。
+    // “逻辑上具有树结构特征”是指要解决的问题在逻辑上是一个树的扩展形态，例如Combination Sum系列中给定candidate数组，每选定一个candidate，就相当与开了一个分支节点。
+    // 虽然这两类问题都涉及到树的结构，但是处理上并不完全一样。实体树结构的问题往往需要更小心的处理，以避免出现回退跳跃的情况。
+    // 回退跳跃：指使用堆栈
+
+    // 如果不是真实的树结构（即只是逻辑上的树，而不是已经实体化为树节点的树），那么可以放心的以步长为1的增和删节点，因为回溯不会出现跳跃。
+    // 但是如果是真实的树结构，那么将会出现跳跃的情况，因为你不知道下次取出来的节点离上个节点多远。需要检查path的最后一个节点是否是当前节点的父节点。
+
+    /** 按理说任何树的问题都应该可以用遍历的四种方式之一来解决。
+     * 这里用Preorder合适，但难点是如何伸缩当前记录的path，使得既保证不同分支间的path是互不影响的，又保证结果和path之间不相互影响。 */
+    // 只要检测到当前的节点是叶子节点，不管匹配不匹配target，都在结束的时候把路径缩短1.
+    // 遍历树的全过程中只使用一个path，path保存的是节点对象
+    // 只有遇到叶子节点的时候，才首先检查是否target达到了0
+    // 然后再peek栈顶的节点（即下一个即将出栈的节点），然后不断的删除path，直至path的最后一个节点是下一个即将出栈节点的父节点。
+
+
+
+    /** DFS + Stack，迭代写法。用了三个栈，存访问节点 + 当前路径结果 + target值（和递归解法根本没区别了，没有意义）*/
     static List<List<Integer>> pathSum2(TreeNode root, int target) {
         List<List<Integer>> result = new ArrayList<>();
         if (root == null) return result;
