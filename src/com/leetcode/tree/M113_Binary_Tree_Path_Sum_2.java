@@ -45,11 +45,12 @@ public class M113_Binary_Tree_Path_Sum_2 {
     //      1     target = 1 应该没有解才对。这点要小心。因为1并不算叶子节点，只有抵达真正的叶子节点才能决定是否输出结果。
     //     /
     //    2
-    // 所以处理节点的原则是：
-    // 首先在递归方法外确保入口节点是有效的
-    // 然后在递归方法内：首尾分别增删当前节点值，在此基础上对当前结点的情况就事论事：
+    // 所以递归方法中的原则是：
+    // 一上来就检查当前节点是否为null。
+    // 然后把当前结点就加入path中，并对其左右子节点的情况就事论事：
     // 1. 如果当前节点是叶子节点，那么检查target减当前结点值是否为0，是就存储result退出。
-    // 2. 如果当前节点不是叶子节点，那么仅对他真正有的儿子进行递归。确保不会递归null节点即可。
+    // 2. 如果当前节点不是叶子节点，那么直接递归左右节点（即使没有也没关系，因为下一层递归方法一开始就会退出）
+    // 然后把本层递归方法在一开始添加上的节点从path中移除。结束本层递归。
     static List<List<Integer>> preOrderPathSum(TreeNode root, int target) {
         List<List<Integer>> result = new ArrayList<>();
         preOrderPathSum(root, target, result, new ArrayList<>());
@@ -66,6 +67,11 @@ public class M113_Binary_Tree_Path_Sum_2 {
         current.remove(current.size() - 1);
     }
 
+    /** 关于回溯法与前序遍历法的对比分析：上面的解法是<Backtracking>，下面的解法则是递归写法的标准<Pre-order Traversal> */
+    // 可以看到，两个算法的形式是极为相似的，虽然他们俩解决的具体问题不完全一样，但是思路是完全一样的。
+    // 所以说，其实Backtracking解法使用在实体树问题上就是前序遍历！！！
+    // 严格来说这两个算法的着眼点是不同的，回溯强调的是“我可以无限的前进和后退以至穷举所有可能”，而前序遍历强调的是“我要以先root后子节点的方式遍历树”。
+    // 但是两者的作用是不约而同的。
     static List<Integer> preOrderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         preOrderTraversal(root, result);
@@ -73,21 +79,83 @@ public class M113_Binary_Tree_Path_Sum_2 {
     }
 
     static void preOrderTraversal(TreeNode node, List<Integer> result) {
-        if (node != null) {
-            result.add(node.val);
-            preOrderTraversal(node.left, result);
-            preOrderTraversal(node.right, result);
-        }
+        if (node == null) return;
+        result.add(node.val);
+        preOrderTraversal(node.left, result);
+        preOrderTraversal(node.right, result);
     }
 
-    /** 关于 <实体树结构的问题> 和 <逻辑上具有树结构特征的问题> 在处理上的不同 */
+    /** 关于 <实体树结构的问题> 和 <逻辑上具有树结构特征的问题> 在处理上是相同的！ */
     // “实体树结构”是指要解决的问题给的直接就是树状数据结构对象，每个节点都具有值/左右子树引用。
     // “逻辑上具有树结构特征”是指要解决的问题在逻辑上是一个树的扩展形态，例如Combination Sum系列中给定candidate数组，每选定一个candidate，就相当与开了一个分支节点。
-    // 虽然这两类问题都涉及到树的结构，但是处理上并不完全一样。实体树结构的问题往往需要更小心的处理，以避免出现回退跳跃的情况。
-    // 回退跳跃：指使用堆栈
+    // 一开始我以为这两类问题不能用相同解法解决，现在上面的递归解法证明其实是可以的。
+    // 反而<真正的难点>在于如何用迭代的写法解决这两类问题（实际是同一类问题）：
+    // 因为递归的时候，函数栈的内容可以自动帮你打理好你在每一个节点时所匹配的这些context，例如当前结点下target的剩余值，以及路径状态（走了哪些点）
+    // 但是迭代的时候，就没有人帮你在背后记录这些东西了，你只能靠自己定义的栈来获知当前节点的context，
+    // 因为身在树林中的你是很难获悉自己在这个树中的确切位置的（指在代价很小的情况下获悉，代价很大的话当然就可以做到，但是算法本身效率就低了）
 
-    // 如果不是真实的树结构（即只是逻辑上的树，而不是已经实体化为树节点的树），那么可以放心的以步长为1的增和删节点，因为回溯不会出现跳跃。
-    // 但是如果是真实的树结构，那么将会出现跳跃的情况，因为你不知道下次取出来的节点离上个节点多远。需要检查path的最后一个节点是否是当前节点的父节点。
+    /** Post-order Traversal */
+    static List<Integer> postOrderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode prev = null;
+        TreeNode current = root;
+
+        while (current != null || stack.isEmpty()) {    // 双循环条件：要不然一开始都进不来循环，没有初始的种子压栈。
+            if (current != null) {
+                stack.push(current);        // 不管右节点
+                current = current.left;     // 直接深入左节点
+            }
+            else {
+                TreeNode peek = stack.peek();
+                if (peek.right == null || peek.right == prev) {
+                    result.add(peek.val);
+                    prev = stack.pop();
+                }
+                else current = peek.right;
+            }
+        }
+        return result;
+    }
+
+    /** Case 1 */
+    //       1
+    //      / \
+    //  null   null
+    //    ↑
+    //  current目前位于节点1的左子叶节点（并不存在）。节点1是一个纯粹的叶子节点。
+    //  [应对策略] 将节点1出栈，并访问节点1。
+    //
+    /** Case 2 */
+    //       1
+    //      / \
+    //  null   2
+    //    ↑
+    //  current目前位于节点1的左子叶节点（并不存在）。节点1存在右叶子节点。
+    //  节点1本身不是叶子节点，因此左右子树都必须访问。
+    //  [应对策略] 将节点1出栈，先检查节点1是否有右子树。如果有，就继续访问右子树，如果没有，等效于Case 1. 可以直接Visit节点1了。
+    //
+    /** Case 3 */
+    //       1
+    //      / \
+    //  null   2
+    //         ↑
+    //         current目前位于节点1的右子叶节点（存在）。
+    //  节点2的情况和Case 1完全一样。因此是先压栈2，然后检测到2是纯粹的叶子节点后，就直接把2出栈并访问了。此时缓存了prev就是节点2。
+    //  然后因为此时current一直是null，因此会一直的peek栈顶元素，并检查yua
+
+
+//    if (current != null) {
+//      current = stack.peek();         // 因为要后序遍历，最后才能访问根节点。
+//      stack.push(current.right);      // 右分支也压进去，先一边凉快着。
+//      current = current.left;         // 不断深入左分支
+//    }
+//    else {
+//      TreeNode backup = stack.pop();
+//    }
+
+
 
     /** 按理说任何树的问题都应该可以用遍历的四种方式之一来解决。
      * 这里用Preorder合适，但难点是如何伸缩当前记录的path，使得既保证不同分支间的path是互不影响的，又保证结果和path之间不相互影响。 */
