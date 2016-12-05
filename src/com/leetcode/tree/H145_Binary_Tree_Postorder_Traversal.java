@@ -25,6 +25,7 @@ public class H145_Binary_Tree_Postorder_Traversal {
         System.out.println(postOrder_iterative(root));
         System.out.println(postOrder_iterative2(root));
         System.out.println(postOrder_iterative3(root));
+        System.out.println(postOrder_iterative4(root));
 
         System.out.println(postOrder_reversePreOrder(root));
         System.out.println(postOrder_reversePreOrder2(root));
@@ -133,6 +134,7 @@ public class H145_Binary_Tree_Postorder_Traversal {
     // node -> X4   top -> 1, 因为 top.right -> 3 && prev -> 3,        所以 访问top.val, prevTop -> 1, stack: [ ]         top(1)右子树已经访问
     // exit.
 
+    // if-else 结构
     static List<Integer> postOrder_iterative2(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         Deque<TreeNode> stack = new ArrayDeque<>();
@@ -154,13 +156,34 @@ public class H145_Binary_Tree_Postorder_Traversal {
         }
         return result;
     }
+    // while 结构
+    static List<Integer> postOrder_iterative3(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode current = root;
+        TreeNode top = null;
+        TreeNode prevTop = null;
+        while (current != null || !stack.isEmpty()) {       // 因为没有在一开始压入种子节点，为了进入循环，就需要扩大循环条件。
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+            top = stack.peek();                         // 判断栈顶元素状况：
+            if (top.right == null || top.right == prevTop) {     // 如果栈顶元素没有右分支，或右分支已经访问过，就可以将栈顶元素出栈。
+                result.add(top.val);
+                prevTop = stack.pop();      // 缓存当前栈顶元素，以便判断扫描方向。
+            }
+            else current = top.right;                            // 如果栈顶元素有右分支，就访问右分支。
+        }
+        return result;
+    }
 
     /** 迭代解法3：也是真正的后序遍历的迭代写法，但是借助了额外的<HashSet>作为判断是否已访问的工具 */
     // 由于哈希表最终需要记录所有节点，所以空间复杂度是Space - o(2n)
     // 基本逻辑是：如果当前节点没有子节点，或者所有子节点都访问过，就记录当前节点在哈希表中，并同时输出该元素。
     // 如果当前节点的子节点还没有访问过，那么就得先压栈等待访问。
     // 灵感来源于E110判断是否balanced的迭代解法。
-    static List<Integer> postOrder_iterative3(TreeNode root) {
+    static List<Integer> postOrder_iterative4(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         Deque<TreeNode> stack = new ArrayDeque<>();
         Set<TreeNode> set = new HashSet<>();
