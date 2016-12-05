@@ -1,6 +1,6 @@
 package com.leetcode.tree;
 
-import sun.reflect.generics.tree.Tree;
+import org.omg.CORBA.INTERNAL;
 
 import java.util.*;
 
@@ -36,8 +36,9 @@ public class M113_Binary_Tree_Path_Sum_2 {
     public static void main(String[] args) {
         TreeNode root = TreeNode.Generator(new int[] {1, 2, 3, 4, 5});
         System.out.println(preOrderTraversal(root));
-        List<List<Integer>> result2 = preOrderPathSum(root, 8);
-
+        List<List<Integer>> result = preOrderPathSum(root, 8);
+        System.out.println(postOrderTraversal(root));
+        List<List<Integer>> result2 = postOrderPathSum(root, 8);
     }
 
     /** DFS, 递归写法，感觉很像回溯法常用的路径增删法。让我试一下。 */
@@ -97,24 +98,50 @@ public class M113_Binary_Tree_Path_Sum_2 {
     /** Post-order Traversal */
     static List<Integer> postOrderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
-        if (root == null) return result;
         Deque<TreeNode> stack = new ArrayDeque<>();
-        TreeNode prev = null;
         TreeNode current = root;
-
-        while (current != null || stack.isEmpty()) {    // 双循环条件：要不然一开始都进不来循环，没有初始的种子压栈。
+        TreeNode prevTop = null;
+        while (current != null || !stack.isEmpty()) {
             if (current != null) {
-                stack.push(current);        // 不管右节点
-                current = current.left;     // 直接深入左节点
+                stack.push(current);
+                current = current.left;
             }
             else {
-                TreeNode peek = stack.peek();
-                if (peek.right == null || peek.right == prev) {
-                    result.add(peek.val);
-                    prev = stack.pop();
+                TreeNode top = stack.peek();
+                if (top.right == null || top.right == prevTop) {
+                    result.add(top.val);
+                    prevTop = stack.pop();
                 }
-                else current = peek.right;
+                else current = top.right;
             }
+        }
+        return result;
+    }
+
+    /** 同样适用Post-Order Traversal的思路，迭代的解决Path Sum问题。 */
+    static List<List<Integer>> postOrderPathSum(TreeNode root, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode current = root;
+        TreeNode prevTop = null;
+        while (current != null || !stack.isEmpty()) {
+            while (current != null) {
+                stack.push(current);
+                path.add(current.val);      // 更新路径
+                target -= current.val;      // 更新target
+                current = current.left;
+            }
+            TreeNode top = stack.peek();
+            if (top.right == null || top.right == prevTop) {       // top要不然没有右分支，要不然右分支已经访问过。可以准备回头了。
+                if (top.left == null && top.right == null && target == 0)   // top是叶子节点且target为0，说明找到一条path。
+                    result.add(new ArrayList<>(path));
+                // 不管top有没有左节点，target是不是0，都要回退了，因此target要恢复，path也要回退。
+                target += top.val;
+                path.remove(path.size() - 1);
+                prevTop = stack.pop();                             // 和后序遍历一样，缓存当前栈顶。
+            }
+            else current = top.right;                              // 接着访问top的右分支。
         }
         return result;
     }
@@ -144,17 +171,6 @@ public class M113_Binary_Tree_Path_Sum_2 {
     //         current目前位于节点1的右子叶节点（存在）。
     //  节点2的情况和Case 1完全一样。因此是先压栈2，然后检测到2是纯粹的叶子节点后，就直接把2出栈并访问了。此时缓存了prev就是节点2。
     //  然后因为此时current一直是null，因此会一直的peek栈顶元素，并检查yua
-
-
-//    if (current != null) {
-//      current = stack.peek();         // 因为要后序遍历，最后才能访问根节点。
-//      stack.push(current.right);      // 右分支也压进去，先一边凉快着。
-//      current = current.left;         // 不断深入左分支
-//    }
-//    else {
-//      TreeNode backup = stack.pop();
-//    }
-
 
 
     /** 按理说任何树的问题都应该可以用遍历的四种方式之一来解决。
