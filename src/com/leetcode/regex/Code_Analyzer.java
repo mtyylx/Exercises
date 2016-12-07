@@ -23,7 +23,7 @@ import java.util.*;
 public class Code_Analyzer {
     /** 测试：用户只需要给出要扫描的根目录绝对地址，然后run()就行了。 */
     public static void main(String[] args) {
-        String root = "D:\\Yuan\\Code\\JavaWorkSpace\\Exercises\\src\\com\\leetcode";
+        String root = System.getProperty("user.dir");
         Code_Analyzer analyzer = new Code_Analyzer(root);
         analyzer.run();
     }
