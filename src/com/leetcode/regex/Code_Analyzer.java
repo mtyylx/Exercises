@@ -23,7 +23,9 @@ import java.util.*;
 public class Code_Analyzer {
     /** 测试：用户只需要给出要扫描的根目录绝对地址，然后run()就行了。 */
     public static void main(String[] args) {
-        String root = System.getProperty("user.dir");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Give me the root folder you want to scan: ");
+        String root = scanner.nextLine();
         Code_Analyzer analyzer = new Code_Analyzer(root);
         analyzer.run();
     }
@@ -31,6 +33,7 @@ public class Code_Analyzer {
     private ArrayList<Path> filePath;               // 根目录下存在的所有文件列表。
     private HashMap<Path, Statistics> fileStat;     // 以文件的Path对象为键，存储该文件内容的统计信息。
     private String root;                            // 用户提供的根目录绝对地址。
+    private int file_count = 0;                         // 扫描文件个数。
 
     /** Constructor */
     Code_Analyzer(String search_path) {
@@ -65,6 +68,7 @@ public class Code_Analyzer {
             min = Math.min(stat.total, min);
         }
         avg = total / filePath.size();
+        System.out.println("来自" + file_count + "个文件的代码统计信息：");
         System.out.println("1. 总行数：" + total + ", ");
         System.out.println("2. 代码行数：" + code + ", ");
         System.out.println("3. 注释行数：" + comments + ", ");
@@ -72,12 +76,14 @@ public class Code_Analyzer {
         System.out.println("5. 单文件最小行数：" + min + ", ");
         System.out.println("6. 文件平均行数：" + avg + ",");
         System.out.println("7. 总字符数：" + characters + ".");
+
     }
 
     /** 使用Files.readAllLines()直接读取小文件的所有内容。并同时交给parse()进行解析和统计。 */
     private void scan() {
         for (Path path : filePath) {
             try {
+                file_count++;
                 List<String> content = Files.readAllLines(path);
                 for (String line : content) {
                     parse(path, line);
