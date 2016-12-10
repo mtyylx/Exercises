@@ -19,11 +19,20 @@ package com.leetcode.dp;
  * Function Signature:
  * public int bestTimeSellStock(int[] a) {...}
  *
+ * 系列问题：
+ * E121 Best Time Sell Stock 1: 给定股票价格数组，限制交易一次，求最大利润。
+ * M122 Best Time Sell Stock 2: 给定股票价格数组，不限制交易次数，同一时间至多只能持有一笔股票，求最大利润。
+ * H123 Best Time Sell Stock 3: 给定股票价格数组，限制交易次数不大于2次，同一时间至多只能持有一笔股票，求最大利润。
+ * H188 Best Time Sell Stock 4: 给定股票价格数组，限制交易次数不大于K次，同一时间至多只能持有一笔股票，求最大利润。
+ * M309 Best Time Sell Stock 5: 给定股票价格数组，不限制交易次数，同一时间至多只能持有一笔股票，且卖出后需要隔一天才能再买入，求最大利润。
+ *
  * */
 public class E121_Best_Time_Sell_Stock {
     public static void main(String[] args) {
         int[] a = {7, 1, 5, 3, 6, 4};
+        System.out.println(bestTimeSellStock(a));
         System.out.println(bestTimeSellStock2(a));
+        System.out.println(bestTimeSellStock3(a));
     }
 
     /** DP解法, Memoization, Bottom-Up, Iterative */
@@ -49,6 +58,8 @@ public class E121_Best_Time_Sell_Stock {
     // 简化版，无需定义max这个变量
     // 因为实际上我真正需要关心的只是当前元素与min的差会不会刷新profit的值，让profit更大而已
     // 所以只需要比较profit和a[i] - min谁更大。
+    // if和else的两个分支一个确保在遇到更小元素的时候更新min，一个确保在元素不是最小的情况下更新最大利润，即Math.max(profit, a[i] - min).
+    // min一定是在a[i]位置之前得到的，因此a[i] - min一定是正值。
     static int bestTimeSellStock2(int[] a) {
         if (a == null || a.length == 0) return 0;
         int min = a[0];
