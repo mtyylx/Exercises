@@ -41,4 +41,13 @@ public class M122_Best_Time_Sell_Stock_2 {
         }
         return profit;
     }
+
+    // 更简洁的写法，推荐。
+    static int bestTimeSellStock2(int[] a) {
+        if (a == null || a.length == 0) return 0;
+        int profit = 0;
+        for (int i = 1; i < a.length; i++)
+            profit += Math.max(0, a[i] - a[i - 1]);      // 只在上升序列时累加收益。
+        return profit;
+    }
 }
