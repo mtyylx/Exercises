@@ -10,7 +10,7 @@ package com.leetcode.dp;
  * Function Signature:
  * public int bestTimeSellStock(int[] a) {...}
  *
- * 系列问题：
+ * 系列问题：（不允许同一天内进行两次操作，先买后卖和先卖后买都不可以）
  * E121 Best Time Sell Stock 1: 给定股票价格数组，限制交易一次，求最大利润。
  * M122 Best Time Sell Stock 2: 给定股票价格数组，不限制交易次数，同一时间至多只能持有一笔股票，求最大利润。
  * H123 Best Time Sell Stock 3: 给定股票价格数组，限制交易次数不大于2次，同一时间至多只能持有一笔股票，求最大利润。
