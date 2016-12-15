@@ -64,23 +64,16 @@ public class M11_Container_With_Most_Water {
         return max;
     }
 
-    // 另一种写法：记录高度最大值，只有遇到新高度才进入下一循环。
+    // 简化写法，在内循环里寻找比现在高度大的停下来。
     static int maxContainer3(int[] a) {
         int left = 0;
         int right = a.length - 1;
         int max = 0;
-        int lMax = a[left];
-        int rMax = a[right];
         while (left < right) {
-            max = Math.max(max, Math.min(a[left], a[right]) * (right - left));
-            if (a[left] < a[right]) {
-                while (left < right && a[left] < lMax) left++;
-                lMax = a[left++];
-            }
-            else {
-                while (left < right && a[right] < rMax) right--;
-                rMax = a[right--];
-            }
+            int min = Math.min(a[left], a[right]);
+            max = Math.max(max, min * (right - left));
+            while (a[left] <= min && left < right) left++;
+            while (a[right] <= min && left < right) right--;
         }
         return max;
     }
