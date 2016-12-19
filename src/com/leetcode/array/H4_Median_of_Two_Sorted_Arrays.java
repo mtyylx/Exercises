@@ -20,12 +20,18 @@ import java.util.List;
  *
  * Function Signature:
  * public double findMedianSortedArrays(int[] nums1, int[] nums2) {...}
+ *
+ * <Tags>
+ * - Binary Search
+ * - Two Pointers: Head → ... ← Tail
+ *
+ * 注:未完全消化掌握。
+ *
  */
 public class H4_Median_of_Two_Sorted_Arrays {
     public static void main(String[] args) {
         System.out.println(findMedian(new int[] {2, 3, 5, 7}, new int[] {1, 4, 6}));
         System.out.println(findMedian2(new int[] {2, 3, 5, 7}, new int[] {1, 4, 6}));
-        System.out.println(findMedian3(new int[] {2, 3, 5, 7}, new int[] {1, 4, 6}));
     }
 
     /** 解法2：Binary Search。Time - o(log(m + n)). */
@@ -55,60 +61,26 @@ public class H4_Median_of_Two_Sorted_Arrays {
     /** 关键3：将二分查找应用于确定分割位置上。 */
     // 二分查找本身逻辑很简单，难点在于将它应用在对的地方。
     // 现在我们已经知道序列长度为N的数组的分割位置有2N+1个，但是我们并不需要用线性的顺序一个一个的去尝试着2N+1个选择，而是用分而治之的方式选择。
-    static double findMedian2(int[] a, int[] b) {
-        int m = a.length;
-        int n = b.length;
-        if (m > n) return findMedian2(b, a);        // 将情况全统一成a比b短。
-
-        int left = 0;
-        int right = m;
-        int leftMax;
-        int rightMin;
-        int i = (left + right) / 2;
-        int j = (m + n + 1) / 2 - i;
-        while (left <= right) {
-            i = (left + right) / 2;
-            j = (m + n + 1) / 2 - i;
-            if (i > 0 && a[i - 1] > b[j]) right = i - 1;
-                //it means i is too large, so decrease i
-                //m <= n(we have assumed), i < m ==> j = (m+n+1)/2 - i > (m+n+1)/2 - m >= (2*m+1)/2 - m >= 0
-            else if (i < m && b[j - 1] > a[i]) left = i + 1;
-                //it means i is too smore.
-                //m <= n(we have assumed), i > 0 ==> j = (m+n+1)/2 - i < (m+n+1)/2 <= (2*n+1)/2 <= n
-            else break;
-        }
-        //find left maximum value and find right maximum value
-        if (i == 0)         leftMax = b[j-1];
-        else if (j == 0)    leftMax = a[i-1];
-        else                leftMax = Math.max(a[i - 1], b[j - 1]);
-        if ((m + n) % 2 == 1) return leftMax;
-
-        if (i == m)         rightMin = b[j];
-        else if (j == n)    rightMin = a[i];
-        else                rightMin = Math.min(a[i],b[j]);
-
-        return ((double)leftMax + rightMin) / 2;        // Avoid Overflow
-    }
-
     // 简化解法
-    static double findMedian3(int[] a, int[] b) {
-        int N1 = a.length;
-        int N2 = b.length;
-        if (N1 < N2) return findMedian3(b, a);	// Make sure b is the shorter one.
+    static double findMedian2(int[] a, int[] b) {
+        int lenA = a.length;
+        int lenB = b.length;
+        if (lenA < lenB) return findMedian2(b, a);	// Make sure b is the shorter one.
 
-        int lo = 0, hi = N2 * 2;
+        int lo = 0, hi = lenB * 2;
         while (lo <= hi) {
-            int mid2 = (lo + hi) / 2;   // Try Cut 2
-            int mid1 = N1 + N2 - mid2;  // Calculate Cut 1 accordingly
+            int midB = (lo + hi) / 2;       // 数组B的初始中点是b[lenB]，每个元素间都算一个位置，有(2 * lenB + 1)个位置，其中点就是lenB
+            int midA = lenA + lenB - midB;  // 数组A的初始中点是a[lenA]，与上面同理。
+            // leftA和rightA代表数组a当前选择的分割点左右的元素指针。leftB和rightB则表示对数组b的分割点左右元素。
+            // 根据上面分析得到的特性，leftA和leftB分别代表了分割后左侧部分的最大值，rightA和rightB则代表分割后右侧部分的最大值。
+            double leftA = (midA == 0) ?      Integer.MIN_VALUE : a[(midA - 1) / 2];
+            double leftB = (midB == 0) ?      Integer.MIN_VALUE : b[(midB - 1) / 2];
+            double rightA = (midA == lenA * 2) ? Integer.MAX_VALUE : a[midA / 2];
+            double rightB = (midB == lenB * 2) ? Integer.MAX_VALUE : b[midB / 2];
 
-            double L1 = (mid1 == 0) ?      Integer.MIN_VALUE : a[(mid1 - 1) / 2];
-            double L2 = (mid2 == 0) ?      Integer.MIN_VALUE : b[(mid2 - 1) / 2];
-            double R1 = (mid1 == N1 * 2) ? Integer.MAX_VALUE : a[mid1 / 2];
-            double R2 = (mid2 == N2 * 2) ? Integer.MAX_VALUE : b[mid2 / 2];
-
-            if (L1 > R2)        lo = mid2 + 1;		// A1's lower half is too big; need to move C1 left (C2 right)
-            else if (L2 > R1)   hi = mid2 - 1;	    // A2's lower half too big; need to move C2 left.
-            else return (Math.max(L1, L2) + Math.min(R1, R2)) / 2;	// Otherwise, that's the right cut.
+            if (leftA > rightB)        lo = midB + 1;		// 在右侧部分继续分割
+            else if (leftB > rightA)   hi = midB - 1;	    // 在左侧部分继续分割
+            else return (Math.max(leftA, leftB) + Math.min(rightA, rightB)) / 2;
         }
         return -1;
     }
