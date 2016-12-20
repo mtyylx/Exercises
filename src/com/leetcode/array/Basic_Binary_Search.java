@@ -9,7 +9,7 @@ package com.leetcode.array;
  * Function Signature:
  * public int binarySearch(int[] a, int target) {...}
  *
- * Tags:
+ * <Tags>
  * - Binary Search
  * - Two Pointers: [left → → → ... ← ← ← right]
  *

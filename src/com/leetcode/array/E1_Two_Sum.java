@@ -19,22 +19,26 @@ import java.util.List;
  * public int[] twoSum(int[] a, int target) {...}
  *
  * <K-Sum系列问题>
- * E1  - Two Sum
- * M15 - Three Sum
- * M18 - Four Sum
- * M167 - Two Sum Sorted
- * E170 - Two Sum Data Structure
+ *    E1 2-Sum: 给定一个整型数组和一个目标值，返回相加等于目标值的两个元素的索引。（只有一个解）
+ *   M15 3-Sum:
+ *   M18 4-Sum:
+ *  M167 2-Sum Sorted:
+ *  E170 2-Sum Data Structure:
+ *
+ * <Tags>
+ * - HashMap
+ * - Sort + Two Pointers: [left → → → ... ← ← ← right]
  *
  */
 public class E1_Two_Sum {
     public static void main(String[] args) {
         int[] a = new int[] {0, 1, 2, 7, 10};
-        int[] result = twoSum2(a, 9);
-        System.out.println(Arrays.toString(result));
+        System.out.println(Arrays.toString(twoSum(a, 9)));
+        System.out.println(Arrays.toString(twoSum2(a, 9)));
         List<List<Integer>> results = twoSum3(new int[] {1, 2, 2, 3, 4, 5, 6, 6, 7}, 8);
     }
 
-    // 哈希表解法，o(n)
+    /** 哈希表解法，Time - o(n) */
     // 关键在于给键和值赋予什么含义：键存储补值（target - value），值存储索引。
     static int[] twoSum(int[] a, int target) {
         HashMap<Integer, Integer> map = new HashMap<>();
@@ -45,7 +49,7 @@ public class E1_Two_Sum {
         return new int[] {-1};
     }
 
-    // 双指针解法，排序需要o(nlogn)，但是寻找两个值本身的操作依然是o(n)。
+    /** 排序 + 双指针解法。排序时间复杂度为 o(nlogn)，但是寻找两个值本身的操作依然是o(n)。 */
     // 利用了已排序数组的性质。
     static int[] twoSum2(int[] a, int target) {
         Arrays.sort(a);
@@ -60,7 +64,8 @@ public class E1_Two_Sum {
         return new int[] {};
     }
 
-    // 进一步扩展，使用双指针处理解不为一的情况，同时避免重复解的记录。
+    /** 当前问题的发散，使得算法可以处理多种组合解的情况。 */
+    // 使用双指针处理解不为一的情况，同时避免重复解的记录。
     // 修改接口，并且直接记录元素值本身。
     static List<List<Integer>> twoSum3(int[] a, int target) {
         Arrays.sort(a);
@@ -69,15 +74,15 @@ public class E1_Two_Sum {
         int right = a.length - 1;
         while (left < right) {
             int sum = a[left] + a[right];
-            if (sum < target) left++;
+            if      (sum < target) left++;
             else if (sum > target) right--;
             else {
-                List<Integer> set = Arrays.asList(a[left], a[right]);
+                List<Integer> set = new ArrayList<>(Arrays.asList(a[left], a[right]));
                 result.add(set);
                 left++;
                 right--;
-                while (left < right && a[left] == a[left - 1]) left++;
-                while (left < right && a[right] == a[right + 1]) right--;
+                while (left < right && a[left] == a[left - 1]) left++;      // Skip duplicate
+                while (left < right && a[right] == a[right + 1]) right--;   // Skip duplicate
             }
         }
         return result;
