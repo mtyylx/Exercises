@@ -15,8 +15,19 @@ import java.util.*;
  *  [-1, -1, 2]
  * ]
  *
- * Funtion Signature:
+ * Function Signature:
  * public List<List<Integer>> threeSum(int[] a) {...}
+ *
+ * <K-Sum系列问题>
+ *    E1 2-Sum: 给定一个整型数组a和目标值k，求解相加等于k的两个元素的索引。（有且仅有一个解）
+ *   M15 3-Sum: 给定一个整形数组a和目标值0，求解所有相加等于0的三元组，不可重复。（解个数随机）
+ *   M18 4-Sum:
+ *  M167 2-Sum Sorted:
+ *  E170 2-Sum Data Structure:
+ *
+ * <Tags>
+ * - Sort + Two Pointers: [left → → → ... ← ← ← right]
+ *
  */
 public class M15_Three_Sum {
     public static void main(String[] args) {
@@ -26,35 +37,33 @@ public class M15_Three_Sum {
         System.out.println(result2.size());
     }
 
-    /** 思路：先排序后解决问题。因为常规解法需要o(n^4)，已经远远高过排序本身的复杂度o(nlogn)
+    /** 最佳解法：Sort + Two Pointers
+     *  标准的 “先排序后解决问题”。因为常规解法需要o(n^4)，已经远远高过排序本身的复杂度o(nlogn)
      *  因此有必要先排序，再使用排序所带了的很好的性质，使得最后整体复杂度降为了o(n^2)。爽爽的。
-     *  同时需要将2Sum的解法扩展到这里。
-     *  外循环遍历第三个值，从头扫描至倒数第三个元素
-     *  将第三个值取反，作为2Sum的Target。
-     *  内循环则用双指针扫描，从而实现在o(n)复杂度下达到既不丢解，也不重复记录解。
+     *  将2Sum的解法扩展到这里。外循环遍历第一个值，扫描范围是0到倒数第三个元素（给后面两个元素留位置）
+     *  内循环的target就是(0 - 第一个值)
+     *  内循环用双指针扫描，从而实现在o(n)复杂度下达到既不丢解，也不重复记录解。
      */
     // 已排序数组的特性1：任意两个元素之和依旧已排序。可以根据这个左右移动首尾指针，记录所有独特解。
-    // 已排序数组的特性2：任何相等的元素都一定会在一起，因此可以直接跳过。根据这个性质避免记录重复解。
+    // 已排序数组的特性2：任何相等的元素都一定会相邻，因此可以直接跳过。根据这个性质避免记录重复解。
+    // 为了进一步避免重复解，在从左向右遍历三元组第一成员的时候，应该限制第二和第三成员的搜索范围在第一成员的<右侧>。
     // 简化代码：使用Arrays.asList()直接生成一个填满元素的List对象。而不用使用add()语句好几次。
     static List<List<Integer>> threeSum2(int[] a) {
         List<List<Integer>> result = new ArrayList<>();
-        if (a.length < 3) return result;
         Arrays.sort(a);
-        for (int i = 0; i < a.length - 2; i++) {
-            if (i > 0 && a[i] == a[i - 1]) continue;        // Avoid Duplicate
-            int target = - a[i];
+        for (int i = 0; i < a.length - 2; i++) {            // 循环至右侧不够两个元素
+            if (i > 0 && a[i] == a[i - 1]) continue;        // 跳过重复元素：三元组第一个成员
             int left = i + 1;
             int right = a.length - 1;
+            int target = 0 - a[i];
             while (left < right) {
-                int sum = a[left] + a[right];
-                if      (sum > target) right--;
-                else if (sum < target) left++;
+                if      (a[left] + a[right] > target) right--;
+                else if (a[left] + a[right] < target) left++;
                 else {
-                    result.add(Arrays.asList(- target, a[left], a[right]));
-                    left++;
-                    right--;
-                    while (left < right && a[left] == a[left - 1]) left++;      // Avoid Duplicate
-                    while (left < right && a[right] == a[right + 1]) right--;   // Avoid Duplicate
+                    result.add(new ArrayList<>(Arrays.asList(a[i], a[left], a[right])));
+                    left++; right--;                                            // 内循环用的是while，因此必须手动移动两个指针，否则会死循环
+                    while (left < right && a[left] == a[left - 1]) left++;      // 跳过重复元素：三元组第二个成员
+                    while (left < right && a[right] == a[right + 1]) right--;   // 跳过重复元素：三元组第三个成员
                 }
             }
         }
@@ -101,7 +110,7 @@ public class M15_Three_Sum {
     }
 
 
-    // 穷举法, time - o(n^4)
+    /** 穷举法, time - o(n^4) */
     // 遍历三个元素就用了三个for循环，
     // 同时还需要检查待插入结果是否已经重复，这又是一个for循环，所以整体时间复杂度是o(n^4)
     static List<List<Integer>> threeSum(int[] a) {
