@@ -6,8 +6,7 @@ import java.util.List;
 
 /**
  * Created by Michael on 2016/10/24.
- * Given an array S of n integers, are there elements a, b, c,
- * and d in S such that a + b + c + d = target?
+ * Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target?
  * Find all unique quadruplets in the array which gives the sum of target.
  * The solution set must not contain duplicate quadruplets.
  *
@@ -22,36 +21,44 @@ import java.util.List;
  * Function Signature:
  * public List<List<Integer>> fourSum(int[] a, int target) {...}
  *
+ * <K-Sum系列问题>
+ *    E1 2-Sum: 给定一个整型数组a和目标值k，求解相加等于k的两个元素的索引。（有且仅有一个解）
+ *   M15 3-Sum: 给定一个整型数组a和目标值0，求解所有相加等于0的三元组，不可重复。（解个数随机）
+ *   M18 4-Sum: 给定一个整型数组a和目标值k，求解所有相加等于0的四元组，不可重复。（解个数随机）
+ *  M167 2-Sum Sorted:
+ *  E170 2-Sum Data Structure:
+ *
+ * <Tags>
+ * - Sort + Two Pointers: [left → → → ... ← ← ← right]
+ * - Backtracking
+ *
  */
 public class M18_Four_Sum {
     public static void main(String[] args) {
-        List<List<Integer>> result = fourSum(new int[] {0, 0, 0, 0}, 0);
-        List<List<Integer>> ksum = kSum(new int[] {-1,0,1,2,-1,-4}, 4, 0);
+        List<List<Integer>> result = fourSum(new int[] {-1, 0, 1, 2, -1, -4}, 0);
+        List<List<Integer>> ksum = kSum(new int[] {-1, 0, 1, 2, -1, -4}, 4, 0);
     }
 
-    /** 2Sum扩展版 */
-    // 4Sum用for循环i降至3Sum，3Sum用for循环j降至2Sum，2Sum用left和right得到答案。
+    /** 解法1：Sort + Two Pointers，迭代写法。Time - o(n^3) */
+    // 2Sum扩展版：4Sum用for循环i降至3Sum，3Sum用for循环j降至2Sum，2Sum用left和right得到答案。
     static List<List<Integer>> fourSum(int[] a, int target) {
         List<List<Integer>> result = new ArrayList<>();
-        if (a == null || a.length < 4) return result;
         Arrays.sort(a);
-        for (int i = 0; i < a.length - 3; i++) {                // 遍历扫描指针i，固定第一个值
-            if (i > 0 && a[i] == a[i - 1]) continue;
-            for (int j = i + 1; j < a.length - 2; j++) {        // 遍历扫描指针j，固定第二个值
-                if (j > i + 1 && a[j] == a[j - 1]) continue;
-                int realtarget = target - a[i] - a[j];
-                int left = j + 1;
+        for (int i = 0; i < a.length - 3; i++) {                // 指针i：固定第一成员
+            if (i > 0 && a[i] == a[i - 1]) continue;            // 跳过重复
+            for (int j = i + 1; j < a.length - 2; j++) {        // 指针j：固定第二成员
+                if (j > i + 1 && a[j] == a[j - 1]) continue;    // 跳过重复
+                int left = j + 1;                               // 双指针固定第三和第四个成员
                 int right = a.length - 1;
-                while (left < right) {                          // 剩下的两个值用2Sum的双指针解法即可o(n)搞定。
-                    int sum = a[left] + a[right];
-                    if (sum < realtarget) left++;
-                    else if (sum > realtarget) right--;
+                int k = target - a[i] - a[j];
+                while (left < right) {
+                    if      (a[left] + a[right] < k) left++;
+                    else if (a[left] + a[right] > k) right--;
                     else {
-                        result.add(Arrays.asList(a[i], a[j], a[left], a[right]));
-                        left++;
-                        right--;
-                        while (left < right && a[left] == a[left - 1]) left++;
-                        while (left < right && a[right] == a[right + 1]) right--;
+                        result.add(new ArrayList<>(Arrays.asList(a[i], a[j], a[left], a[right])));
+                        left++; right--;                                              // while循环手动移动指针
+                        while (left < right && a[left] == a[left - 1]) left++;        // 跳过重复
+                        while (left < right && a[right] == a[right + 1]) right--;     // 跳过重复
                     }
                 }
             }
@@ -59,7 +66,44 @@ public class M18_Four_Sum {
         return result;
     }
 
-    /** K-Sum 通用解法，递归形式 */
+    /** 问题发散：推广至<K-Sum>情况下，该如何去解决？ */
+
+    /** 解法1：Backtracking + Two Pointers, 递归写法。Time - o(n^(k-1)). */
+    //递归方法的签名设计：传递当前搜索起点start，传递当前剩余成员个数k，传递解集，传递当前路径（以便随时回退）
+    static List<List<Integer>> kSum2(int[] a, int target, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(a);
+        if (k <= a.length) kSum_Recursive(a, target, 0, k, result, new ArrayList<>());
+        return result;
+    }
+
+    static void kSum_Recursive(int[] a, int target, int start, int k, List<List<Integer>> result, List<Integer> path) {
+        if (k == 2) {                                                   // Two-Sum情况
+            int left = start;
+            int right = a.length - 1;
+            while (left < right) {
+                if      (a[left] + a[right] > target) right--;
+                else if (a[left] + a[right] < target) left++;
+                else {
+                    result.add(new ArrayList<>(path));                                      // 拷贝新path
+                    result.get(result.size() - 1).addAll(Arrays.asList(a[left], a[right])); // 直接对副本path添加最后两个成员
+                    left++; right--;
+                    while (left < right && a[left] == a[left - 1]) left++;
+                    while (left < right && a[right] == a[right + 1]) right--;
+                }
+            }
+        }
+        else {                                                          // k-Sum情况
+            for (int i = start; i < a.length - k + 1; i++) {            // i的搜索区间应该从start至a.length减去剩下k-1个元素个数
+                if (i > start && a[i] == a[i - 1]) continue;
+                path.add(a[i]);
+                kSum_Recursive(a, target - a[i], i + 1, k - 1, result, path);
+                path.remove(path.size() - 1);                      // backtracking的典型回退方式
+            }
+        }
+    }
+
+    /** 解法2：同样是递归写法，只不过是在每次递归结束时把返回的解集全添加上当前成员，思路稍显复杂。 */
     // 通过前面的2Sum,3Sum,4Sum，我们已经可以感受到推广到K-Sum是什么形式。
     // 本质上，只要K超过了2，就只能使用完全遍历，所以解决K-Sum问题，就是将K-Sum转化为2Sum再用2Sum的双指针解法解决的过程。
     // 2Sum的时间复杂度为o(n), 3Sum的时间复杂度为o(n^2)，4Sum的时间复杂度为o(n^3)，因此K-Sum的时间复杂度就是o(n^(k-1)).
