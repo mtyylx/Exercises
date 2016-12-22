@@ -20,6 +20,7 @@ import java.util.Arrays;
  *  M167 2-Sum Sorted:
  *  E170 2-Sum Data Structure:
  *   M16 3-Sum Closest: 给定一个整型数组a和目标值k，求解距离k最近的一个三元组之和。（有且仅有一个解）
+ *  M259 3-Sum Smaller: 给定一个整型数组a和目标值k，求解和小于target的三元组个数，可以重复。
  *
  * <Tags>
  * - Sort + Two Pointers: [left → → → ... ← ← ← right]
