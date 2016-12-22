@@ -36,13 +36,17 @@ import java.util.List;
 public class M18_Four_Sum {
     public static void main(String[] args) {
         List<List<Integer>> result = fourSum(new int[] {-1, 0, 1, 2, -1, -4}, 0);
-        List<List<Integer>> ksum = kSum(new int[] {-1, 0, 1, 2, -1, -4}, 4, 0);
+        List<List<Integer>> result2 = fourSum2(new int[] {-1, 0, 1, 2, -1, -4}, 0);
+        List<List<Integer>> result3 = kSum(new int[] {-1, 0, 1, 2, -1, -4}, 0, 4);
+        List<List<Integer>> result4 = kSum2(new int[] {-1, 0, 1, 2, -1, -4}, 0, 4);
+        List<List<Integer>> result5 = kSum_Trim(new int[] {-1, 0, 1, 2, -1, -4}, 0, 4);
     }
 
     /** 解法1：Sort + Two Pointers，迭代写法。Time - o(n^3) */
     // 2Sum扩展版：4Sum用for循环i降至3Sum，3Sum用for循环j降至2Sum，2Sum用left和right得到答案。
     static List<List<Integer>> fourSum(int[] a, int target) {
         List<List<Integer>> result = new ArrayList<>();
+        if (a == null || a.length < 4) return result;
         Arrays.sort(a);
         for (int i = 0; i < a.length - 3; i++) {                // 指针i：固定第一成员
             if (i > 0 && a[i] == a[i - 1]) continue;            // 跳过重复
@@ -66,14 +70,76 @@ public class M18_Four_Sum {
         return result;
     }
 
+    /** 解法2：<Sort + 剪枝法>。虽然代码更长，但是运行速度超过了解法1，因为节省了很多无用功。通用的递归解法见后面。 */
+    // 剪枝0：如果当前元素等于左侧相邻元素，则应该跳过当前元素扫描。（解法1只用了这一种剪枝策略）
+    // 剪枝1：如果数组最大元素的4倍都比target小，则一定无解。
+    // 剪枝2：如果数组最小元素的4倍都比target大，则一定无解。
+    // 剪枝3：如果当前元素加数组最大元素的3倍都比target小，则当前元素做为四元组第一成员一定无解。
+    // 剪枝4：如果当前元素的4倍都比target大，则当前元素及其之后的所有元素做为四元组第一成员一定无解。
+    // 剪枝5：如果当前元素的4倍等于target，且当前元素向右3个位置的元素都等于当前元素，则找到一个解，否则无解。
+    static List<List<Integer>> fourSum2(int[] a, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (a == null || a.length < 4) return result;
+        Arrays.sort(a);
+        int max = a[a.length - 1];
+        if (a[0] * 4 > target || max * 4 < target) return result;   // 剪枝1 + 剪枝2
+        for (int i = 0; i < a.length - 3; i++) {
+            if (i > 0 && a[i] == a[i - 1]) continue;                // 剪枝0
+            if (a[i] + max * 3 < target) continue;                  // 剪枝3
+            if (a[i] * 4 > target) break;                           // 剪枝4
+            if (a[i] * 4 == target) {
+                if (a[i + 3] == a[i]) result.add(new ArrayList<>(Arrays.asList(a[i], a[i], a[i], a[i])));
+                break;                                              // 剪枝5
+            }
+            threeSum(a, target - a[i], a[i], i + 1, result);
+        }
+        return result;
+    }
+
+    static void threeSum(int[] a, int target, int e1, int start, List<List<Integer>> result) {
+        int max = a[a.length - 1];
+        if (a[start] * 3 > target || max * 3 < target) return;
+        for (int i = start; i < a.length - 2; i++) {
+            if (i > start && a[i] == a[i - 1]) continue;
+            if (a[i] + max * 2 < target) continue;
+            if (a[i] * 3 > target) break;
+            if (a[i] * 3 == target) {
+                if (a[i + 2] == a[i]) result.add(new ArrayList<>(Arrays.asList(e1, a[i], a[i], a[i])));
+                break;
+            }
+            twoSum(a, target - a[i], e1, a[i], i + 1, result);
+        }
+    }
+
+    static void twoSum(int[] a, int target, int e1, int e2, int start, List<List<Integer>> result) {
+        int max = a[a.length - 1];
+        if (a[start] * 2 > target || max * 2 < target) return;
+        int left = start;
+        int right = a.length - 1;
+        while (left < right) {
+            if      (a[left] + a[right] < target) left++;
+            else if (a[left] + a[right] > target) right--;
+            else {
+                result.add(new ArrayList<>(Arrays.asList(e1, e2, a[left], a[right])));
+                left++;
+                right--;
+                while (left < right && a[left] == a[left - 1]) left++;
+                while (left < right && a[right] == a[right + 1]) right--;
+            }
+        }
+    }
+
+
     /** 问题发散：推广至<K-Sum>情况下，该如何去解决？ */
 
-    /** 解法1：Backtracking + Two Pointers, 递归写法。Time - o(n^(k-1)). */
-    //递归方法的签名设计：传递当前搜索起点start，传递当前剩余成员个数k，传递解集，传递当前路径（以便随时回退）
+    /** 解法1：<Backtracking + Two Pointers>, 递归写法。Time - o(n^(k-1)). */
+    // 递归方法的签名设计：传递当前搜索起点start，传递当前剩余成员个数k，传递解集，传递当前路径（以便随时回退）
+    // 需要考虑k的边界情况：k超过数组长度则一定无解，k为0也无解，k为1则问题退化为判断数组中是否有target元素的问题，也不考虑。
     static List<List<Integer>> kSum2(int[] a, int target, int k) {
         List<List<Integer>> result = new ArrayList<>();
+        if (a == null || k > a.length || k < 2) return result;
         Arrays.sort(a);
-        if (k <= a.length) kSum_Recursive(a, target, 0, k, result, new ArrayList<>());
+        kSum_Recursive(a, target, 0, k, result, new ArrayList<>());
         return result;
     }
 
@@ -103,7 +169,59 @@ public class M18_Four_Sum {
         }
     }
 
-    /** 解法2：同样是递归写法，只不过是在每次递归结束时把返回的解集全添加上当前成员，思路稍显复杂。 */
+    /** 解法2：基于上面解法2的 K Sum推广。<Sort + 剪枝>，递归写法。
+     *  绝对是我最近的登峰造极之作！！！灭哈哈哈哈哈！！！
+     *  */
+    // 传递List<Integer> path而不是单独元素。
+    static List<List<Integer>> kSum_Trim(int[] a, int target, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (a == null || a.length < k || k < 2) return result;
+        Arrays.sort(a);
+        kSum_Trim(a, target, k, 0, result, new ArrayList<>());
+        return result;
+    }
+
+    static void kSum_Trim(int[] a, int target, int k, int start, List<List<Integer>> result, List<Integer> path) {
+        int max = a[a.length - 1];
+        if (a[start] * k > target || max * k < target) return;                              // 剪枝1 + 剪枝2
+        if (k == 2) {
+            int left = start;
+            int right = a.length - 1;
+            while (left < right) {
+                if      (a[left] + a[right] < target) left++;
+                else if (a[left] + a[right] > target) right--;
+                else {
+                    result.add(new ArrayList<>(path));
+                    result.get(result.size() - 1).addAll(Arrays.asList(a[left], a[right]));
+                    left++; right--;
+                    while (left < right && a[left] == a[left - 1]) left++;
+                    while (left < right && a[right] == a[right + 1]) right--;
+                }
+            }
+        }
+        else {
+            for (int i = start; i < a.length - k + 1; i++) {
+                if (i > start && a[i] == a[i - 1]) continue;                                // 剪枝0
+                if (a[i] + max * (k - 1) < target) continue;                                // 剪枝3
+                if (a[i] * k > target) break;                                               // 剪枝4
+                if (a[i] * k == target) {                                                   // 剪枝5
+                    if (a[i + k - 1] == a[i]) {
+                        result.add(new ArrayList<>(path));
+                        List<Integer> temp = new ArrayList<>();
+                        for (int x = 0; x < k; x++) temp.add(a[i]);
+                        result.get(result.size() - 1).addAll(temp);
+                    }
+                    break;
+                }
+                path.add(a[i]);
+                kSum_Trim(a, target - a[i], k - 1, i + 1, result, path);
+                path.remove(path.size() - 1);                                         // Backtracking方式
+            }
+        }
+    }
+
+
+    /** 早期解法：同样是递归写法，只不过是在每次递归结束时把返回的解集全添加上当前成员，思路稍显复杂。 */
     // 通过前面的2Sum,3Sum,4Sum，我们已经可以感受到推广到K-Sum是什么形式。
     // 本质上，只要K超过了2，就只能使用完全遍历，所以解决K-Sum问题，就是将K-Sum转化为2Sum再用2Sum的双指针解法解决的过程。
     // 2Sum的时间复杂度为o(n), 3Sum的时间复杂度为o(n^2)，4Sum的时间复杂度为o(n^3)，因此K-Sum的时间复杂度就是o(n^(k-1)).
@@ -127,7 +245,7 @@ public class M18_Four_Sum {
     // 因此，一旦不注意在这个假list上使用add,remove这类数组并不支持的操作就会报错。
     // 所以，珍爱生命，用new ArrayList<>(Arrays.asList())而不是Arrays.asList()
     // 前者是货真价实的list，后者只会让你不知道怎么死的。
-    static List<List<Integer>> kSum(int[] a, int k, int target) {
+    static List<List<Integer>> kSum(int[] a, int target, int k) {
         List<List<Integer>> result = new ArrayList<>();
         if (a == null || a.length < k) return result;
         Arrays.sort(a);
