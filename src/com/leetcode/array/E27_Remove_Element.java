@@ -15,22 +15,37 @@ import java.util.Arrays;
  * Hint:
  * Try two pointers.
  * Did you use the property of "the order of elements CAN BE changed"?
- * What happens when the elements to remove are rare?
+ * What happens when the elements     to remove are rare? 解法3更好：只交换目标元素。
+ * What happens when the elements NOT to remove are rare? 解法2更好：只交换非目标元素。
+ * What happens when the order need to remain the same?   解法1,2更好：可确保顺序不变。
  *
  * Solution Signature:
  * public int removeElement(int[] nums, int val) {...}
  *
+ * <Tags>
+ * - Two Pointers: [slow → ... fast → → → ... ]
+ * - Two Pointers: [ ... ← ← ← fast ... ← slow ]
+ *
  */
 public class E27_Remove_Element {
     public static void main(String[] args) {
-        int[] a = {1, 2, 2, 3, 3};
-        System.out.println("The New Length is " + removeElement3(a, 2));
+        int[] a = {2, 3, 1, 4, 2, 7, 2};
+        System.out.println("The New Length is " + removeElement3(a, 3));
         System.out.println(Arrays.toString(a));
+        int[] b = {2, 3, 1, 4, 2, 7, 2};
+        System.out.println("The New Length is " + removeElement2(b, 3));
+        System.out.println(Arrays.toString(b));
+        int[] c = {2, 3, 1, 4, 2, 7, 2};
+        System.out.println("The New Length is " + removeElement(c, 3));
+        System.out.println(Arrays.toString(c));
     }
 
-    /** 解法3：双指针同向扫描，逆序扫描，结果乱序。Time - o(n), Space - o(1). */
-    // 逆序扫描解法：o(n) 优势是如果要删的元素少，则运算量也小，覆盖次数等效于要删除的元素个数。
-    // 发现要删除的元素后，将该元素用数组最后一个元素覆盖，并缩小数组长度。这样可以确保缩小数组长度的同时用有用元素替换无用元素。
+    /** 解法3：双指针同向扫描（快慢指针），逆序扫描，不维持原有排列顺序。Time - o(n), Space - o(1). */
+    // [ ... ← ← ← fast ... ← slow ]
+    // 利用结果无需保持原有排列顺序的特点，使用<一次交换>而不是<多次平移>来删除目标元素。
+    // 交换（覆盖）次数等于要删除的元素个数。因此适合于目标值零星出现在数组中的情况。
+    // 发现要删除的元素后，将该元素用有效长度数组最后一个元素覆盖，并缩小数组长度。
+    // len = slow, i = fast
     static int removeElement3(int[] a, int target) {
         if (a == null || a.length == 0) return 0;
         int len = a.length;
@@ -41,38 +56,34 @@ public class E27_Remove_Element {
     }
 
 
-    // 双指针解法：o(n)
-    // 注意这道题里告诉你：The order of elements can be changed. It doesn't matter what you leave beyond the new length
-    static int removeElement2(int[] nums, int val) {
-        if (nums == null || nums.length == 0) return 0;
-        int i = 0;
-        // 如果当前元素不是要删除的元素，那么i和j都自增，而且是j覆盖i元素
-        // 如果当前元素需要被删除，那么只有j自增，这样可以确保j走的快，i走的慢，i只有在处于不需要删除的元素时才会向前走。
-        // i就等于留下来的数组长度
-        for (int j = 0; j < nums.length; j++) {
-            if (nums[j] != val) {
-                nums[i] = nums[j];
-                i++;
-            }
+    /** 解法2：双指针同向扫描（快慢指针），正序扫描，可以维持原有排列顺序。Time - o(n), Space - o(1) */
+    // [slow → ... fast → → → ... ]
+    // 同样使用<一次交换>而不是<多次平移>来删除目标元素，相比于解法3，可以确保不改变原来的排列顺序。
+    // 此法的交换（覆盖）次数等于无需被删除的元素的个数。适合处理目标值在数组中出现次数远多于其他值的情况。
+    // slow指示数组未扫描区域的起始点，如果fast不需要删除，就用fast所指元素覆盖该起始点，并向前移动。如果fast需要删除，则只移动fast。
+    static int removeElement2(int[] a, int target) {
+        if (a == null || a.length == 0) return 0;
+        int slow = 0;
+        for (int fast = 0; fast < a.length; fast++) {
+            if (a[fast] != target) a[slow++] = a[fast];
         }
-        return i;
+        return slow;
     }
 
-    // 依次平移解法：o(n^2) 优势是可以确保没删除的元素相对位置不变。
-    // 要想清楚的是虽然不可能做到不创建新数组而删除数组元素，但是可以通过改变元素顺序，再把想要去掉的元素放在最后，再给出新长度就可以
-    // it is impossible to remove an element from the array without making a copy of the array.
-    // Remove given val in-place and return the new length.
-    static int removeElement(int[] nums, int val) {
-        if (nums == null || nums.length == 0) return 0;
-        int new_length = nums.length;
-        for (int i = nums.length -  1; i >= 0; i--) {
-            if (nums[i] == val) {
-                for (int j = i; j < new_length - 1; j++) {
-                    nums[j] = nums[j + 1];
-                }
-                new_length--;
+
+    /** 解法1：双指针依次平移解法，类似于插入排序的思路，逆序扫描。可以保持原有排列顺序不变。Time - o(n^2), Space - o(1) */
+    // [ ... ← ← ← fast ... ← slow ]
+    // len = slow, i = fast
+    // 如果当前元素就是目标元素，即a[i] == target，则依次将第(i + 1)个元素至第len - 1个元素拷贝至前一个元素。
+    static int removeElement(int[] a, int target) {
+        if (a == null || a.length == 0) return 0;
+        int len = a.length;
+        for (int i = a.length - 1; i >= 0; i--) {
+            if (a[i] == target) {
+                len--;
+                for (int j = i; j < len; j++) a[j] = a[j + 1];      // 依次平移
             }
         }
-        return new_length;
+        return len;
     }
 }
