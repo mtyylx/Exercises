@@ -14,6 +14,10 @@ import java.util.Map;
  * Functions Signature:
  * public int majorityElement(int[] a){...}
  *
+ * <系列问题>
+ * E169 Majority Element : 给定一个数组，确定存在一个出现次数超过 n / 2 的元素，找到这个元素。
+ * M229 Majority Element2: 给定一个数组，不确定存在出现次数超过 n / 3 的元素，找到所有元素。（可能的元素个数：0, 1, 2）
+ *
  * <Tags>
  * - Moore Voting Algorithm: Find majority.
  * - HashMap: Collect Frequency Statistics
