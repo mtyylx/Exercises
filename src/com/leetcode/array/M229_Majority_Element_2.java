@@ -33,6 +33,16 @@ public class M229_Majority_Element_2 {
     /** 解法2：升级版的Moore Voting。Time - o(n), Space - o(1) */
     // 首先用扩展版的投票法，获得出现频率最高的两个值。
     // 然后再扫描一次，确定两个值出现次数都超过了n / 3。
+    // [1 2 3 2 1]
+    // x   m1 c1 m2 c2
+    // 1   1  1  1  0
+    // 2   1  1  2  1
+    // 3   1  0  2  0
+    // 2   1  0  2  1
+    // 1   1  1  2  1
+    // 关键在于两个counter快要触底时该如何操作
+    // 只有在两个counter都不为0时，才全都自减
+    // 如果有一个为零，那么就更换这个counter对应的major值，并且把counter从死亡线（0）拉上来，避免越界。
     static List<Integer> majorityElement2(int[] a) {
         List<Integer> result = new ArrayList<>(2);
         if (a == null || a.length == 0) return result;
@@ -68,9 +78,9 @@ public class M229_Majority_Element_2 {
         Set<Integer> set = new HashSet<>(2);
         Map<Integer, Integer> map = new HashMap<>(a.length);
         for (int x : a) {
-            if      (map.containsKey(x)) map.put(x, map.get(x) + 1);
-            else    map.put(x, 1);
-            if      (map.get(x) > limits) set.add(x);
+            if   (map.containsKey(x)) map.put(x, map.get(x) + 1);
+            else map.put(x, 1);
+            if   (map.get(x) > limits) set.add(x);
         }
         return new ArrayList<>(set);
     }
