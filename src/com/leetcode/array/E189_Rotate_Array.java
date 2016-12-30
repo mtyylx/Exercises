@@ -17,9 +17,14 @@ import java.util.Arrays;
  * Function Signature:
  * public void rotateArray(int[] a, int k) {...}
  *
+ * <系列问题>
+ * E189 Rotate Array    : 给定一个数组，和偏移值k，求数组向右平移k次的结果。
+ * M151 Reverse Words 1 : 给定一个字符串，按单词顺序翻转整个字符数组。字符串可能含有首部或尾部空格，单词之间可能有多个空格。（非原位）
+ * M186 Reverse Words 2 : 给定一个字符数组，按单词顺序翻转整个字符数组。字符数组不含首部或尾部空格，单词之间只有一个空格。（原位）
+ *
  * <Tags>
  * - Divide & Conquer
- * - Reverse: Two Pointers
+ * - Multiple Reverse: Two Pointers
  * - Shifting by swapping
  *
  */
