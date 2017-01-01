@@ -14,7 +14,10 @@ package com.leetcode.array;
  * Function Signature:
  * public int shortestWordDistance(String[] list, String a, String b) {...}
  *
- * 可以扩展为任意类型的数组，给定数组中的两个元素，求他们的最近距离。
+ * <系列问题>
+ * E243 Shortest Word Distance 1: 给定一个字符串数组，以及两个不重复的字符串，求数组中两个字符串的最短距离。
+ * M244 Shortest Word Distance 2: 与E243的要求一样，但会反复调用这个方法。
+ * M245 Shortest Word Distance 3: 给定一个字符串数组，以及两个可能重复的字符串，求数组中这两个字符串的最短距离。
  *
  * <Tags>
  * - Two Pointers: i → → → ... j → → →
@@ -23,7 +26,7 @@ package com.leetcode.array;
  */
 public class E243_Shortest_Word_Distance {
     public static void main(String[] args) {
-        System.out.println(wordDistance(new String[] {"a", "b", "c", "a"}, "a", "c"));
+        System.out.println(wordDistance(new String[] {"a", "b", "c", "a"}, "a", ""));
     }
 
     /** 解法1：双指针同向扫描，一个指针管一个值。Time - o(n), Space - o(1). */
