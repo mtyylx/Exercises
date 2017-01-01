@@ -9,34 +9,38 @@ package com.leetcode.array;
  * Given word1 = "coding", word2 = "practice", return 3.
  * Given word1 = "makes", word2 = "coding", return 1.
  *
- * Note:
- * You may assume that word1 does not equal to word2, and word1 and word2 are both in the list.
+ * Note: You may assume that word1 does not equal to word2, and word1 and word2 are both in the list.
  *
- * Solution Signature:
+ * Function Signature:
  * public int shortestWordDistance(String[] list, String a, String b) {...}
+ *
+ * 可以扩展为任意类型的数组，给定数组中的两个元素，求他们的最近距离。
+ *
+ * <Tags>
+ * - Two Pointers: i → → → ... j → → →
+ * - Sentinel: Use <-1> as protect index.
+ *
  */
 public class E243_Shortest_Word_Distance {
     public static void main(String[] args) {
-        String[] list = {"a", "b", "c", "a", "b", "c"};
-        String a = "a";
-        String b = "c";
-        System.out.println("The shortest word distance is " + shortestWordDistance(list, a, b));
+        System.out.println(wordDistance(new String[] {"a", "b", "c", "a"}, "a", "c"));
     }
 
-    // 双指针解法：o(n)
-    // 从这种题中可以看到使用双指针解法的场景所具备的一些共性：都是对数组操作，而且一般是要在遍历整个数组的同时比较两个东西。
-    // 只扫描一次，且有一定几率扫描到中间直接退出
-    // 扫描数组，两个指针只有在匹配到单词时才会更新，且只要两个单词都匹配到就开始每个循环都比较两指针距离
-    static int shortestWordDistance(String[] list, String a, String b) {
-        int i = -1; // 需要区分已找到和未找到两种状态，必须两个单词都找到（不等于-1）才能开始比较计算距离
-        int j = -1;
-        int diff = Integer.MAX_VALUE; // 必须是一个极大值，大于所有可能出现的差值，才能找到最小的距离
-        for (int x = 0; x < list.length; x++) {
-            if (list[x].equals(a)) i = x;
-            if (list[x].equals(b)) j = x;
-            if (i != -1 && j != -1) diff = Math.min(diff, Math.abs(i - j));
-            if (diff == 1) return 1; //如果距离已经为1，则不会有更近的距离出现，因此没必要继续扫描下去。
+    /** 解法1：双指针同向扫描，一个指针管一个值。Time - o(n), Space - o(1). */
+    // 使用双指针解法题目的共性：需要同时跟踪两个对象（这里是两个单词）的出现，直到遍历完整个数组。
+    // 由于题目确保两个单词一定在数组中，因此我们只需要在发现两个单词之中的一个的时候，更新距离最小值即可。
+    // 一个技巧是两个指针初始默认值的设计，为了确保两个单词都找到才比较，我们需要能够判断是否已经找到该单词，
+    // 因此负数的索引可以很清晰的表示该指针代表的单词还未找到
+    static int wordDistance(String[] list, String a, String b) {
+        int min = Integer.MAX_VALUE;
+        int ai = -1, bi = -1;
+        for (int i = 0; i < list.length; i++) {
+            if      (list[i].equals(a)) ai = i;
+            else if (list[i].equals(b)) bi = i;
+            else continue;                                  // 如果当前单词谁都不是就跳过计算距离
+            if (ai >= 0 && bi >= 0)
+                min = Math.min(min, Math.abs(ai - bi));     // 如果当前单词是两者之一，就尝试更新最小距离。
         }
-        return diff;
+        return min;
     }
 }
