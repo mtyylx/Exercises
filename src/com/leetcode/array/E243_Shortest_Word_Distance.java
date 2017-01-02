@@ -15,9 +15,9 @@ package com.leetcode.array;
  * public int shortestWordDistance(String[] list, String a, String b) {...}
  *
  * <系列问题>
- * E243 Shortest Word Distance 1: 给定一个字符串数组，以及两个不重复的字符串，求数组中两个字符串的最短距离。
- * M244 Shortest Word Distance 2: 与E243的要求一样，但会反复调用这个方法。
- * M245 Shortest Word Distance 3: 给定一个字符串数组，以及两个可能重复的字符串，求数组中这两个字符串的最短距离。
+ * E243 Shortest Word Distance 1: 给定一个字符串数组，以及该数组中的两个字符串（不重复），求它们的最短距离。
+ * M244 Shortest Word Distance 2: 给定一个字符串数组，反复给出该数组中的任意两个的字符串（不重复），求它们的最短距离。
+ * M245 Shortest Word Distance 3: 给定一个字符串数组，以及该数组中的两个字符串（可能重复），求它们的最短距离。
  *
  * <Tags>
  * - Two Pointers: i → → → ... j → → →
