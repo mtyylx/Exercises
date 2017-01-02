@@ -1,9 +1,6 @@
 package com.leetcode.array;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by LYuan on 2016/9/6.
@@ -59,7 +56,7 @@ class WordDistance {
         }
     }
 
-    /** 双指针扫描 + 利用已排序数组的性质 */
+    /** 双指针扫描 + 利用已排序数组的性质。Time - o(n + m) */
     // 由于每个字符串的位置索引列表一定是已排序的（因为是按顺序扫描的）
     // 因此可以利用这个性质来移动两个指针中的一个，避免无用的结果
     // idx1 = [0   20   25   40]
@@ -88,5 +85,78 @@ class WordDistance {
             for (int y : idx2)
                 min = Math.min(min, Math.abs(x - y));
         return min;
+    }
+}
+
+class WordListII {
+    String[] words;
+    Set<String> set;
+    int[][] distance;
+    Map<String, Integer> map = new HashMap<>();
+    public WordListII(String[] words) {
+        this.words = words;
+        set = new HashSet<>(Arrays.asList(words));
+        List<String> list = new ArrayList<>(set);
+        int idx = 0;
+        for (String x : list) map.put(x, idx++);
+        distance = new int[set.size()][set.size()];
+        for (int i = 0; i < list.size(); i++ ) {
+            for (int j = 0; j < list.size(); j++) {
+                if (j == i) continue;
+                distance[i][j] = wordDistance(list.get(i), list.get(j));
+            }
+        }
+    }
+    // 关键是没有一个能够存三元组的数据结构
+    private int wordDistance(String a, String b) {
+        int min = Integer.MAX_VALUE;
+        int ai = -1, bi = -1;
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equals(a)) ai = i;
+            else if (words[i].equals(b)) bi = i;
+            else continue;
+            if (ai != -1 && bi != -1) min = Math.min(min, Math.abs(ai - bi));
+        }
+        return min;
+    }
+
+    public int shortestDistance(String a, String b) {
+        return distance[map.get(a)][map.get(b)];
+    }
+}
+
+class WordListIII {
+    String[] words;
+    Set<String> set;
+    Map<String, Integer> distance = new HashMap<>();
+    Map<String, Integer> map = new HashMap<>();
+    public WordListIII(String[] words) {
+        this.words = words;
+        set = new HashSet<>(Arrays.asList(words));
+        List<String> list = new ArrayList<>(set);
+        int idx = 0;
+        for (String x : list) map.put(x, idx++);
+    }
+    // 关键是没有一个能够存三元组的数据结构
+    // 而且a与b和b与a的距离是相同的，无需计算。
+    private int wordDistance(String a, String b) {
+        int min = Integer.MAX_VALUE;
+        int ai = -1, bi = -1;
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equals(a)) ai = i;
+            else if (words[i].equals(b)) bi = i;
+            else continue;
+            if (ai != -1 && bi != -1) min = Math.min(min, Math.abs(ai - bi));
+        }
+        return min;
+    }
+
+    public int shortestDistance(String a, String b) {
+        int i = map.get(a);
+        int j = map.get(b);
+        String key = String.valueOf(Math.min(i, j)) + "+" + String.valueOf(Math.max(i, j));
+        if (!distance.containsKey(key))
+            distance.put(key, wordDistance(a, b));
+        return distance.get(key);
     }
 }
