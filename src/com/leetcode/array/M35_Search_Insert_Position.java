@@ -15,12 +15,18 @@ package com.leetcode.array;
  * Function Signature:
  * public int insertPos(int[] a, int target) {...}
  *
+ * <系列问题>
+ * M35  Search Insert Position: 给定一个已排序数组a和一个目标值k，求k在a中出现的位置值。如果k不在a中，求将k插入a中后让a依然保持有序的位置值。
+ * M34  Search In Range:        给定一个已排序数组a和一个目标值，求k在a中出现的起始和终止位置值。如果k不在a中，则返回[-1, -1]
+ * E278 First Bad Version:      给定一个取值范围1至n（即有序）和一个判定函数，求让判定函数第一次返回true的位置索引。
+ * E374 Guess Number:           给定一个取值范围1至n（即有序）和一个判定函数，求让判定函数返回0的位置索引。
+ *
  * <Tags>
  * - Binary Search
  * - Two Pointers: [left → → → ... ← ← ← right]
  *
  */
-public class E35_Search_Insert_Position {
+public class M35_Search_Insert_Position {
     public static void main(String[] args) {
         int[] a = {0, 1, 3, 5, 7, 9};
         System.out.println(insertPos(a, 10));
