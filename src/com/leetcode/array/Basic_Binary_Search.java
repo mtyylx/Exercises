@@ -19,7 +19,46 @@ public class Basic_Binary_Search {
         int[] a = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20};
         System.out.println(binarySearchIterative(a, 19));
         System.out.println(binarySearchRecursive(a, 2));
+
+        int[] b = {3, 4, 4, 5, 6, 7, 7, 7, 8, 9};
+        System.out.println("Testing InsertPos: ");
+        System.out.println(getFirstInsertPos(b, 4));
+        System.out.println(getLastInsertPos(b, 4));
+        System.out.println(getFirstInsertPos(b, 3));
+        System.out.println(getLastInsertPos(b, 3));
+        System.out.println(getFirstInsertPos(b, 1));
+        System.out.println(getLastInsertPos(b, 1));
+        System.out.println(getFirstInsertPos(b, 12));
+        System.out.println(getLastInsertPos(b, 12));
     }
+
+
+    /** 问题发散：寻找target在数组的首次出现位置。如果target不在数组中，则给出最佳插入位置。 */
+    // 插入位置范围：0 to len （默认插入后右侧元素会全部右移并拓展）
+    static int getFirstInsertPos(int[] a, int target) {
+        int i = 0;
+        int j = a.length - 1;
+        while (i <= j) {
+            int mid = i + (j - i) / 2;
+            if (a[mid] >= target) j = mid - 1;      // 尽可能左移右指针，以获得最左侧target
+            else i = mid + 1;
+        }
+        return i;   // 返回左指针
+    }
+
+    /** 问题发散：寻找target在数组的最后一次出现位置。如果target不在数组中，则给出最佳插入位置。 */
+    // 插入位置范围：-1 to len - 1 （默认插入后左侧元素会全部左移并拓展）
+    static int getLastInsertPos(int[] a, int target) {
+        int i = 0;
+        int j = a.length - 1;
+        while (i <= j) {
+            int mid = i + (j - i) / 2;
+            if (a[mid] <= target) i = mid + 1;      // 尽可能右移左指针，以获得最右侧target
+            else j = mid - 1;
+        }
+        return j;   // 返回右指针
+    }
+
 
     // Example: 证明left刚好处于待插入位置。
     // 以下四种情况涵盖了left/right指针的所有可能情况，可以看到left最终的位置都能确保是正确的插入位置。
