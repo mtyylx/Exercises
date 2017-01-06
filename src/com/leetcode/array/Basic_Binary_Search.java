@@ -30,6 +30,8 @@ public class Basic_Binary_Search {
         System.out.println(getLastInsertPos(b, 1));
         System.out.println(getFirstInsertPos(b, 12));
         System.out.println(getLastInsertPos(b, 12));
+
+        System.out.println(binarySearchIterative2(new int[] {1, 2, 4, 8}, 0));
     }
 
 
@@ -127,19 +129,20 @@ public class Basic_Binary_Search {
         return left;
     }
 
-    // 下面的解法不建议，只是为了突出使用(left <= right)而不是(left < right)的必要性。
-    // 只是改变了while循环的条件（i<=j 变成 i<j）以及区段划分j = middle，
-    // 但是不如上面解法的地方在于，如果没有查找到的话它不能正确的返回插入位置。所以不建议。
+    /** 另一种写法，循环终止条件为左右指针重合（而不是上面解法的指针交错），另外右指针的移动是mid而不是mid-1. */
+    // 两种解法在target存在于数组中时没有差别，但是这种解法在target大于数组所有元素时的最佳插入位置不对。
+    // [1 2 4 8] target = 10, 该解法返回的插入位置是3，但实际应该是4，即插入在元素8之后。
+    // 所以此解法不适用于M35，不过却对M153有奇效。
     static int binarySearchIterative2(int[] a, int target) {
         if (a == null) return -1;
         int i = 0;
         int j = a.length - 1;
-        int middle;
+        int mid;
         while (i < j) {
-            middle = i + (j - i) / 2;
-            if      (target > a[middle]) i = middle + 1;
-            else if (target < a[middle]) j = middle;
-            else return middle;
+            mid = i + (j - i) / 2;
+            if      (target > a[mid]) i = mid + 1;
+            else if (target < a[mid]) j = mid;
+            else return mid;
         }
         return i;
     }

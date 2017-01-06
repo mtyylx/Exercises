@@ -10,24 +10,30 @@ package com.leetcode.array;
  * Function Signature:
  * public int findMin(int[] a) {...}
  *
+ * <系列问题>
+ * - M153 Find Min in Rotated Sorted Array 1: 给定一个被折断的有序数组，找到折断的起点（即最小值），该数组无重复元素。
+ * - H154 Find Min in Rotated Sorted Array 2: 给定一个被折断的有序数组，找到折断的起点（即最小值），该数组有重复元素。
+ * - H33  Search in Rotated Sorted Array:     给定一个被折断的有序数组和一个目标值，如果目标值在数组中就返回所在索引，如果不在就返回-1.
+ *
  * <Tags>
  * - Binary Search
  * - Two Pointers: 左右指针首尾包围 [left → → → ... ← ← ← right]
+ * - Rotated Array: 寻找最小值就是比较中点与右指针之间的关系。
  *
  */
-public class M153_Find_Min_in_Rotated_Sorted_Array {
+public class M153_Find_Min_Rotated_Sorted_Array {
     public static void main(String[] args) {
         System.out.println(findMin2(new int[] {1, 2, 3}));
         System.out.println(findMin(new int[] {3, 1, 2}));
     }
 
     /** 解法2：Binary Search的变体。Time - o(logn) */
-    // 与标准的二分查找不同，这里只需要判断a[mid]与a[j]的大小关系就可以移动左右指针了。
-    // 如果a[mid] > a[j]，就说明最小值一定在mid之右，且mid本身不可能是min
+    // 与标准的二分查找不同，这里完全根据a[mid]和a[j]两者的大小关系移动左右指针，而不是target与a[mid]之间的大小关系。
+    // Case #1：如果a[mid] > a[j]，就说明最小值一定在mid之右，且mid本身不可能是min
     // 例如[2 3 1]中，a[mid] = 3 > 1，因此最小值只可能在3的右侧
-    // 如果a[mid] <= a[j]，就说明最小值在mid之左，且mid本身可能就是min
+    // Case #2：如果a[mid] <= a[j]，就说明最小值在mid之左，且mid本身可能就是min
     // 例如[3 1 2]中，a[mid] = 1 < 2，因此最小值在包括1在内的左侧
-    // 试图用标准的i<=j方式解决，但是似乎不如这个来的逻辑清晰
+    // 需要注意的是，这里使用的循环终止条件是i < j，而不是i <= j（后者无法很好的处理边界情况）
     static int findMin2(int[] a) {
         if (a == null || a.length == 0) return -1;
         int i = 0;
@@ -39,6 +45,7 @@ public class M153_Find_Min_in_Rotated_Sorted_Array {
         }
         return a[i];
     }
+
 
     /** 解法1：顺序扫描，最简单。Time - o(n) */
     // 第一个不满足的元素就是最小值。
