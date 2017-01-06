@@ -2,13 +2,19 @@ package com.leetcode.array;
 
 /**
  * Created by Michael on 2016/12/14.
+ *
  * Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai).
  * n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0).
  * Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+ *
  * Note: You may not 倾斜 the container.
  *
  * Function Signature:
  * public int maxContainer(int[] a) {...}
+ *
+ * <Tags>
+ * - Two Pointers: 左右指针首尾包围。[left → → → ... ← ← ← right]
+ * - Early Exit
  *
  */
 public class M11_Container_With_Most_Water {
@@ -25,16 +31,18 @@ public class M11_Container_With_Most_Water {
     // #2. 中心扩散：即从序列的中间某一点分别向左右运动（排序中常用到）
     // #3. 首尾包围：即从序列的首尾相向运动直至汇合。
     // 针对这个问题，make sense的是第三种。
-
     // 方案#1和#2都是扩张矩形，在这个过程中，不管选择移动哪一边，都无法确定面积会一定增大或一定减小，也就是说，“找不到一种可靠的变化趋势”。
     // 既然找不到一种趋势，我们也就没有移动A指针而不移动B指针的根据，那么在这种情况下，为了避免错过最优解，我们只能尝试所有可能，即退化成为穷举法。
-    // 方案#3则是收缩矩形，在这个过程中，我们找到了一种可靠的趋势：
-    // 指针A在左，指针B在右，如果指针A所在高度 > 指针B所在高度，那么当前矩形面积由指针B所决定，
-    // 此时如果我们收缩指针A，则不管下一个高度是什么，矩形面积一定会减小。
-    // Case #1 如果下一个高度增加，但矩形高度依然由指针B决定，因此高度不变，但因为宽度收缩，所以整体面积会减小。
-    // Case #2 如果下一个高度减小至比指针B高度还小，矩形高度将会由这个更小的高度决定，再加上宽度收缩，因此整体面积同样会减小，而且减小的更多。
-    // 因此我们就有理由不去移动指针A了。我们找到了一种可靠的变化趋势，可以用于精简解空间的搜索，也就不再是穷举法了。
-    // A高于B，无论什么情况移动A至A'都会导致面积减小。
+    // 方案#3则是收缩矩形，在这个过程中，我们找到了一种可靠的趋势！
+
+    // 由于木桶效应，任意时刻的矩形面积只由短边决定。即如果左指针a[i] > 右指针a[j]，那么决定矩形面积的是右指针。
+    // 此时如果我们收缩左指针，则不管下一个高度是什么，矩形面积一定会减小，原因如下：
+    // Case #1 - a[i'] 比 a[i] 更高：没用，因为矩形高度依然由左指针决定，因此高度不变，但因为宽度收缩，所以整体面积会减小。
+    // Case #2 - a[i'] 比 a[i] 更矮：如果a[i']依然大于a[j]，那么等同于Case#1，
+    // 如果a[i']小于a[j]，那么矩形高度将会由这个更小的高度决定，再加上宽度收缩，因此整体面积同样会减小，而且减小的更多。
+    // 综上所述，移动两个指针中高的那个不会让面积增大，但移动短的那个却不一定不增大。
+    // 因此我们就有理由不去移动高指针了。我们找到了一种可靠的变化趋势，可以用于精简解空间的搜索，也就不再是穷举法了。
+    //
     //      Case #1          Case #2
     //
     //       *             *
@@ -42,24 +50,24 @@ public class M11_Container_With_Most_Water {
     //    *  *     *       *     *  *
     //    *  *  *  *       *  *  *  *
     //    *  *  *  *       *  *  *  *
-    //    A  A'    B       A  A'    B
+    //    i  i'    j       i  i'    j
     // 接下来再讨论收缩指针B在什么情况下会有可能更新最大面积记录。
     // 由于矩形宽度是不断收缩的，因此如果收缩指针B的下一个位置比当前位置高度还低，那么整体面积一定会缩小，没有必要更新max
     // 只有下一位置比当前位置高度升高，才有比较的意义。因此加入early exit逻辑。
     static int maxContainer2(int[] a) {
-        int left = 0;
-        int right = a.length - 1;
-        int max = Math.min(a[left], a[right]) * right;
-        while (left < right) {
-            if (a[left] > a[right]) {
-                right--;
-                if (a[right] < a[right + 1]) continue;      // 变矮就跳过更新max
+        int i = 0;
+        int j = a.length - 1;
+        int max = Math.min(a[i], a[j]) * j;
+        while (i < j) {
+            if (a[i] > a[j]) {
+                j--;
+                if (a[j] < a[j + 1]) continue;          // 变矮就跳过更新max
             }
             else {
-                left++;
-                if (a[left] < a[left - 1]) continue;        // 变矮就跳过更新max
+                i++;
+                if (a[i] < a[i - 1]) continue;          // 变矮就跳过更新max
             }
-            max = Math.max(max, Math.min(a[left], a[right]) * (right - left));  // 尝试更新max
+            max = Math.max(max, Math.min(a[i], a[j]) * (j - i));  // 尝试更新max
         }
         return max;
     }
