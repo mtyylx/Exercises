@@ -11,14 +11,15 @@ package com.leetcode.array;
  * public int findMin(int[] a) {...}
  *
  * <系列问题>
- * - M153 Find Min in Rotated Sorted Array 1: 给定一个被折断的有序数组，找到折断的起点（即最小值），该数组无重复元素。
- * - H154 Find Min in Rotated Sorted Array 2: 给定一个被折断的有序数组，找到折断的起点（即最小值），该数组有重复元素。
- * - H33  Search in Rotated Sorted Array:     给定一个被折断的有序数组和一个目标值，如果目标值在数组中就返回所在索引，如果不在就返回-1.
+ * - M153 Find Min in Rotated Sorted Array 1: 给定一个被折断的有序数组，找到折断的起点（即最小值），该数组<无重复元素>。
+ * - H154 Find Min in Rotated Sorted Array 2: 给定一个被折断的有序数组，找到折断的起点（即最小值），该数组<有重复元素>。
+ * - H33  Search in Rotated Sorted Array 1:   给定一个被折断的有序数组和一个目标值，如果目标值在数组中就返回所在索引，如果不在就返回-1，该数组<无重复元素>。
+ * - M81  Search in Rotated Sorted Array 2:   给定一个被折断的有序数组和一个目标值，判断目标值是否存在于数组中，该数组<有重复元素>。
  *
  * <Tags>
  * - Binary Search
  * - Two Pointers: 左右指针首尾包围 [left → → → ... ← ← ← right]
- * - Rotated Array: 寻找最小值就是比较中点与右指针之间的关系。
+ * - Rotated Array: 折断数组由两个已排序数组构成，最小值通过比较中点与右指针之间的关系得到。
  *
  */
 public class M153_Find_Min_Rotated_Sorted_Array {

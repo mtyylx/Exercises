@@ -3,11 +3,12 @@ package com.leetcode.array;
 /**
  * Created by Michael on 2017/1/6.
  *
- * Follow up for "Find Minimum in Rotated Sorted Array":
- * What if duplicates are allowed?
+ * Follow up for "Find Minimum in Rotated Sorted Array": What if duplicates are allowed?
  * Would this affect the run-time complexity? How and why?
  * Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
- * Find the minimum element. The array may contain duplicates.
+ * (i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
+ * Find the minimum element.
+ * The array may contain duplicates.
  *
  * Example:
  * - [3, 3, 3, 1, 3], Min = 1
@@ -19,12 +20,13 @@ package com.leetcode.array;
  * <系列问题>
  * - M153 Find Min in Rotated Sorted Array 1: 给定一个被折断的有序数组，找到折断的起点（即最小值），该数组<无重复元素>。
  * - H154 Find Min in Rotated Sorted Array 2: 给定一个被折断的有序数组，找到折断的起点（即最小值），该数组<有重复元素>。
- * - H33  Search in Rotated Sorted Array:     给定一个被折断的有序数组和一个目标值，如果目标值在数组中就返回所在索引，如果不在就返回-1.
+ * - H33  Search in Rotated Sorted Array 1:   给定一个被折断的有序数组和一个目标值，如果目标值在数组中就返回所在索引，如果不在就返回-1，该数组<无重复元素>。
+ * - M81  Search in Rotated Sorted Array 2:   给定一个被折断的有序数组和一个目标值，判断目标值是否存在于数组中，该数组<有重复元素>。
  *
  * <Tags>
  * - Binary Search
  * - Two Pointers: 左右指针首尾包围 [left → → → ... ← ← ← right]
- * - Rotated Array: 寻找最小值就是比较中点与右指针之间的关系。
+ * - Rotated Array: 折断数组由两个已排序数组构成，最小值通过比较中点与右指针之间的关系得到。
  *
  */
 public class H154_Find_Min_Rotate_Sorted_Array_2 {
