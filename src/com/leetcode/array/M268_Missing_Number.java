@@ -13,46 +13,50 @@ import java.util.Arrays;
  *
  * Function Signature:
  * public int missingNumber(int[] a) {...}
+ *
+ * <Tags>
+ * - Bit Manipulation: XOR of Value & Index
+ * - Sum
+ *
  */
 public class M268_Missing_Number {
     public static void main(String[] args) {
-        int[] a = {0, 2, 3};
+        int[] a = new int[Integer.MAX_VALUE / 10];
+        for (int i = 0; i < a.length; i++) a[i] = i;
+        System.out.println(missingNumber(a));
+        System.out.println(missingNumber2(a));
         System.out.println(missingNumber3(a));
     }
 
-    // 法3：先排序后找，o(nlogn)
-    // 利用数组索引与元素内容的相同的特性迅速找到
-    static int missingNumber3(int[] a) {
-        Arrays.sort(a);
-        for (int i = 0; i < a.length; i++)
-            if (i != a[i]) return i;
-        return a.length;
-    }
-
-    // 法2：Bit Manipulation解法：使用XOR特性， o(n)
-    // 虽然，比特反转法比较难想，不如一般直觉的算法好理解，
-    // 但是他绝对的优势在于他会<避免出现各种溢出风险>，而且运算速度是所有操作中最快的
-    // 这道题的具有的一个特点是，不管数组是什么顺序，数组的元素取值范围和数组索引的范围一定是一样的
-    // 因此把所有索引和所有元素异或在一起，最后的结果一定是0，缺的那个元素则会留到最后
-    // {0, 2, 3} = (0 ^ 0 ^ 1 ^ 2 ^ 2 ^ 3) ^ 3 = 1
-    static int missingNumber2(int[] a){
+    /** 解法3：Bit Manipulation XOR. Time - o(n), Space - o(1) */
+    // 比特反转法的最无敌的优势在于可以避免溢出，运算速度是所有操作中最快的
+    // 通过解法2的启发，我们已经注意到这里数组的索引值范围与数组元素的取值范围完全重合，
+    // 这两者之间的区别在于：数组索引一定是有序的，而数组元素内容因为缺少一个元素因此可能是断开的，或在首尾缺值。
+    // 因此按理说对于一个完美的数组，其元素值和索引值的XOR应该为0。而对于缺了一个值得数组来讲，异或的结果就是缺的那个值。
+    // 理想情况下取值范围应该是0 to a.length, 即a.length+1个元素，但是由于实际情况中数组只有a.length个元素，因此a.length索引值是单独存在的，可以作为初始值。
+    static int missingNumber3(int[] a){
         int result = a.length;
         for (int i = 0; i < a.length; i++)
             result = result ^ i ^ a[i];
         return result;
     }
 
-    // 法1：求和公式解法，o(n). 缺陷在于如果数组长度超过int类型长度，则会溢出
-    // 数组长度是切入点
-    // 数组少一个元素，因此可以直接从数组长度求出该数组如果不少那个元素的时候的和
-    // sum = (0 + len) * (len + 1) / 2 中，算上了少的元素，所以首项是0，末项是len - 1 + 1，长度是len + 1.
-    // 如果想通过在扫描过程中找到最大值来判断数组长度的话，
-    // 会碰到{0, 1, 2} 和 {1, 2, 3} 这两种情况需要区分，就不够简洁优美了
+    /** 解法2：先排序，再利用已排序数组的性质。Time - o(nlogN), Space - o(1) */
+    // 由于题目明确取值范围是0到n，恰好跟数组索引的取值范围完全一样，因此只要发现了索引与数值不匹配的元素，就一定是这个索引值丢失了。
+    // 如果没有索引值丢失，就说明只缺一个尾部元素。
+    static int missingNumber2(int[] a) {
+        Arrays.sort(a);
+        for (int i = 0; i < a.length; i++)
+            if (i != a[i]) return i;
+        return a.length;
+    }
+
+    /** 解法1：求和法。Time - o(n), Space - o(1) */
+    // 唯一的缺点就是会溢出，因此必须使用long存储元素之和。
     static int missingNumber(int[] a) {
         int len = a.length;
-        int sum = (0 + len) * (len + 1) / 2;
-        for (int x : a)
-            sum -= x;
-        return sum;
+        long sum = len * (len + 1) / 2;      // 首项0，末项len，项数len + 1
+        for (int x : a) sum -= x;            // 减掉即可，无需先求和再相互减
+        return (int) sum;
     }
 }

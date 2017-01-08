@@ -13,6 +13,7 @@ import java.util.List;
  * public List<String> summaryRange(int[] a) {...}
  *
  * <Tags>
+ * - Two Pointers: 快慢指针 [slow → ... fast → → → ... ]
  * - Integer to String Conversion.
  * - Embed While inside For loops for faster traversal.
  *
@@ -24,7 +25,7 @@ public class M228_Summary_Range {
         System.out.println(summaryRange2(a));
     }
 
-    /** 解法1：双指针扫描。一个指针及记录起点，一个指针记录终点。Time - o(n) */
+    /** 解法1：双指针扫描（快慢指针）。一个指针及记录起点，一个指针记录终点。Time - o(n) */
     // 简单分析后可以发现只有两种情况下，需要记录range：
     // Case #1：当前元素是最后一个元素 i + 1 == a.length
     // Case #2：当前元素与下一个元素不连续 a[i] + 1 != a[i + 1]
@@ -34,12 +35,12 @@ public class M228_Summary_Range {
     static List<String> summaryRange(int[] a) {
         List<String> result = new ArrayList<>();
         if (a == null || a.length == 0) return result;
-        int start = a[0];
-        for (int i = 0; i < a.length; i++) {
+        int start = a[0];                                               // Init Value for slow pointer.
+        for (int i = 0; i < a.length; i++) {                            // Scan using the fast pointer.
             if (i + 1 == a.length || a[i + 1] != a[i] + 1) {            // Case #1 + #2
                 if (start == a[i]) result.add(String.valueOf(start));
                 else result.add(start + "->" + a[i]);
-                if (i < a.length - 1) start = a[i + 1];
+                if (i < a.length - 1) start = a[i + 1];                 // Update slow pointer.
             }
         }
         return result;
