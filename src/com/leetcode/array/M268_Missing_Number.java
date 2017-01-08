@@ -17,6 +17,7 @@ import java.util.Arrays;
  * <Tags>
  * - Bit Manipulation: XOR of Value & Index
  * - Sum
+ * - Binary Search
  *
  */
 public class M268_Missing_Number {
@@ -26,6 +27,7 @@ public class M268_Missing_Number {
         System.out.println(missingNumber(a));
         System.out.println(missingNumber2(a));
         System.out.println(missingNumber3(a));
+        System.out.println(missingNumber4(a));
     }
 
     /** 解法3：Bit Manipulation XOR. Time - o(n), Space - o(1) */
@@ -49,6 +51,22 @@ public class M268_Missing_Number {
         for (int i = 0; i < a.length; i++)
             if (i != a[i]) return i;
         return a.length;
+    }
+
+    /** 解法4：基于解法2，Binary Search。如果数组已排序，则Time - o(logn), Space - o(1) */
+    // 如果数组已经排序，则这是最快的算法。因为时间复杂度可以比线性还低。
+    // 只要a[mid] != mid，就说明缺口在mid之前就出现了。只要a[mid] == mid，就说明缺口还在mid之后。
+    // 使用标准的二分法，返回左指针是最佳插入位置的索引。
+    static int missingNumber4(int[] a) {
+        Arrays.sort(a);
+        int i = 0;
+        int j = a.length - 1;
+        while (i <= j) {
+            int mid = i + (j - i) / 2;
+            if (a[mid] == mid) i = mid + 1;
+            else j = mid - 1;
+        }
+        return i;
     }
 
     /** 解法1：求和法。Time - o(n), Space - o(1) */
