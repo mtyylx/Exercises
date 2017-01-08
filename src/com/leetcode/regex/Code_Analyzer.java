@@ -1,5 +1,6 @@
 package com.leetcode.regex;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
@@ -33,10 +34,15 @@ import java.util.*;
 public class Code_Analyzer {
     /** 测试：用户只需要给出要扫描的根目录绝对地址，然后run()就行了。 */
     public static void main(String[] args) {
+        String slash = File.separator;
+        String defaults = System.getProperty("user.dir") + slash + "src" + slash + "com" + slash + "leetcode";
+        System.out.println("Give me the root folder you want to scan.");
+        System.out.println("Default scan path: <" + defaults + ">, correct?");
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Give me the root folder you want to scan: ");
-        String root = scanner.nextLine();
-        Code_Analyzer analyzer = new Code_Analyzer(root);
+        String custom = scanner.nextLine();
+        Code_Analyzer analyzer;
+        if (custom.equals("")) analyzer = new Code_Analyzer(defaults);
+        else                   analyzer = new Code_Analyzer(custom);
         analyzer.run();
     }
 
