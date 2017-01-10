@@ -26,18 +26,31 @@ import java.util.Set;
 public class E36_Valid_Sudoku {
     public static void main(String[] args) {
         char[][] matrix = new char[9][9];
-        matrix[0] = new char[]{'1', '2', '.', '.', '.', '.', '.', '.', '.'};
-        matrix[1] = new char[]{'.', '.', '9', '.', '.', '.', '.', '7', '.'};
-        matrix[2] = new char[]{'8', '.', '.', '.', '.', '5', '.', '.', '.'};
-        matrix[3] = new char[]{'.', '.', '1', '.', '.', '.', '.', '.', '.'};
-        matrix[4] = new char[]{'.', '.', '.', '7', '.', '.', '2', '.', '.'};
-        matrix[5] = new char[]{'.', '.', '.', '.', '.', '.', '4', '3', '.'};
-        matrix[6] = new char[]{'7', '.', '8', '.', '.', '.', '.', '.', '.'};
-        matrix[7] = new char[]{'.', '.', '5', '.', '6', '.', '.', '2', '.'};
-        matrix[8] = new char[]{'.', '.', '.', '.', '.', '.', '.', '.', '.'};
+        matrix[0] = "12.......".toCharArray();
+        matrix[1] = "..9....7.".toCharArray();
+        matrix[2] = "8....5...".toCharArray();
+        matrix[3] = "..1......".toCharArray();
+        matrix[4] = "...7..2..".toCharArray();
+        matrix[5] = "......43.".toCharArray();
+        matrix[6] = "7.8......".toCharArray();
+        matrix[7] = "..5.6....".toCharArray();
+        matrix[8] = "2........".toCharArray();
+
+        char[][] matrix2 = new char[9][9];
+        matrix2[0] = "12.......".toCharArray();
+        matrix2[1] = "..9....7.".toCharArray();
+        matrix2[2] = "8....5...".toCharArray();
+        matrix2[3] = "..1......".toCharArray();
+        matrix2[4] = "...7..2..".toCharArray();
+        matrix2[5] = "......43.".toCharArray();
+        matrix2[6] = "7.8......".toCharArray();
+        matrix2[7] = "..5.6....".toCharArray();
+        matrix2[8] = "5......7.".toCharArray();
 
         System.out.println(validSudoku(matrix));
         System.out.println(validSudoku2(matrix));
+        System.out.println(validSudoku(matrix2));
+        System.out.println(validSudoku2(matrix2));
     }
 
     /** 问题的扩展：对于N * N尺寸的矩阵，如何按照指定块大小K（N可以被K整除）进行块遍历？
