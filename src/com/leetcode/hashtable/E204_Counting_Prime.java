@@ -18,9 +18,16 @@ import java.util.Set;
  */
 public class E204_Counting_Prime {
     public static void main(String[] args) {
-        System.out.println(countPrime(9999999));        // 4946 ms
-        System.out.println(countPrime2(9999999));       // 94 ms
-        System.out.println(countPrime3(9999999));       // 62 ms
+        long start;
+        start = System.nanoTime();
+        System.out.println(countPrime(9999999));                        // 5012 ms
+        System.out.println((System.nanoTime() - start)/1000000 + " ms");
+        start = System.nanoTime();
+        System.out.println(countPrime2(9999999));                       // 93 ms
+        System.out.println((System.nanoTime() - start)/1000000 + " ms");
+        start = System.nanoTime();
+        System.out.println(countPrime3(9999999));                       // 57 ms
+        System.out.println((System.nanoTime() - start)/1000000 + " ms");
     }
 
     /** 解法3：解法2的升级版，两次扫描，内循环指针j的取值范围不断缩小。
@@ -37,7 +44,6 @@ public class E204_Counting_Prime {
     // ...
     // 不过相比解法2可以直接一次就统计完毕，这里如果在第一个for循环中统计，将统计不全，必须单开一个重新统计。
     static int countPrime3(int n) {
-        long start = System.nanoTime();
         boolean[] map = new boolean[n];
         for (int i = 2; i * i < n; i++) {           // 写成 i * i < n 是因为sqrt运算量较大
             if (map[i]) continue;                   // 一旦已经判定过是合数就不再继续
@@ -46,7 +52,6 @@ public class E204_Counting_Prime {
         }
         int count = 0;
         for (int i = 2; i < n; i++) if (!map[i]) count++;       // 必须从2开始统计，因为第0和第1个都不算。
-        System.out.println((System.nanoTime() - start)/1000000 + " ms");
         return count;
     }
 
@@ -62,7 +67,6 @@ public class E204_Counting_Prime {
     // 5 * [2, 19] {10,15,20,25,30...
     // ...
     static int countPrime2(int n) {
-        long start = System.nanoTime();
         boolean[] map = new boolean[n];
         int count = 0;
         for (int i = 2; i < n; i++) {           // 2 to n
@@ -71,7 +75,6 @@ public class E204_Counting_Prime {
             for (int j = 2; i * j < n; j++)     // 2 to sqrt n
                 map[i * j] = true;
         }
-        System.out.println((System.nanoTime() - start)/1000000 + " ms");
         return count;
     }
 
@@ -93,7 +96,6 @@ public class E204_Counting_Prime {
     // 不过这里计算出的合数依然会出现重复，例如2*6=3*4=12, 2*9=3*6=18
     // 只能利用HashSet来做到自动去重。最后HashSet的大小就是给定范围内的所有合数的个数。剩下的就是质数的个数了。
     static int countPrime(int n) {
-        long start = System.nanoTime();
         if (n < 2) return 0;
         Set<Integer> set = new HashSet<>();
         for (int i = 2; i * i < n; i++) {           // 选择乘数1：从2开始，遍历至根号n
@@ -101,7 +103,6 @@ public class E204_Counting_Prime {
             for (int j = i; i * j < n; j++)         // 选择乘数2：从i开始，扩展到相乘等于n
                 set.add(i * j);
         }
-        System.out.println((System.nanoTime() - start)/1000000 + " ms");
         return n - set.size() - 2;
     }
 }
