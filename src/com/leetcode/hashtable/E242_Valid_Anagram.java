@@ -19,6 +19,11 @@ import java.util.*;
  * Function Signature:
  * public boolean isValidAnagram(String a, String b) {...}
  *
+ * <Anagram系列问题>
+ * E242 Valid Anagram: 给定字符串a和字符串b，判断a和b是否是Anagram。
+ * M49  Group Anagram: 给定一个字符串数组，按Anagram分组返回。
+ * E438 Find Anagram : 给定字符串a和字符串b，返回a中所有出现b的Anagram的起始位置。
+ *
  * <Tags>
  * - HashMap: 字符做键，出现次数做值。
  * - Value-As-Index：字符数组ASCII值作为索引访问，等效于HashMap。

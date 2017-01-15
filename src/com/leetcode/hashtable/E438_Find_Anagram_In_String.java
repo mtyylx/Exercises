@@ -22,6 +22,11 @@ import java.util.List;
  * Function Signature:
  * public List<Integer> findAnagram(String a, String b) {...}
  *
+ * <Anagram系列问题>
+ * E242 Valid Anagram: 给定字符串a和字符串b，判断a和b是否是Anagram。
+ * M49  Group Anagram: 给定一个字符串数组，按Anagram分组返回。
+ * E438 Find Anagram : 给定字符串a和字符串b，返回a中所有出现b的Anagram的起始位置。
+ *
  * <Tags>
  * - Slide Window: 双指针扫描
  * - Two Pointers: 用于实现滑动窗
@@ -71,9 +76,9 @@ public class E438_Find_Anagram_In_String {
         for (char c : b.toCharArray()) pattern[c - 'a']++;          // 收集目标字符串b的字符分布和频率
         int[] map = new int[26];                                    // 源字符串a的字符分布和频率
         int start = 0;                                              // 循环外定义滑动窗的<左指针>
-        for (int i = 0; i < a.length(); i++) {                      // 循环变量为滑动窗的<右指针>
-            map[a.charAt(i) - 'a']++;                               // 上来先添加当前字符的统计
-            if (i - start + 1 == b.length()) {                      // 如果当前元素（右指针）是饱满的滑动窗的最右侧元素，就:
+        for (int stop = 0; stop < a.length(); stop++) {             // 循环变量为滑动窗的<右指针>
+            map[a.charAt(stop) - 'a']++;                            // 上来先添加当前字符的统计
+            if (stop - start + 1 == b.length()) {                   // 如果当前元素（右指针）是饱满的滑动窗的最右侧元素，就:
                 if (Arrays.equals(map, pattern)) result.add(start); // 先添加左指针位置
                 map[a.charAt(start) - 'a']--;                       // 再去掉左指针元素
                 start++;                                            // 再移动左指针

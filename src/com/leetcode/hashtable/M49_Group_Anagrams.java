@@ -20,6 +20,11 @@ import java.util.*;
  * Function Signature:
  * public List<List<String>> groupAnagram(String[] a) {...}
  *
+ * <Anagram系列问题>
+ * E242 Valid Anagram: 给定字符串a和字符串b，判断a和b是否是Anagram。
+ * M49  Group Anagram: 给定一个字符串数组，按Anagram分组返回。
+ * E438 Find Anagram : 给定字符串a和字符串b，返回a中所有出现b的Anagram的起始位置。
+ *
  * <Tags>
  * - Sort String: 对字符串的字符进行排序，可以用于获得字符串的特征
  * - HashMap: Key → Pattern, Value → BucketID。哈希表可用作桶归类的辅助。
