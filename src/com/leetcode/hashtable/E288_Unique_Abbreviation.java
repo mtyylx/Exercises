@@ -1,9 +1,6 @@
 package com.leetcode.hashtable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by LYuan on 2016/9/2.
@@ -32,18 +29,60 @@ import java.util.Set;
  * Function Signature:
  * public ValidWordAbbr(String[] dictionary) {...}
  * public boolean isUnique(String word) {...}
+ *
+ * <Tags>
+ * - HashSet: 快速去重。导入ArrayList或Arrays.asList()。
+ * - HashMap: Key → 字符串模板（缩写），Value → 标志是否Unique
+ *
  */
 public class E288_Unique_Abbreviation {
     public static void main(String[] args) {
+        ValidWordAbbr2 dict2 = new ValidWordAbbr2(new String[]{"deer", "door", "cake", "card"});
+        System.out.println(dict2.isUnique("dear")); // false
+        System.out.println(dict2.isUnique("cart")); // true
+        System.out.println(dict2.isUnique("cane")); // false
+        System.out.println(dict2.isUnique("make")); // true
         ValidWordAbbr dict = new ValidWordAbbr(new String[]{"deer", "door", "cake", "card"});
         System.out.println(dict.isUnique("dear")); // false
         System.out.println(dict.isUnique("cart")); // true
         System.out.println(dict.isUnique("cane")); // false
         System.out.println(dict.isUnique("make")); // true
     }
-
 }
 
+/** 解法2：HashSet去重 + HashMap映射（键值对定义为String,Boolean）。更简洁的写法。 */
+// 可以看到代码简洁程度和清晰程度有大幅度提升，说明这几个月的算法训练是有效果的。
+class ValidWordAbbr2 {
+    Map<String, Boolean> map = new HashMap<>();
+    Set<String> set;
+    public ValidWordAbbr2(String[] dict) {
+        set = new HashSet<>(Arrays.asList(dict));       // 首先导入到HashSet中去重，以避免对["a", "a"]这种情况误判成false。
+        for (String s : set) {
+            String pattern = getAbbr(s);
+            if (map.containsKey(pattern)) map.put(pattern, false);  // 此时dict中没有完全相同的字符串，因此只要遇到相同的pattern，就需要置为false
+            else map.put(pattern, true);                            // 如果map中尚未存储该pattern，则首先置为true
+        }
+    }
+
+    /** 可能分支较多，脑子要清楚，需要分成五种情况讨论，区分word和dict自身的独特性。 */
+    // Case #1: word in dict, pattern in map is false -> false
+    // Case #2: word in dict, pattern in map is true -> true
+    // Case #3: word not in dict, pattern in map, pattern is true -> false
+    // Case #4: word not in dict, pattern in map, pattern is false -> false
+    // Case #5: word not in dict, pattern not in map -> true
+    public boolean isUnique(String word) {
+        String p = getAbbr(word);
+        if (set.contains(word)) return map.get(p);
+        else return !map.containsKey(p);
+    }
+
+    private String getAbbr(String s) {
+        if (s.length() < 3) return s;
+        return "" + s.charAt(0) + String.valueOf(s.length() - 2) + s.charAt(s.length() - 1);    // 首先加上空字符串是为了避免char自动转型为int计算
+    }
+}
+
+/** 解法1：老解法。HashMap的键值对定义是<String,String>. */
 // 哈希表解法，难点在于如何处理dictionary中出现多个不同的字符串具有相同pattern时如何返回false
 // 题目没有说清楚什么时候给的word叫unique：有以下几种情况
 // 1. word的pattern根本dictionary中就没有，即：!map.containsKey(pattern)
