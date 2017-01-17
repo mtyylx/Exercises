@@ -23,8 +23,12 @@ import java.util.Set;
  * Function Signature:
  * public boolean isIsomorphic(String a, String b) {...};
  *
+ * <一一映射系列问题>
+ * E205 Isomorphic Strings: 给定两个字符串，判断两个字符串的字符是否满足<一一映射>。
+ * E290 Word Pattern      : 给定一个字符串，一个单词串，判断两者之间是否满足<一一映射>。
+ *
  * <Tags>
- * - HashMap: Key-Value-Pair, 排除一对多映射（HashMap自动完成）和多对一映射（需用containsValue手动判断）
+ * - HashMap: containsKey禁止一对多映射，containsValue禁止多对一映射。
  * - Value-As-Index: 字符数组ASCII值作为索引访问，可以等效于HashMap。
  *
  */
