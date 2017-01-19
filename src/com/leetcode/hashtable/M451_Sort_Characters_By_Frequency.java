@@ -29,6 +29,10 @@ import java.util.Map;
  * Function Signature:
  * public String frequencySort(String a) {...}
  *
+ * <出现频率分布统计 系列问题>
+ * - M347 Top K Frequent Element      : 给定一个整型数组和一个值K，按照元素出现次数从大到小的顺序返回前K个元素值。
+ * - M451 Sort Characters By Frequency: 给定一个字符串，按照字符出现次数从大到小的顺序返回字符串。
+ *
  * <Tags>
  * - HashMap: Key - 字符， Value - 字符出现的次数
  * - Value-As-Index: 针对小字符集可以代替HashMap实现映射功能。
