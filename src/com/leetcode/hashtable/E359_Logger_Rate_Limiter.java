@@ -14,44 +14,62 @@ import java.util.Map;
  * Example:
  * Logger logger = new Logger();
  * // logging string "foo" at timestamp 1
- * logger.shouldPrintMessage(1, "foo"); returns true;
- * // logging string "bar" at timestamp 2
- * logger.shouldPrintMessage(2,"bar"); returns true;
- * // logging string "foo" at timestamp 3
- * logger.shouldPrintMessage(3,"foo"); returns false;
- * // logging string "bar" at timestamp 8
- * logger.shouldPrintMessage(8,"bar"); returns false;
- * // logging string "foo" at timestamp 10
- * logger.shouldPrintMessage(10,"foo"); returns false;
- * // logging string "foo" at timestamp 11
- * logger.shouldPrintMessage(11,"foo"); returns true;
+ * logger.shouldPrintMessage(1, "foo");     // returns true;
  *
- * public boolean shouldPrintLog(int timestamp, String message) {...}
+ * // logging string "bar" at timestamp 2
+ * logger.shouldPrintMessage(2,"bar");      // returns true;
+ *
+ * // logging string "foo" at timestamp 3
+ * logger.shouldPrintMessage(3,"foo");      // returns false;
+ *
+ * // logging string "bar" at timestamp 8
+ * logger.shouldPrintMessage(8,"bar");      // returns false;
+ *
+ * // logging string "foo" at timestamp 10
+ * logger.shouldPrintMessage(10,"foo");     // returns false;
+ *
+ * // logging string "foo" at timestamp 11
+ * logger.shouldPrintMessage(11,"foo");     // returns true;
+ *
+ * public boolean shouldPrint(int timestamp, String message) {...}
+ *
+ * <Tags>
+ * - HashMap: Key → 消息, Value → 时间戳
+ *
  */
 
 public class E359_Logger_Rate_Limiter {
     public static void main(String[] args) {
-        Logger logger = new Logger();
-        System.out.println(logger.shouldPrintLog(1, "foo")); //returns true;
-        System.out.println(logger.shouldPrintLog(2,"bar")); //returns true;
-        System.out.println(logger.shouldPrintLog(3,"foo")); //returns false;
-        System.out.println(logger.shouldPrintLog(8,"bar")); //returns false;
-        System.out.println(logger.shouldPrintLog(10,"foo")); //returns false;
-        System.out.println(logger.shouldPrintLog(11,"foo")); //returns true;
+        LogLimiter2 logger2 = new LogLimiter2();
+        System.out.println(logger2.shouldPrint("foo", 1)); //returns true;
+        System.out.println(logger2.shouldPrint("bar", 2)); //returns true;
+        System.out.println(logger2.shouldPrint("foo", 3)); //returns false;
+        System.out.println(logger2.shouldPrint("bar", 8)); //returns false;
+        System.out.println(logger2.shouldPrint("foo", 10)); //returns false;
+        System.out.println(logger2.shouldPrint("foo", 11)); //returns true;
+
+        LogLimiter logger = new LogLimiter();
+        System.out.println(logger.shouldPrint("foo", 1)); //returns true;
+        System.out.println(logger.shouldPrint("bar", 2)); //returns true;
+        System.out.println(logger.shouldPrint("foo", 3)); //returns false;
+        System.out.println(logger.shouldPrint("bar", 8)); //returns false;
+        System.out.println(logger.shouldPrint("foo", 10)); //returns false;
+        System.out.println(logger.shouldPrint("foo", 11)); //returns true;
+
     }
 }
 
-// 使用哈希表解法最直观
+/** 解法2：同样是HashMap，简化了下逻辑。 */
 // 思路是：打印出来的消息才更新哈希表中对应键的时间戳，没打印的则不更新时间戳
-class Logger {
+class LogLimiter2 {
     private Map<String, Integer> map;
 
-    public Logger() {
+    public LogLimiter2() {
         this.map = new HashMap<>();
     }
 
-    public boolean shouldPrintLog(int timestamp, String message) {
-        // 如果没有出现该消息，或者出现了该消息但是时间戳只差大于10秒，那么就可以打印并更新时间戳
+    public boolean shouldPrint(String message, int timestamp) {
+        // 如果没有出现该消息，或者出现了该消息但是时间戳之差大于等于10秒，那么就可以打印，并同时更新时间戳。
         // 注意这里或运算的设计，A||B中，只有A为false时才会执行B，所以可以把B的前提写在!A中。
         if (!map.containsKey(message) || timestamp - map.get(message) >= 10) {
             map.put(message, timestamp);
@@ -59,5 +77,26 @@ class Logger {
         }
         else
             return false;
+    }
+}
+
+/** 解法1：HashMap. */
+// 关键在于只有时间戳之差超过了10，才可以打印，打印才可以导致时间戳更新，才可以导致继续打印。
+class LogLimiter {
+    private Map<String, Integer> map;
+    public LogLimiter() {
+        map = new HashMap<>();
+    }
+
+    public boolean shouldPrint(String message, int timeStamp) {
+        if (map.containsKey(message)) {                             // 消息出现过
+            if (timeStamp - map.get(message) < 10) return false;    // 消息出现过且是在10秒钟内出现的，不打印
+            map.put(message, timeStamp);                            // 否则打印，并更新时间戳
+            return true;
+        }
+        else {                                                      // 消息未出现过
+            map.put(message, timeStamp);                            // 肯定打印，并存储消息时间戳
+            return true;
+        }
     }
 }
