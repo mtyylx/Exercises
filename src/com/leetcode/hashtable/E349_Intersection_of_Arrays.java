@@ -17,10 +17,15 @@ import java.util.*;
  * Function Signature:
  * public int[] intersection(int[] a, int[] b) {...}
  *
+ * <Intersection 系列问题>
+ * E349 Intersection of Arrays：给定两个数组，找出它们共同拥有的元素，<不含重复>。
+ * E350 Intersection of Arrays：给定两个数组，找出它们共同拥有的元素，<包含重复>。
+ *
  * <Tags>
  * - Sort + Two Pointers: [i → → → ... ] [j → → → ... ]
  * - Sort + Binary Search: [i → → → ... mid ... ← ← ← j]
  * - HashSet去重
+ * - 小递归：在方法起始添加一个递归语句，优化性能。
  *
  */
 public class E349_Intersection_of_Arrays {
