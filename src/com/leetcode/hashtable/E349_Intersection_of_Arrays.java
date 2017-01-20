@@ -5,8 +5,7 @@ import java.util.*;
 /**
  * Created by Michael on 2016/8/30.
  * Given two arrays, write a function to compute their intersection.
- * 说的更清楚些，就是求两个数组的公用元素列表。
- * 一个元素如果既出现在a数组也出现在b数组中，就算是结果之一。
+ * 求两个数组的公用元素列表。一个元素如果既出现在a数组也出现在b数组中，就算是结果之一。
  *
  * Example:
  * Given nums1 = [1, 2, 2, 1], nums2 = [2, 2], return [2].
@@ -17,86 +16,83 @@ import java.util.*;
  *
  * Function Signature:
  * public int[] intersection(int[] a, int[] b) {...}
- * */
+ *
+ * <Tags>
+ * - Sort + Two Pointers: [i → → → ... ] [j → → → ... ]
+ * - Sort + Binary Search: [i → → → ... mid ... ← ← ← j]
+ * - HashSet去重
+ *
+ */
 public class E349_Intersection_of_Arrays {
     public static void main(String[] args) {
-        int[] a = {1, 4, 7, 29, 30, 59, 67};
-        int[] b = {2, 5, 6, 30, 59, 55};
-        int[] result = intersection3(a, b);
+        int[] a = {1, 4, 2, 8, 5, 7};
+        int[] b = {2, 6, 4, 3, 4, 2, 9};
+        System.out.println(Arrays.toString(intersection3(a, b)));
+        System.out.println(Arrays.toString(intersection2(a, b)));
+        System.out.println(Arrays.toString(intersection1(a, b)));
     }
 
-    // 二分查找，两数组
-    // 当然也可以只让一个数组有序，然后遍历另一个数组的每个元素，边遍历边与已排序数组进行二分查找比对
-    // 所以计算量依然是n次的logn二分查找。
+
+    /** 解法3：双HashSet。Time - o(n), Space - o(n). */
+    // 先对第一个数组用HashSet去重，然后遍历第二个数组，判断元素是否在第一个数组出现。
     static int[] intersection3(int[] a, int[] b) {
-        int[] small = a.length < b.length ? a : b;
-        int[] big = a.length >= b.length ? a : b;
-        Arrays.sort(big);
+        if (a == null || b == null) return null;
         Set<Integer> set = new HashSet<>();
-        int i, j, mid;
-        for (int x = 0; x < small.length; x++) {
-            // 每扫描完一个元素，必须重置首尾指针哦
-            i = 0;
-            j = big.length - 1;
-            while (i <= j) {
-                mid = (i + j) / 2;
-                if      (big[mid] < small[x]) i = mid + 1;
-                else if (big[mid] > small[x]) j = mid - 1;
-                else    {
-                    set.add(small[x]);
-                    break;      // 找到后得立刻退出循环
-                }
-            }
-        }
-        int[] result = new int[set.size()];
+        for (int x : a) set.add(x);
+        Set<Integer> inter = new HashSet<>();
+        for (int x : b)
+            if (set.contains(x)) inter.add(x);
+        int[] result = new int[inter.size()];
         int idx = 0;
-        for (int ele : set) {
-            result[idx++] = ele;
-        }
+        for (int x : inter) result[idx++] = x;
         return result;
     }
 
-    // 先把两个数组都排序后用双指针扫描解法，因为有排序的复杂度在那，所以是o(nlogn)
+    /** 解法2：Sort + Two Pointer。Time - o(nlogn), Space - o(n). */
+    // 对两个数组都进行排序，然后双指针同步扫描，根据大小关系选择移动哪个指针。
     static int[] intersection2(int[] a, int[] b) {
+        if (a == null || b == null) return null;
+        List<Integer> result = new ArrayList<>();
         Arrays.sort(a);
         Arrays.sort(b);
-        int i = 0;
-        int j = 0;
-        Set<Integer> set = new HashSet<>();
-        while (i < a.length && j < b.length) {
-            if      (a[i] > b[j]) j++;
-            else if (a[i] < b[j]) i++;
+        int i = 0, j = 0;
+        while (i < a.length && j < b.length) {      // 双指针同步扫描
+            if      (a[i] < b[j]) i++;
+            else if (a[i] > b[j]) j++;
             else {
-                set.add(a[i]);
-                i++;
-                j++;
+                result.add(a[i]);
+                i++; j++;
             }
         }
-        int[] result = new int[set.size()];
-        int x = 0;
-        for (int z : set)
-            result[x++] = z;
-        return result;
+        Set<Integer> set = new HashSet<>(result);
+        int[] res = new int[set.size()];
+        int idx = 0;
+        for (int x : set) res[idx++] = x;
+        return res;
     }
 
-    // 常规解法，o(n)
-    // 先统计数组a中独特元素都是哪些，存在HashSet中
-    // 再统计数组b中有哪些元素是HashSet中有的，存在ArrayList中
-    // 最后把ArrayList转化成为int数组返回
-    static int[] intersection(int[] a, int[] b) {
-        Set<Integer> set = new HashSet<>();
-        List<Integer> list = new ArrayList<>();
-        for (int x : a)
-            set.add(x);
-        for (int x : b) {
-            if (set.contains(x)) {
-                list.add(x);
-                set.remove(x);  // 避免重复记录
+    /** 解法1：Sort + Binary Search. Time - o(nlogn), Space - o(n). */
+    // 对两个数组中的其中一个进行排序，然后对另外一个数组的每一个元素使用Binary Search。
+    // 为了避免结果中出现重复元素，需要存入HashSet中再输出到int[]数组之中。
+    static int[] intersection1(int[] a, int[] b) {
+        if (a == null || b == null) return null;
+        if (a.length > b.length) intersection1(b, a);   // 小递归：为的是让两个数组中长的那个排序，短的那个遍历
+        Set<Integer> set = new HashSet<>();             // 自动去重，避免记录重复元素
+        Arrays.sort(b);                                 // Time - o(max(n,m) * log(max(n,m)))
+        for (int x : a) {                               // 标准Binary Search, Time - o(min(n,m) * log(max(n,m)))
+            int i = 0;
+            int j = b.length - 1;
+            while (i <= j) {
+                int mid = i + (j - i) / 2;
+                if      (b[mid] < x) i = mid + 1;
+                else if (b[mid] > x) j = mid - 1;
+                else    { set.add(x); break; }          // 找到就立即结束while循环
             }
         }
-        int[] result = new int[list.size()];
-        for (int i = 0; i < result.length; i++)
-            result[i] = list.get(i);
-        return result;
+        int idx = 0;
+        int[] res = new int[set.size()];
+        for (int x : set) res[idx++] = x;               // 集合类转数组
+        return res;
     }
+
 }
