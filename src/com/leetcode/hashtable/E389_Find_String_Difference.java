@@ -1,6 +1,8 @@
 package com.leetcode.hashtable;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,15 +20,24 @@ import java.util.Set;
  *
  * Function Signature:
  * public char findDifference(String a, String b) {...}
+ *
+ * <Tags>
+ * - HashMap: Key → 字符, Value → 出现次数。使用map.put(c, map.getOrDefault(c, 0) + 1);一行就搞定字符串的字符分布频率统计。
+ * - Bit Manipulation: XOR. 异或运算绝对是求差别的最强大工具。
+ * - 硬币翻转加减法: 又称为Sum +/-法，与XOR有异曲同工之妙。
+ *
  */
 public class E389_Find_String_Difference {
     public static void main(String[] args) {
+        System.out.println(findDiff("abcde", "dcbe"));
+        System.out.println(findDiff2("abcde", "dcbe"));
         String a = "\uFFFE\uFFFF";
         String b = "\uFFFF\uFFFE\u1234";
-        char result = findDifference2(a, b);
+        System.out.println(findDiff3(a, b));
     }
 
-    // 加减解法，
+    /** 解法3：我自创的硬币翻转加减解法。Time - o(n), Space - o(1). */
+    // 绝对原创解法。其实该算法的本质类似与XOR，都是把所有信息累加在一起，最后看呈现出的结果。
     // 比我一开始想象的要复杂的多，先加后减并不能避免overflow/underflow，
     // 运算的过程中一样会出现小于0而underflow，或大于65535而overflow
     // 但是很绝的是即使连续overflow多次，依然可以得到正确结果！
@@ -34,9 +45,7 @@ public class E389_Find_String_Difference {
     // 我敢说如果深究的话，其实在underflow和overflow的时候，其实运算的原理和异或一定有相似之处
     // 但是说实话这么玩让人觉得很不可靠，所以还是能避免underflow/overflow就避免吧。
     // 在研究的过程中复习了下char这个基础类型的知识，例如取值范围为0到65535，不存在负值。
-    // time - o(n)
-    // space - o(1)
-    static char findDifference2(String a, String b) {
+    static char findDiff3(String a, String b) {
         char result = b.charAt(b.length() - 1);
         for (int i = 0; i < a.length(); i++) {
             result += b.charAt(i);
@@ -45,17 +54,30 @@ public class E389_Find_String_Difference {
         return result;
     }
 
-    // 比特翻转解法
-    // time - o(n)
-    // space - o(1)
-    // 需要注意将0赋给char类型变量时，其值为'\u0000'，对应的二进制值就是全0，所以根本不需要最后异或掉初始值。
-    // 如果将'0'赋给char类型变量时，其ASCII值才是48，即110000
-    static char findDifference(String a, String b) {
+    /** 解法2：HashMap 正负统计出现次数。Time - o(n), Space - o(n). */
+    // 正负计数，最后所有键值对都抵消殆尽，只有一个键值对的Value（出现次数）不为0，就是要找的字符。
+    static char findDiff2(String a, String b) {
+        Map<Character, Integer> map = new HashMap<>();
+        for (char c : a.toCharArray())
+            map.put(c, map.getOrDefault(c, 0) + 1);     // 来自字符串a的字符计数为正
+        for (char c : b.toCharArray())
+            map.put(c, map.getOrDefault(c, 0) - 1);     // 来自字符串b的字符计数为负
+        for (char c : map.keySet())
+            if (map.get(c) != 0) return c;                         // 由于题目字符串a和b一定只有一个字符不同，因此最后HashMap中只有一个不为0的Value
+        return 'f';
+    }
+
+    /** 解法1：XOR (Bit Manipulation).  Time - o(n), Space - o(1). */
+    // 看到<两者几乎完全相似求它们不同元素>这种描述，第一个想到的就是无敌的XOR。
+    // 由于字符类型与整型的完全可互换的，因此整型的性质都可以用在字符运算上，因此对字符直接进行XOR完全没问题。
+    // 需要注意的是，char类型变量的一般取值范围是[0, 65535]，其默认初始值是'\u0000\'，这个值就等效于<整型数字0>本身（注意数字0和字符'0'含义不同）
+    // 因此 char x = 0 等效于 char x = '\u0000'.
+    // 注意区别：char x = 0 与 char x = '0' 是完全没关系的两个值。数字0的ASCII值就是0（'\u0000'），而字符'0'的ASCII值是48，即'\u0030'.
+    // 由于0在XOR运算中就等效于空气，因此将result初始化为0可以确保不留任何痕迹。
+    static char findDiff(String a, String b) {
         char result = 0;
-        for (char x : a.toCharArray())
-            result ^= x;
-        for (char x : b.toCharArray())
-            result ^= x;
+        for (char x : a.toCharArray()) result ^= x;
+        for (char x : b.toCharArray()) result ^= x;
         return result;
     }
 }
