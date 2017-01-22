@@ -21,9 +21,17 @@ import java.util.Set;
  * Function Signature:
  * public boolean isPalindromePermutation(String a) {...}
  *
+ * <Palindrome系列问题>
+ * E9   Palindrome Number
+ * E125 Palindrome String
+ * E234 Palindrome LinkedList
+ * E266 Palindrome Permutation
+ * M267 Palindrome Permutation II
+ * E409 Longest Palindrome
+ *
  * <Tags>
  * - HashSet: 统计字符分布。
- * - Coin-Flipping：硬币式增删法。有就删掉，没有就添上，最后剩下的一定是落单的。
+ * - Coin-Flipping：硬币翻转加减法（Sum +/-）。有就删掉，没有就添上，最后剩下的一定是落单的。
  * - Value-As-Index：模拟哈希表。
  *
  */
