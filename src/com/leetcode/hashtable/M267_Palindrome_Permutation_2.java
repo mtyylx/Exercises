@@ -27,23 +27,34 @@ import java.util.*;
  * M267 Palindrome Permutation II
  * E409 Longest Palindrome
  *
+ * <Permutation系列问题>
+ * M267 Palindrome Permutation II
+ * M46  Permutation
+ * M47  Permutation II
+ * M31  Next Permutation
+ *
  * <Tags>
  * - HashMap：Key → 字符，Value → 出现次数。
  * - Value-As-Index: 模拟HashMap统计字符频率分布。
- * - Backtracking: 路径增删 / 记录索引而不是内容 / 跳过同层相等元素
+ * - Backtracking
+ *      - 路径增删: 1. List<Character>做数据源， 2. Map<Character,Integer>做数据源
+ *      - <选过的不能再选>: 1. 记录索引而不是内容， 2. 使用额外数组标记使用情况
+ *      - <跳过同层相等元素>
+ * - 字符串反转：用StringBuilder。Arrays没有提供，Collections的绕太远。
  *
  */
 public class M267_Palindrome_Permutation_2 {
     public static void main(String[] args) {
-        System.out.println(getAllPalindromes("abcabc").toString());
-        System.out.println(getAllPalindromes2("aab").toString());
+        System.out.println(getAllPalindromes("aabbccc").toString());
+        System.out.println(getAllPalindromes2("aabbccc").toString());
+        System.out.println(getAllPalindromes3("aabbccc").toString());
     }
 
-    /** 解法2：HashMap统计词频 + Backtracking。简化解法1的逻辑。 */
+    /** 解法3：HashMap统计词频 + Backtracking。不过似乎HashMap的频繁改值运算性能并没有直接 */
     // 起初想把逻辑设计成一旦哈希表中的字符对应出现次数为0就删除该KVP，
     // 但是这么做会导致用foreach遍历Key时出现ConcurrentModification，只能通过新建一个拷贝的HashMap来workaround，不是一个好方法。
     // 现在改成先检查key值，只要为0就跳过。由于我们foreach的时keySet，而修改的是Values，因此就巧妙的避开了上面的问题
-    static List<String> getAllPalindromes2(String s) {
+    static List<String> getAllPalindromes3(String s) {
         List<String> result = new ArrayList<>();
         Map<Character, Integer> map = new HashMap<>();
         for (char c : s.toCharArray()) map.put(c, map.getOrDefault(c, 0) + 1);
@@ -54,7 +65,7 @@ public class M267_Palindrome_Permutation_2 {
             map.put(c, map.get(c) / 2);                     // 对于只出现1次的字符，会自动降为0
         }
         if (count > 1) return result;
-        getPermutations2(map, result, new StringBuilder(), s.length() / 2, odd);    // 不管字符串是奇是偶，达标长度一定是除2
+        getPermutations3(map, result, new StringBuilder(), s.length() / 2, odd);    // 不管字符串是奇是偶，达标长度一定是除2
         return result;
     }
 
@@ -66,7 +77,7 @@ public class M267_Palindrome_Permutation_2 {
     // path用来记录当前走过的路径（做出的选择）
     // len作为递归终止条件，即字符串的一半长度，例如源字符串长度为3，那么path长到1就可以返回，如果长度为4，那么path长到2就可以返回
     // odd作为返回时构造镜像字符串中心点（仅当字符串拥有奇数次字符时才起作用）
-    private static void getPermutations2(Map<Character, Integer> map, List<String> result, StringBuilder path, int len, char odd) {
+    private static void getPermutations3(Map<Character, Integer> map, List<String> result, StringBuilder path, int len, char odd) {
         if (path.length() == len) {
             StringBuilder sb = new StringBuilder(path);
             if (odd != 0) sb.append(odd);
@@ -79,9 +90,52 @@ public class M267_Palindrome_Permutation_2 {
             if (map.get(c) == 0) continue;                  // 次数用尽，直接跳过
             map.put(c, map.get(c) - 1);
             path.append(c);
-            getPermutations2(map, result, path, len, odd);
+            getPermutations3(map, result, path, len, odd);
             map.put(c, map.get(c) + 1);
             path.deleteCharAt(path.length() - 1);
+        }
+    }
+
+    /** 解法2：解法1的增强版 - 使用String做中间位置的字符。使用StringBuilder做path方便反转。使用boolean[]标记已使用元素降低运算复杂度。 */
+    static List<String> getAllPalindromes2(String s) {
+        List<String> result = new ArrayList<>();
+        // Step #1. 检查是否满足Palindrome要求
+        int[] map = new int[128];
+        for (char c : s.toCharArray()) map[c]++;
+        String odd = "";                            // 即能缓存出现奇数次的字符，其长度也标识了是否满足palindrome，无需单独计数了
+        for (int i = 0; i < map.length; i++) {
+            if (map[i] % 2 != 0) odd += (char) i;
+            map[i] /= 2;
+        }
+        if (odd.length() > 1) return result;
+        // Step #2. 构造半个字符串
+        List<Character> source = new ArrayList<>();
+        for (int i = 0; i < map.length; i++) {
+            if (map[i] == 0) continue;
+            for (int j = 0; j < map[i]; j++)
+                source.add((char) i);
+        }
+        // Step #3. 根据半个字符串构造其排列组合，并合成镜像字符串
+        getPermutations2(source, result, new StringBuilder(), new boolean[source.size()], odd);
+        return result;
+    }
+
+    // 选过的位置不能再选这个逻辑通过boolean[]数组实践
+    // 直接这里面集成了构造镜像字符串的功能，更简洁
+    private static void getPermutations2(List<Character> source, List<String> result, StringBuilder path, boolean[] used, String odd) {
+        if (path.length() == source.size()) {
+            result.add(path.toString() + odd + path.reverse().toString());        // 很简洁的写法：利用StringBuilder的反转功能
+            path.reverse();                                                       // 但是要注意这个方法是In-place修改源字符串的，因此用完得反转回来！
+            return;
+        }
+        for (int i = 0; i < source.size(); i++) {
+            if (used[i]) continue;                              // 和source相同长度的布尔类型数组用于标记元素是否使用，将原本o(n)的复杂度降为o(1).
+            used[i] = true;
+            path.append(source.get(i));
+            getPermutations2(source, result, path, used, odd);
+            path.deleteCharAt(path.length() - 1);
+            used[i] = false;                                    // 用完记得恢复
+            while (i < source.size() - 1 && source.get(i) == source.get(i + 1)) i++;
         }
     }
 
@@ -103,7 +157,7 @@ public class M267_Palindrome_Permutation_2 {
         char odd = 0;
         int count = 0;                              // 判定奇数次字符的个数
         for (int i = 0; i < map.length; i++) {
-            if (map[i] % 2 != 0) { odd = (char) map[i]; count++; }
+            if (map[i] % 2 != 0) { odd = (char) i; count++; }
             map[i] /= 2;
         }
         if (count > 1) return result;
@@ -154,6 +208,4 @@ public class M267_Palindrome_Permutation_2 {
             while (i < source.size() - 1 && source.get(i) == source.get(i + 1)) i++;    // 同一级深度跳过相同元素，去重
         }
     }
-
-
 }
