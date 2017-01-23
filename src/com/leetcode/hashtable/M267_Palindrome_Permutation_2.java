@@ -37,9 +37,9 @@ import java.util.*;
  * - HashMap：Key → 字符，Value → 出现次数。
  * - Value-As-Index: 模拟HashMap统计字符频率分布。
  * - Backtracking
- *      - 路径增删: 1. List<Character>做数据源， 2. Map<Character,Integer>做数据源
+ *      - 路径增删: 1. List<Character>做数据源， 2. Map<Character,Integer> 或 int[] 做数据源
  *      - <选过的不能再选>: 1. 记录索引而不是内容， 2. 使用额外数组标记使用情况
- *      - <跳过同层相等元素>
+ *      - <跳过同层相等元素>: 如果使用类HashMap方式则自动达成。
  * - 字符串反转：用StringBuilder。Arrays没有提供，Collections的绕太远。
  *
  */
@@ -48,13 +48,15 @@ public class M267_Palindrome_Permutation_2 {
         System.out.println(getAllPalindromes("aabbccc").toString());
         System.out.println(getAllPalindromes2("aabbccc").toString());
         System.out.println(getAllPalindromes3("aabbccc").toString());
+        System.out.println(getAllPalindromes4("aabbccc").toString());
     }
 
-    /** 解法3：HashMap统计词频 + Backtracking。不过似乎HashMap的频繁改值运算性能并没有直接 */
+    /** 解法4：HashMap统计词频 + Backtracking。速度慢于解法3。 */
+    // 按解法3的思路，从Value-As-Index迁移至HashMap的解法，但是速度并没有解法3快。
     // 起初想把逻辑设计成一旦哈希表中的字符对应出现次数为0就删除该KVP，
     // 但是这么做会导致用foreach遍历Key时出现ConcurrentModification，只能通过新建一个拷贝的HashMap来workaround，不是一个好方法。
     // 现在改成先检查key值，只要为0就跳过。由于我们foreach的时keySet，而修改的是Values，因此就巧妙的避开了上面的问题
-    static List<String> getAllPalindromes3(String s) {
+    static List<String> getAllPalindromes4(String s) {
         List<String> result = new ArrayList<>();
         Map<Character, Integer> map = new HashMap<>();
         for (char c : s.toCharArray()) map.put(c, map.getOrDefault(c, 0) + 1);
@@ -65,7 +67,7 @@ public class M267_Palindrome_Permutation_2 {
             map.put(c, map.get(c) / 2);                     // 对于只出现1次的字符，会自动降为0
         }
         if (count > 1) return result;
-        getPermutations3(map, result, new StringBuilder(), s.length() / 2, odd);    // 不管字符串是奇是偶，达标长度一定是除2
+        getPermutations4(map, result, new StringBuilder(), s.length() / 2, odd);    // 不管字符串是奇是偶，达标长度一定是除2
         return result;
     }
 
@@ -77,7 +79,7 @@ public class M267_Palindrome_Permutation_2 {
     // path用来记录当前走过的路径（做出的选择）
     // len作为递归终止条件，即字符串的一半长度，例如源字符串长度为3，那么path长到1就可以返回，如果长度为4，那么path长到2就可以返回
     // odd作为返回时构造镜像字符串中心点（仅当字符串拥有奇数次字符时才起作用）
-    private static void getPermutations3(Map<Character, Integer> map, List<String> result, StringBuilder path, int len, char odd) {
+    private static void getPermutations4(Map<Character, Integer> map, List<String> result, StringBuilder path, int len, char odd) {
         if (path.length() == len) {
             StringBuilder sb = new StringBuilder(path);
             if (odd != 0) sb.append(odd);
@@ -90,9 +92,42 @@ public class M267_Palindrome_Permutation_2 {
             if (map.get(c) == 0) continue;                  // 次数用尽，直接跳过
             map.put(c, map.get(c) - 1);
             path.append(c);
-            getPermutations3(map, result, path, len, odd);
+            getPermutations4(map, result, path, len, odd);
             map.put(c, map.get(c) + 1);
             path.deleteCharAt(path.length() - 1);
+        }
+    }
+
+    /** 解法3：解法2的简化版 - Backtracking之前不再构建专门的字符串供排列组合，而是直接使用Value-As-Index的数组进行Backtracking。*/
+    static List<String> getAllPalindromes3(String s) {
+        List<String> result = new ArrayList<>();
+        int[] map = new int[128];
+        for (char c : s.toCharArray()) map[c]++;
+        String odd = "";
+        for (int i = 0; i < map.length; i++) {
+            if (map[i] % 2 != 0) odd += (char) i;
+            map[i] /= 2;
+        }
+        if (odd.length() > 1) return result;
+        getPermutations3(map, result, new StringBuilder(), odd, s.length() / 2);    // 不管字符串是奇是偶，达标长度一定是除2
+        return result;
+    }
+
+    // 判断map数组元素值是否大于0，决定是否还能使用
+    // 由于相同元素已经归类在一起，所以无需考虑去重，"跳过同层相等元素"的原则已经自动满足
+    private static void getPermutations3(int[] map, List<String> result, StringBuilder path, String odd, int len) {
+        if (path.length() == len) {
+            result.add(path.toString() + odd + path.reverse().toString());
+            path.reverse();
+            return;
+        }
+        for (int i = 0; i < map.length; i++) {
+            if (map[i] == 0) continue;                      // 次数用尽，直接跳过
+            map[i]--;
+            path.append((char) i);                          // 新增路径，记录的是内容（不像解法1只能记录索引）
+            getPermutations3(map, result, path, odd, len);
+            path.deleteCharAt(path.length() - 1);
+            map[i]++;
         }
     }
 
