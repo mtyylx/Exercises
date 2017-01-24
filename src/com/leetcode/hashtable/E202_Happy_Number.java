@@ -25,9 +25,9 @@ import java.util.Set;
  * <Tags>
  * - Loop Detection: HashSet判重
  * - Loop Detection: Two Pointers （快慢指针，快指针是慢指针前进速度的两倍）
- * - Math
+ * - Math: 穷举找规律
  *
- * */
+ */
 public class E202_Happy_Number {
     public static void main(String[] args) {
         for (int i = 1; i < 100; i++) {
