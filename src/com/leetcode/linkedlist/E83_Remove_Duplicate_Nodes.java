@@ -41,21 +41,22 @@ public class E83_Remove_Duplicate_Nodes {
         return head;
     }
 
-    // 双指针解法，但似乎并不简约，time - o(n), space - o(1)
-    // 快指针一旦找到和慢指针值不同的节点，就让慢指针节点的next指向这个节点，然后向前移动慢指针
+    /** 解法1：双指针解法（快慢指针）。Time - o(n), Space - o(1). */
+    // 快指针负责寻找和慢指针不同的节点，如果相同，就只移动快指针，如果不同，就让慢指针的next指向快指针，并且同时移动快指针和慢指针。
+    // 需要单独处理最后全是相同节点的情况
+    // 需要单独处理空链表的情形
     static ListNode removeDuplicate(ListNode head) {
-        if (head == null || head.next == null) return head;
-        ListNode current = head;
-        ListNode next = head.next;
-        while (next != null) {
-            if (next.val != current.val) {
-                current.next = next;
-                current = current.next;
-                next = current;
+        if (head == null) return null;
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null) {
+            if (fast.val != slow.val) {
+                slow.next = fast;
+                slow = slow.next;
             }
-            next = next.next;
+            fast = fast.next;
         }
-        current.next = next;
+        slow.next = null;
         return head;
     }
 }
