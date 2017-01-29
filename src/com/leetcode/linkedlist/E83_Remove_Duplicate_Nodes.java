@@ -11,6 +11,10 @@ package com.leetcode.linkedlist;
  * Function Signature:
  * public ListNode removeDuplicate(ListNode head) {...}
  *
+ * <链表重复节点删除 系列问题>
+ * E83 Remove Duplicate Nodes   : 给定一个已排序单链表，删除多余的重复节点。
+ * M82 Remove Duplicate Nodes 2 : 给定一个已排序单链表，只要节点值出现重复就删除。
+ *
  * <Tags>
  * - Two Pointers：快慢指针同向扫描，快指针始终移动，慢指针仅在值不相同时才移动。[ slow → → → ... fast → → → ... ]
  * - 递归解法：反向递归，在当前节点和子链表之间做出选择。

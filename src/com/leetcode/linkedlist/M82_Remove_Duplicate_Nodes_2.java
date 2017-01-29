@@ -39,6 +39,18 @@ public class M82_Remove_Duplicate_Nodes_2 {
     // 但是此时并不能急于将slow移动至fast.next，因为此时我们还不清楚fast.next是否就符合要求，例如 2 2 3 3 4 4 这种就不符合要求，
     // 因此应该做的是先更新slow.next的指针。
     // 如果标志为是false，就说明可以移动slow指针了。
+    // dummy -> 1 -> 1 -> 2 -> 3 -> 3       初始状态
+    //   ↑      ↑
+    //   slow   fast
+    // dummy -> 1 -> 1 -> 2 -> 3 -> 3       while循环结束，fast停在不同节点之前
+    //   ↑           ↑    ↑
+    //   slow        fast fast.next
+    // dummy -> 2 -> 3 -> 3                 更新slow.next
+    //   ↑      ↑    ↑
+    //   slow   fast fast.next
+    // dummy -> 2 -> 3 -> 3                 更新slow
+    //          ↑    ↑
+    //        slow   fast
     static ListNode removeDuplicate(ListNode head) {
         ListNode dummy = new ListNode(0);
         dummy.next = head;
