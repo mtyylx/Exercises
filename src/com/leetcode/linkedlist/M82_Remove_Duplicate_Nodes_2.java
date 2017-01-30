@@ -25,10 +25,11 @@ public class M82_Remove_Duplicate_Nodes_2 {
     public static void main(String[] args) {
         removeDuplicate(ListNode.Generator(new int[] {1, 1, 2, 2, 3, 4, 4, 4, 5, 5, 5})).print();
         removeDuplicate2(ListNode.Generator(new int[] {1, 1, 2, 2, 3, 4, 4, 4, 5, 5, 5})).print();
+        removeDuplicate3(ListNode.Generator(new int[] {1, 1, 2, 2, 3, 4, 4, 4, 5, 5, 5})).print();
     }
 
 
-    /** 解法1：双指针（快慢指针）+ Dummy节点. Time - o(n), Space - o(1). */
+    /** 解法1：双指针（快慢指针）+ Dummy节点.（迭代写法） Time - o(n), Space - o(1). */
     // 由于涉及到head被删除的情况，所以肯定要用dummy节点。
     // slow从dummy节点出发，fast从head出发，可以自动处理head为空节点的情况。
     // 关键在于slow和fast的移动逻辑：
@@ -89,36 +90,25 @@ public class M82_Remove_Duplicate_Nodes_2 {
         return dummy.next;
     }
 
-    // 最初的解法，没有章法，判断语句太多。
-    static ListNode removeDuplicatex(ListNode head) {
-        ListNode dummy = new ListNode(0);
-        ListNode done = dummy;
-        ListNode current = head;
-        ListNode next;
-        while (current != null) {
-            if (current.next != null) next = current.next;
-            else {
-                done.next = current;
-                done = done.next;
-                break;
-            }
-            if (next.val == current.val) {
-                while (next != null && next.val == current.val) {
-                    next = next.next;
-                }
-                if (next != null) current = next;
-                else {
-                    done.next = null;
-                    break;
-                }
-            }
-            else {
-                done.next = current;
-                done = done.next;
-                current = current.next;
-            }
+
+
+    /** 解法2：递归写法（正向递归）. Time - o(n), Space - o(n). */
+    // 虽然链表问题通常不建议用递归解法，因为当链表很长时将会很轻松的堆栈溢出。但是用递归解链表问题确实是一种思维训练，很考验对递归的理解。
+    // 在这道题中，我最初试图用E83的反向递归思路来解决，但是由于E83和M82的细微不同，反向递归处理起来并不好弄。
+    // 因为这里你需要在了解这个节点值已经重复的情况下抛弃所有拥有该节点值的节点，链表的接续将会很困难。
+    // 而如果使用正向递归，则一切都豁然开朗。
+    // 正向递归可以确保最快的检测到出现相等值的相邻节点，并且直接跳过它。
+    // 而且正向递归的逻辑可以确保只要当前节点与下个节点值不相等，那么当前节点就一定是独一无二的。
+    static ListNode removeDuplicate3(ListNode head) {
+        if (head == null) return null;                                  // 递归终止条件
+        if (head.next != null && head.val == head.next.val) {
+            while (head.next != null && head.val == head.next.val)
+                head = head.next;
+            return removeDuplicate3(head.next);
         }
-        done.next = null;
-        return dummy.next;
+        else head.next = removeDuplicate3(head.next);
+        return head;
     }
+
+
 }
