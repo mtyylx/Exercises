@@ -19,6 +19,7 @@ package com.leetcode.linkedlist;
  * <Tags>
  * - Two Pointers: 快慢指针同向扫描. [slow → → → ... fast → → → ...]
  * - Dummy节点：由于链表头节点有可能会被删除。
+ * - 递归：正序递归。
  *
  */
 public class M82_Remove_Duplicate_Nodes_2 {
@@ -97,16 +98,22 @@ public class M82_Remove_Duplicate_Nodes_2 {
     // 在这道题中，我最初试图用E83的反向递归思路来解决，但是由于E83和M82的细微不同，反向递归处理起来并不好弄。
     // 因为这里你需要在了解这个节点值已经重复的情况下抛弃所有拥有该节点值的节点，链表的接续将会很困难。
     // 而如果使用正向递归，则一切都豁然开朗。
-    // 正向递归可以确保最快的检测到出现相等值的相邻节点，并且直接跳过它。
+    // 由于正向递归是从表头一直扫描至表尾的，因此它能够<最早的检测到出现相等值的相邻节点>，并且直接跳过所有同类。
+    // 1 -> 2 -> 2 -> 2 -> 3
+    //      ↑
+    //      检测到重复节点，跳过所有等于2的节点
     // 而且正向递归的逻辑可以确保只要当前节点与下个节点值不相等，那么当前节点就一定是独一无二的。
+    // 1 -> 2 -> 2 -> 2 -> 3 -> 4
+    //                     ↑
+    //                     当前节点与下个节点不同，保留当前节点，对下个节点打头的子链表进行递归
     static ListNode removeDuplicate3(ListNode head) {
         if (head == null) return null;                                  // 递归终止条件
         if (head.next != null && head.val == head.next.val) {
             while (head.next != null && head.val == head.next.val)
                 head = head.next;
-            return removeDuplicate3(head.next);
+            return removeDuplicate3(head.next);                         // 跳过所有相同节点，递归后续链表
         }
-        else head.next = removeDuplicate3(head.next);
+        else head.next = removeDuplicate3(head.next);                   // 保留当前节点，递归后续链表
         return head;
     }
 
