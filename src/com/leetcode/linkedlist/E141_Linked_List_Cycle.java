@@ -5,48 +5,69 @@ import java.util.Set;
 
 /**
  * Created by LYuan on 2016/9/8.
- * Given a linked list, determine if it has a cycle in it. <-- 判断链表是否是循环链表，比较的是节点（内存地址）是否重复，而不只是值是否重复
+ * Given a linked list, determine if it has a cycle in it.
+ * 判断链表是否是循环链表，比较的是节点（内存地址）是否重复，而不只是值是否重复
  *
  * Notes:
  * Can you solve it without using extra space?
  *
  * Function Signature:
  * public boolean hasCycle(ListNode head) {...}
- * */
+ *
+ * <Tags>
+ * - Two Pointers: 快慢指针用于循环检测。慢指针每次移动一个节点，快指针每次移动两个节点。[slow → * 1 ... fast → * 2 ... ]
+ * - HashSet: 判重。这里所存元素是节点的内存地址。
+ *
+ */
 public class E141_Linked_List_Cycle {
     public static void main(String[] args) {
         ListNode x = ListNode.Generator(new int[] {1, 2, 3, 4});
         x.next.next.next.next = x;      // Make it loop back to the first node.
         System.out.println(hasCycle(x));
+        System.out.println(hasCycle2(x));
 
         // 即使每个元素内容都一样，一样可以正确判断。因为比较的是两个节点是否一样，而不是两个节点的val是否一样。
         ListNode y = ListNode.Generator(new int[] {1, 1, 1, 1});
         x.next.next.next.next = x;
         System.out.println(hasCycle(x));
+        System.out.println(hasCycle2(x));
     }
 
-    // 双指针解法，fast/slow pointer. time - o(n), space - o(1)
-    // 简单的来说就是判断链表是否是循环链表，而不是判断链表中的元素内容是否周期循环。
-    static boolean hasCycle(ListNode head) {
+    /** 解法2：双指针（快慢指针）。优势是空间复杂度低。Time - o(n), Space - o(1). */
+    // 快慢指针同向扫描的一大功效：循环检测。
+    // 慢指针采用1倍步长，快指针采用2倍步长，有定理可以证明如果循环存在则两个指针一定会相遇。
+    // 1 -> 2 -> 3 -> 4
+    //      ↑_________|
+    // 指针运动示例：
+    // 1 -> 2 -> 3 -> 4
+    //      ↑    ↑
+    //      slow fast
+    // 1 -> 2 -> 3 -> 4
+    //      ↑    ↑
+    //      fast slow
+    // 1 -> 2 -> 3 -> 4
+    //               ↑ ↑
+    //            fast,slow
+    //
+    static boolean hasCycle2(ListNode head) {
         ListNode slow = head;
         ListNode fast = head;
-        // 终止条件很容易疏忽：假设没有cycle，那么fast一定永远跑在slow的前面，因此只要fast没有遇到null那么slow一定不会遇到null
-        // 假设真的有cycle，那么就更不可能遇到null
-        while (fast != null && fast.next != null && fast.next.next != null) {
+        while (fast != null && fast.next != null && fast.next.next != null) {       // 循环逻辑：得寸进尺，确定fast不为null才检查fast.next
             slow = slow.next;
             fast = fast.next.next;
-            if (slow == fast) return true;
+            if (slow == fast) return true;                                          // 这里是内存地址比较，即identity compare
         }
         return false;
     }
 
-    // 哈希表解法，time - o(n), space - o(n).
-    static boolean hasCycle2(ListNode head) {
+    /** 解法1：HashSet判重。需要使用额外空间。Time - o(n), Space - o(n). */
+    // 最直观的解法就是用哈希表存储每个节点对象的内存地址，如果链表存在循环则一定会第二次访问同一个节点。
+    static boolean hasCycle(ListNode head) {
         Set<ListNode> set = new HashSet<>();
-        while (head != null) {
-            if (set.contains(head)) return true;
-            else set.add(head);
-            head = head.next;
+        ListNode curr = head;
+        while (curr != null) {
+            if (!set.add(curr)) return true;
+            curr = curr.next;
         }
         return false;
     }
