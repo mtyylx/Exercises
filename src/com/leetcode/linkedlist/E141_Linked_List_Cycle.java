@@ -14,8 +14,13 @@ import java.util.Set;
  * Function Signature:
  * public boolean hasCycle(ListNode head) {...}
  *
+ * <链表循环检测 系列问题>
+ * - E141 Linked List Cycle  : 给定一个单链表，判断链表是否存在循环。
+ * - E142 Linked List Cycle 2: 给定一个单链表，返回链表循环的起始节点，如果没有循环则返回null。
+ *
  * <Tags>
  * - Two Pointers: 快慢指针用于循环检测。慢指针每次移动一个节点，快指针每次移动两个节点。[slow → * 1 ... fast → * 2 ... ]
+ * - Floyd Loop Detection: 本质是使用双指针实现。
  * - HashSet: 判重。这里所存元素是节点的内存地址。
  *
  */
