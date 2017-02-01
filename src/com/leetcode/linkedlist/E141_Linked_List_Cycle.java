@@ -57,10 +57,10 @@ public class E141_Linked_List_Cycle {
     static boolean hasCycle2(ListNode head) {
         ListNode slow = head;
         ListNode fast = head;
-        while (fast != null && fast.next != null && fast.next.next != null) {       // 循环逻辑：得寸进尺，确定fast不为null才检查fast.next
+        while (fast != null && fast.next != null) {       // 循环逻辑：得寸进尺，确定fast不为null才检查fast.next
             slow = slow.next;
             fast = fast.next.next;
-            if (slow == fast) return true;                                          // 这里是内存地址比较，即identity compare
+            if (slow == fast) return true;                // 这里是内存地址比较，即identity compare
         }
         return false;
     }

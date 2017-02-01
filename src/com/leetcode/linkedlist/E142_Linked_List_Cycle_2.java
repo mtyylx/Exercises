@@ -1,6 +1,5 @@
 package com.leetcode.linkedlist;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,36 +27,56 @@ import java.util.Set;
 public class E142_Linked_List_Cycle_2 {
     public static void main(String[] args) {
         ListNode x = ListNode.Generator(new int[] {1, 2, 3, 4});
-        x.next.next.next.next = x;      // Make it loop back to the first node.
+        x.next.next.next.next = x;                      // Make it loop back to the first node.
         System.out.println(getCycleStart(x).val);
         System.out.println(getCycleStart2(x).val);
     }
 
-    // 要想清楚循环链表只有两种形式：（不要忘了还存在第二种形式）
-    // 1. 全循环链表：{1, 2, 3, 1, 2, 3, 1, 2, 3, ... } 节点1开始了循环
-    // 2. 部分循环链表：{9, 8, 7, 1, 2, 3, 1, 2, 3, ... } 节点1开始了循环
-    // 所谓的“the node where cycle begins”指的就是循环开始的第一个节点。
-    // Floyd循环检测本质上就是“让快指针套圈慢指针”，快慢指针相会时走过的距离差一定是循环长度
+    /** <存在循环的链表所具有的特性>
+     *  1. 该链表将没有结尾。
+     *  2. 该链表将具有一个长度为0-N的起始非循环区域（prefix），当N等于链表长度时，链表不具有循环。
+     *  3. 该链表的非循环长度一定等于快慢指针相遇位置距离下个循环起点的长度。（推导过程见下面分析）
+     */
 
-    // 解法的根据在于：
-    //     base↘    meet↘   cycle↘    meet↘
-    // 9, 9, 9, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6
-    // slow指针走过的距离 = base + meet
-    // fast指针走过的距离 = base + meet + cycle
-    // 同时又有两倍步长特性: (base + meet) * 2 = base + meet + cycle
-    // 综上所述，刚好有这个关系：base + meet = cycle
-    // 所以从meet开始平移至循环第一个元素的长度一定是cycle - meet，而这个值恰好等于base
-    // 而从head平移至循环第一个元素的长度也是base，所以同时从head和meet平移，一定能同时遇到第一个循环元素。
+    /** 解法2：双指针（快慢指针循环检测）。无需额外空间。Time - o(n), Space - o(1). */
+    // {9, 9, 9, 1, 2, 3, 4, 5, 6} 的展开形式为 9, 9, 9, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6 ...
+    //           ↑______________|
+    //
+    //            |←————partA————→|←partB→|
+    // |←-prefix-→|←————————loop—————————→|
+    //  9   9   9   1   2   3   4   5   6   1   2   3   4   5   6 ...
+    //  ↑1  ↑2  ↑3  ↑4  ↑5  ↑6  ↑7
+    // |←———————Length.slow——————→|←partB→|
+    // ↑↑1     ↑↑2     ↑↑3     ↑↑4     ↑↑5     ↑↑6     ↑↑7
+    // |←—————————————————Length.fast————————————————————→|
+    //
+    // 根据两个指针所走路程的成分分解可以得到
+    /** <线索1> */
+    // loop = partA + partB
+    // Length.slow = prefix + partA
+    // Length.fast = prefix + loop + partA
+    // 由于快指针速度是慢指针的两倍，因此相等时间走过的路程长度一定也是两倍，可以得到
+    /** <线索2> */
+    // Length.slow * 2 = Length.fast
+    // 结合<线索1>和<线索2>，可以将等式转化为：
+    // (prefix + partA) * 2 = prefix + partA + loop
+    // i.e.  prefix + partA = loop
+    // i.e.          prefix = loop - partA
+    // i.e.          prefix = partB
+    // 最终结论就是：prefix的长度刚好等于partB的长度
+    // 因此当slow已经和fast相遇时，slow从相遇位置移动到下一个循环起点的长度（partB），就等于从链表头移动到该循环起点的长度（prefix）
+    // 所以，我们首先让slow和fast相遇，在让slow和head相遇，这个相遇节点就一定是循环起点。
+    //    9   9   9   1   2   3   4   5   6   1   2   3   4   5   6 ...
+    //                |       slow ->  ->  -> |
+    // head ->  ->  ->|
     static ListNode getCycleStart2(ListNode head) {
         ListNode slow = head;
         ListNode fast = head;
         while (fast != null && fast.next != null) {
             slow = slow.next;
-            fast = fast.next;
-            fast = fast.next;
-            if (fast == slow) {
-                // 找到相会点，此时同时从head和相会点出发，遇到的第一个相同节点就是循环开始的第一个节点
-                while (head != slow) {
+            fast = fast.next.next;
+            if (fast == slow) {                 // 首先让快慢指针相遇
+                while (head != slow) {          // 然后让慢指针与头指针相遇
                     head = head.next;
                     slow = slow.next;
                 }
