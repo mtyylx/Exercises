@@ -20,6 +20,11 @@ import java.util.Set;
  * Function Signature:
  * public int findDuplicate(int[] a) {...}
  *
+ * <链表循环检测 系列问题>
+ * - E141 Linked List Cycle  : 给定一个单链表，判断链表是否存在循环。
+ * - E142 Linked List Cycle 2: 给定一个单链表，返回链表循环的起始节点，如果没有循环则返回null。
+ * - M287 Find Duplicate     : 给定一个长度为n的数组，取值范围为n-1，只包含一个重复元素，求这个重复元素。
+ *
  * <Tags>
  * - Binary Search (Two Pointers): 左右指针包围扫描。[left → ... ← right] 不过这里左右指针的范围是元素的取值范围，而不是数组的索引位置。
  * - Two Pointers: 快慢指针进行循环检测。
