@@ -15,10 +15,12 @@ package com.leetcode.linkedlist;
  * E83 Remove Duplicate Nodes   : 给定一个已排序单链表，删除多余的重复节点。
  * M82 Remove Duplicate Nodes 2 : 给定一个已排序单链表，只要节点值出现重复就删除。
  * E203 Remove Element          : 给定一个未排序单链表和一个值k，删除链表中所有值等于k的节点。
+ * E237 Delete Node             : 给定一个链表的节点指针，删除该节点。
  *
  * <Tags>
  * - Dummy节点：因为头节点有可能被删除
  * - 递归：逆序递归，先递归，后处理。
+ * - 单链表节点的删除：使用(curr.next != null)做循环条件提前判断并删除。
  *
  */
 public class E203_Remove_Element {

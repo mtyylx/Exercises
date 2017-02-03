@@ -15,6 +15,7 @@ package com.leetcode.linkedlist;
  * E83 Remove Duplicate Nodes   : 给定一个已排序单链表，删除多余的重复节点。
  * M82 Remove Duplicate Nodes 2 : 给定一个已排序单链表，只要节点值出现重复就删除。
  * E203 Remove Element          : 给定一个未排序单链表和一个值k，删除链表中所有值等于k的节点。
+ * E237 Delete Node             : 给定一个链表的节点指针，删除该节点。
  *
  * <Tags>
  * - Two Pointers：快慢指针同向扫描，快指针始终移动，慢指针仅在值不相同时才移动。[ slow → → → ... fast → → → ... ]
