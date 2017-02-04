@@ -10,6 +10,10 @@ package com.leetcode.linkedlist;
  * Function Signature:
  * public ListNode reverse(ListNode head) {...}
  *
+ * <链表反转 系列问题>
+ * E206 Reverse Linked List  : 反转整个链表
+ * M92  Reverse Linked List 2: 反转链表的指定区域。
+ *
  * <Tags>
  * - 链表反转 之 <两段法>：使用双指针，分为已排序和未排序的两部分。
  * - 链表反转 之 <插入法>：使用Dummy节点，以头节点为轴心，将轴心所指节点插入链表头。
