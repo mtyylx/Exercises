@@ -13,6 +13,9 @@ package com.leetcode.linkedlist;
  * - 递归：利用逆序递归的特性，达到反向扫描链表的目的。当然代价是空间复杂度为o(n)。
  * - 双指针：快慢指针获得链表中点位置。[slow → → → ... fast → → → ... ]
  * - 双指针：中心扩散扫描。    [ ... ← ← ← left | right → → → ... ]
+ * - 链表反转：两段法
+ * - 链表反转：插入法
+ *
  */
 public class E234_Palindrome_Linked_List {
     public static void main(String[] args) {
@@ -22,11 +25,16 @@ public class E234_Palindrome_Linked_List {
         System.out.println(isPalindrome2(ListNode.Generator(new int[] {1, 2, 3, 2, 1})));
         System.out.println(isPalindrome2(ListNode.Generator(new int[] {1, 2, 3, 3, 2, 1})));
         System.out.println(isPalindrome2(ListNode.Generator(new int[] {1, 2, 4, 3, 2, 1})));
-        System.out.println(isPalindrome3(ListNode.Generator(new int[] {1, 2})));
+        System.out.println(isPalindrome3(ListNode.Generator(new int[] {1, 2, 3, 2, 1})));
+        System.out.println(isPalindrome3(ListNode.Generator(new int[] {1, 2, 3, 3, 2, 1})));
+        System.out.println(isPalindrome3(ListNode.Generator(new int[] {1, 2, 4, 3, 2, 1})));
+        System.out.println(isPalindrome4(ListNode.Generator(new int[] {1, 2, 3, 2, 1})));
+        System.out.println(isPalindrome4(ListNode.Generator(new int[] {1, 2, 3, 3, 2, 1})));
+        System.out.println(isPalindrome4(ListNode.Generator(new int[] {1, 2, 4, 3, 2, 1})));
     }
 
 
-    /** 解法3：双指针（快慢指针）寻找链表中点 + 反转链表的前半段。空间复杂度最优解。Time - o(n), Space - o(1). */
+    /** 解法3：双指针（快慢指针）寻找链表中点 + 前半段链表反转（两段法）。空间复杂度最优解。Time - o(n), Space - o(1). */
     // 首先用快慢指针定位链表中点，然后根据链表长度的奇偶情况分别处理。
     //  奇数长度  1 -> 2 -> 3 -> 2 -> 1
     //           ← ← ←| IGNORE |→ → →
@@ -62,6 +70,38 @@ public class E234_Palindrome_Linked_List {
         }
         ListNode left = odd ? prev.next : prev;         // 左半部的起始节点，如果是奇数长度则需要跳过中心节点
         while (left != null) {                          // 双指针中心扩散，同步扫描
+            if (left.val != right.val) return false;
+            left = left.next;
+            right = right.next;
+        }
+        return true;
+    }
+
+    /** 解法4：简化写法，半程扫描和链表反转同时完成 + 前半段链表反转（插入法）。Time - o(n), Space - o(1). */
+    // 似乎分段反转法会有一些问题，于是这里使用插入反转。
+    // dummy -> 1 -> 2 -> 3 -> 4 -> 4 -> 3 -> 2 -> 1 -> null
+    //          ↑
+    //        slow (pivot)
+    // dummy -> 2 -> 1 -> 3 -> 4 -> 4 -> 3 -> 2 -> 1 -> null
+    // dummy -> 3 -> 2 -> 1 -> 4 -> 4 -> 3 -> 2 -> 1 -> null
+    // dummy -> 4 -> 3 -> 2 -> 1 -> 4 -> 3 -> 2 -> 1 -> null
+    //          ↑              ↑    ↑
+    //         left          slow  right
+    static boolean isPalindrome4(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            ListNode next = slow.next;
+            slow.next = next.next;
+            next.next = dummy.next;
+            dummy.next = next;
+        }
+        ListNode left = (fast.next == null) ? dummy.next.next : dummy.next;     // 左半部起始节点，如果奇数则需要跳过第一个节点
+        ListNode right = slow.next;                                             // 右半部起始节点
+        while (right != null) {                                                 // 以右指针结束为循环条件
             if (left.val != right.val) return false;
             left = left.next;
             right = right.next;
@@ -106,38 +146,4 @@ public class E234_Palindrome_Linked_List {
         }
         return true;
     }
-
-
-    // 双指针解法，time & space - o(n)，空间复杂度最优
-    // 卡在了如何让指针回退的问题上。为了能让指针回退，只能部分反转链表。
-    // 所以需要先扫描一遍链表，获得长度，然后从中点开始向后反转链表，最后首尾边扫描边比对。
-    static boolean isPalindrome4(ListNode head) {
-        int length = 0;
-        ListNode node = head;
-        while (node != null) {
-            length++;
-            node = node.next;
-        }
-        node = head;
-        for (int i = 0; i < length / 2; i++) {
-            node = node.next;
-        }
-        // Reverse the 2nd half
-        ListNode prev = null;
-        ListNode next;
-        while (node != null) {
-            next = node.next;
-            node.next = prev;
-            prev = node;
-            node = next;
-        }
-        // Head and Tail Scan & Compare
-        for (int i = 0; i < length / 2; i++) {
-            if (head.val != prev.val) return false;
-            head = head.next;
-            prev = prev.next;
-        }
-        return true;
-    }
-
 }
