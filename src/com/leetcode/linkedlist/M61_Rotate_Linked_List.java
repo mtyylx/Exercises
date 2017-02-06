@@ -20,6 +20,7 @@ public class M61_Rotate_Linked_List {
     public static void main(String[] args) {
         rotateList(ListNode.Generator(new int[] {1, 2, 3, 4, 5}), 2).print();
         rotateList2(ListNode.Generator(new int[] {1, 2, 3, 4, 5}), 2).print();
+        rotateList3(ListNode.Generator(new int[] {1, 2, 3, 4, 5}), 2).print();
     }
 
 
@@ -51,6 +52,27 @@ public class M61_Rotate_Linked_List {
         }
         curr.next = null;                                           // 链表复原
         return newHead;
+    }
+    // 简化解法，省略了平移过程，更为优美。
+    // dummy -> 1 -> 2 -> 3 -> 4 -> 5 -> null
+    //                    ↑         ↑
+    //                    slow      fast
+    //          1 -> 2 -> 3 XX 4 -> 5 -> 1 -> 2 -> 3 -> null
+    //                         ↑    ↑
+    //                   dummy.next fast
+    static ListNode rotateList3(ListNode head, int k) {
+        if (head == null || head.next == null) return head;
+        ListNode fast = head;
+        ListNode slow = head;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        int count = 0;
+        for (; fast.next != null; count++) fast = fast.next;            // 计算链表长度，同时获得链表最后一个节点的指针
+        for (int i = 0; i < count - k % count; i++) slow = slow.next;   // 移动至新链表最后一个节点（长度 - k步）
+        fast.next = dummy.next;         // 链表成环（此时新链表的最后一个节点的下个节点就是第一个节点）
+        dummy.next = slow.next;         // 将dummy从旧链表头切换至新链表头
+        slow.next = null;               // 链表复原
+        return dummy.next;
     }
 
 
