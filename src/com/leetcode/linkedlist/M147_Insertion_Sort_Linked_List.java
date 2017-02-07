@@ -12,9 +12,10 @@ import java.util.Arrays;
  * <Tags>
  * - Linked List to Array: 很多问题并不一定非要限制在一种数据结构中解决，完全可以转化为其他数据结构解决。
  * - 数组插入排序的两种方式：实际使用双指针实现
- * - Two Pointers：中心扩散扫描 [ ... ← ← ← sorted | unsorted → → → ... ]
+ * - Two Pointers：<中心扩散扫描> ，适用于数组的插入排序。
+ *                           [ ... ← ← ← sorted | unsorted → → → ... ]
  *                           [ ... ← ← ← unsorted | sorted → → → ... ]
- * - Two Pointers：同向扫描（适用于链表的插入排序）
+ * - Two Pointers：<同向扫描> ，适用于链表的插入排序。
  *                           [ sorted → → → ... | unsorted → → → ... ]
  * - 递归：利用逆序递归实现链表的逆序扫描。
  *
@@ -22,7 +23,8 @@ import java.util.Arrays;
 public class M147_Insertion_Sort_Linked_List {
     public static void main(String[] args) {
         insertionSort(ListNode.Generator(new int[] {4, 5, 3, 2, 1, 0})).print();
-        insertionSort2(ListNode.Generator(new int[] {6, 5, 4, 3})).print();
+        insertionSort2(ListNode.Generator(new int[] {4, 5, 3, 2, 1, 0})).print();
+        insertionSort2(ListNode.Generator(new int[] {4, 5, 3, 2, 1, 0})).print();
     }
 
     /**
