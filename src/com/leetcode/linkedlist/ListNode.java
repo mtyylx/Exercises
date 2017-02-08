@@ -7,12 +7,12 @@ package com.leetcode.linkedlist;
  *
  */
 public class ListNode {
-    int val;
-    ListNode next;
-    ListNode(int x) { val = x; }
+    public int val;
+    public ListNode next;
+    public ListNode(int x) { val = x; }
 
     // 根据给定数组生成链表，并同时打印出来。
-    static ListNode Generator(int[] a) {
+    public static ListNode Generator(int[] a) {
         ListNode dummy = new ListNode(0);
         ListNode node = dummy;
         for (int x : a) {
@@ -25,7 +25,7 @@ public class ListNode {
     }
 
     // 打印任何非空ListNode节点及其子节点
-    void print() {
+    public void print() {
         StringBuilder sb = new StringBuilder();
         ListNode current = this;
         while (current != null) {
