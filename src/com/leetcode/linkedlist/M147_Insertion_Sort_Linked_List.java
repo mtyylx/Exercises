@@ -18,6 +18,7 @@ import java.util.Arrays;
  * - Two Pointers：<同向扫描> ，适用于链表的插入排序。
  *                           [ sorted → → → ... | unsorted → → → ... ]
  * - 递归：利用逆序递归实现链表的逆序扫描。
+ * - 利用Dummy节点进行链表迁移：Dummy节点的特殊用法。并不在一开始就把Dummy节点于链表头相连，而是不断的把当前链表的节点迁移至Dummy节点打头的新链表上。
  *
  */
 public class M147_Insertion_Sort_Linked_List {
@@ -64,7 +65,8 @@ public class M147_Insertion_Sort_Linked_List {
         return newHead;
     }
 
-    /** 解法2：迭代写法，基于数组插入排序解法1（但并不完全一样，内循环的扫描方向是与外循环一样的）. Time - o(n^2), Space - o(1).*/
+    /** 解法2：迭代写法，基于数组插入排序解法1（但并不完全一样，内循环的扫描方向是与外循环一样的）. Time - o(n^2), Space - o(1).
+     *  同时利用Dummy节点的链表迁移用法。*/
     // 对于<数组>的插入排序解法1的思路形如：
     //  sorted | unsorted
     // ← 内循环   外循环 →

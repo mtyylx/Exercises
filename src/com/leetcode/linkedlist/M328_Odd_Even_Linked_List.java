@@ -20,7 +20,7 @@ package com.leetcode.linkedlist;
  *
  * <Tags>
  * - Two Pointers: 同向等速扫描。[slow → → → ... fast → → → ... ]
- * - Dummy节点：特殊用法，并不在一开始就把Dummy节点于链表头相连，而是不断的把当前链表的节点迁移至Dummy节点打头的新链表上。
+ * - 利用Dummy节点进行链表迁移：Dummy节点的特殊用法。并不在一开始就把Dummy节点于链表头相连，而是不断的把当前链表的节点迁移至Dummy节点打头的新链表上。
  *
  */
 public class M328_Odd_Even_Linked_List {
