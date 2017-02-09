@@ -15,7 +15,7 @@ package com.leetcode.linkedlist;
  * public ListNode swapNodes(ListNode head) {...}
  *
  * <Tags>
- * - Dummy节点
+ * - Dummy节点：动态链表头。表头会被修改。
  * - <三指针>遍历链表：<prev | curr | next>
  * - 递归解法：<把每一个节点都视为链表的表头>，每个节点都开启了它所打头的链表。
  *

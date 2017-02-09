@@ -17,7 +17,7 @@ package com.leetcode.linkedlist;
  * public ListNode removeNthFromEnd(ListNode head, int x) {...}
  *
  * <Tags>
- * - Dummy节点：自动处理表头节点被删除的情况。
+ * - Dummy节点：动态链表头。自动处理表头节点被删除的情况。
  * - Two Pointers：等距快慢指针，特别适合处理<倒数xxx问题>。[ slow → → → ... fast → → → ... ]
  * - Recursion：利用顺序递归、逆序返回的特性。
  *

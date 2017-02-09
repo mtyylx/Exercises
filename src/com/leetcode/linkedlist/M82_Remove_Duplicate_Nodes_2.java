@@ -20,7 +20,7 @@ package com.leetcode.linkedlist;
  *
  * <Tags>
  * - Two Pointers: 快慢指针同向扫描. [slow → → → ... fast → → → ...]
- * - Dummy节点：由于链表头节点有可能会被删除。
+ * - Dummy节点：动态链表头。链表头节点有可能会被删除。
  * - 递归：正序递归。
  *
  */

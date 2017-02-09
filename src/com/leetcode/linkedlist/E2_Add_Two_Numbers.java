@@ -14,7 +14,7 @@ package com.leetcode.linkedlist;
  * public ListNode addTwoNums(ListNode l1, ListNode l2) {...}
  *
  * <Tags>
- * - Dummy节点：自动handle空链表的情形。要知道，链表的很多问题，不用dummy节点是解不出来的。这道题就是。
+ * - Dummy节点：动态链表头。自动handle空链表的情形。要知道，链表的很多问题，不用dummy节点是解不出来的。这道题就是。
  * - Sentinel卫兵：在单个while循环内完成两个链表的扫描，精简代码。
  * - Math: Carry
  *

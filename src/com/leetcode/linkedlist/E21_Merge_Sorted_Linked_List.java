@@ -10,7 +10,7 @@ package com.leetcode.linkedlist;
  * public ListNode merge(ListNode a, ListNode b) {...}
  *
  * <Tags>
- * - Dummy节点：自动处理链表头节点不确定的情况。
+ * - Dummy节点：动态链表头。自动处理链表头节点不确定的情况。
  * - Sentinel卫兵：单个While循环内完成两个长短不一的链表的扫描。
  * - 递归：利用链表每个节点的<自相似性>，正向递归。
  *
