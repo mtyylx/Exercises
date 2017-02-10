@@ -13,8 +13,14 @@ package com.leetcode.linkedlist;
  * Function Signature:
  * public ListNode addTwoNums(ListNode l1, ListNode l2) {...}
  *
+ * <链表加法 系列问题>
+ * E2   Add Two Numbers 1    : 给定表示两个数字的两个链表，低位在前，求和链表。
+ * M445 Add Two Numbers 2    : 给定表示两个数字的两个链表，高位在前，求和链表。
+ * M369 Plus One Linked List : 给定表示一个数字的一个链表，高位在前，求加一链表。
+ *
  * <Tags>
  * - Dummy节点：动态链表头。自动handle空链表的情形。要知道，链表的很多问题，不用dummy节点是解不出来的。这道题就是。
+ * - Two Pointers：双指针并行扫描两个链表。[p → → → ... ] [q → → → ...] 通常会搭配卫兵使代码更简洁。
  * - Sentinel卫兵：在单个while循环内完成两个链表的扫描，精简代码。
  * - Math: Carry
  *

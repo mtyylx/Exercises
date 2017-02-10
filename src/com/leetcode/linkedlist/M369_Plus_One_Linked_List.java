@@ -11,6 +11,11 @@ package com.leetcode.linkedlist;
  * Function Signature:
  * public ListNode plusOne(ListNode head) {...}
  *
+ * <链表加法 系列问题>
+ * E2   Add Two Numbers 1    : 给定表示两个数字的两个链表，低位在前，求和链表。
+ * M445 Add Two Numbers 2    : 给定表示两个数字的两个链表，高位在前，求和链表。
+ * M369 Plus One Linked List : 给定表示一个数字的一个链表，高位在前，求加一链表。
+ *
  * <Tags>
  * - 递归：利用逆序递归实现链表的反向扫描。
  * - 链表反转：当你想反向扫描链表而不修改结构时，链表反转可以满足你。
