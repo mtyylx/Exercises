@@ -28,9 +28,9 @@ public class Basic_Merge_Sort {
         System.out.println(Arrays.toString(arr2));
     }
 
-    /** 解法2：分解过程用迭代实现，合并过程同样需要额外空间。Time - o(nlogn), Space - o(n). */
-    // Bottom-Up Iterative：相当于省略了递归方法不断除二分解将数组分段的过程，
-    // 直接指定最小比较区段就是1，1比完了比2，2比完了比4，一直比到数组长度N
+    /** 解法2：<分解过程>用迭代实现，<合并过程>同样需要额外空间。Time - o(nlogn), Space - o(n). */
+    // 与解法1共享合并过程的算法，唯一区别在于分解的过程是直接访问的，省略了递归方法不断除二分解将数组分段的过程。
+    // Bottom-Up Iterative：直接指定最小比较区段就是1，1比完了比2，2比完了比4，一直比到数组长度N
     /** 循环指针含义 */
     // 记住内外循环的目的是为了构造正确的left, mid, right值给merge方法使用，而不是直接当场扫描并合并
     // 外循环i表示每次划分的<左右分区各自宽度>，应为1, 2, 4, 8, 16...，因此有：i *= 2
@@ -54,11 +54,25 @@ public class Basic_Merge_Sort {
     // Merge(0, 3, 4): 4 7 8 9 5 -> 4 5 7 8 9
     // {4, 5, 7, 8, 9}
     static void MergeSort_Iterative(int[] a) {
-        for (int i = 1; i < a.length; i *= 2) {
-            for (int j = 0; j < a.length; j += 2 * i) {
-                merge(a, j, Math.min(j + i - 1, a.length - 1), Math.min(j + 2 * i - 1, a.length - 1));
-                // System.out.println("Merge(" + j + ", " + Math.min(j + i - 1, a.length - 1) + ", " + Math.min(j + 2 * i - 1, a.length - 1) + ")");
-            }
+        for (int i = 1; i < a.length; i *= 2)
+            for (int j = 0; j < a.length; j += 2 * i)
+                mergeX(a, j, Math.min(j + i - 1, a.length - 1), Math.min(j + 2 * i - 1, a.length - 1));
+    }
+    // 完全相同的合并过程
+    static void mergeX(int[] a, int left, int mid, int right) {
+        List<Integer> list = new ArrayList<>(right - left + 1);
+        int i = left;
+        int j = mid + 1;
+        while (i <= mid || j <= right) {
+            int x = i <= mid ? a[i] : Integer.MAX_VALUE;
+            int y = j <= right ? a[j] : Integer.MAX_VALUE;
+            list.add(Math.min(x, y));
+            if (x < y) i++;
+            else j++;
+        }
+        int idx = left;
+        for (int element : list) {
+            a[idx++] = element;
         }
     }
 
