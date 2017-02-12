@@ -13,7 +13,7 @@ import java.util.List;
  *
  * <Tags>
  * - 二分法：将问题规模分解，使得时间复杂度从 n * n 降至 n * logn.
- * - 递归：逆序递归
+ * - 递归：利用逆序递归对数组进行分解
  * - Sentinel卫兵：同步扫描两个序列时经常用到
  *
  */
@@ -27,6 +27,9 @@ public class Basic_Merge_Sort {
         MergeSort_Recursive(arr2);
         System.out.println(Arrays.toString(arr2));
     }
+
+    // 解法1和解法2分别使用递归和迭代的方式对数组进行分解。
+    // 解法1和解法2使用相同的合并方式对分解的数组区间进行合并。
 
     /** 解法2：<分解过程>用迭代实现，<合并过程>同样需要额外空间。Time - o(nlogn), Space - o(n). */
     // 与解法1共享合并过程的算法，唯一区别在于分解的过程是直接访问的，省略了递归方法不断除二分解将数组分段的过程。
