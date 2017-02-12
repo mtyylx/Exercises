@@ -1,17 +1,13 @@
-package com.leetcode.sort;
-
-import com.sun.scenario.effect.Merge;
-
-import java.util.Arrays;
+package com.leetcode.linkedlist;
 
 /**
  * Created by Michael on 2016/10/6.
- * Sort a linked list in O(n log n) time using constant space complexity.
+ * Sort a linked list in o(nlogn) time and o(1) space.
  *
  * Function Signature:
  * public ListNode sort(ListNode head) {...}
  */
-public class M148_Sort_Linked_List {
+public class M148_Merge_Sort_Linked_List {
     public static void main(String[] args) {
         ListNode head = ListNode.Generator(new int[]{9, 7, 5, 6});
         head = sort(head);
@@ -80,59 +76,4 @@ public class M148_Sort_Linked_List {
         return dummy.next;
     }
 
-    /** Standard <Iterative> Merge Sort for reference. */
-    public static void MergeSort(int[] a) {
-        for (int i = 1; i < a.length; i *= 2) {
-            for (int j = 0; j < a.length; j += 2 * i) {
-                merge(a, j, Math.min(j + i - 1, a.length - 1), Math.min(j + 2 * i - 1, a.length - 1));
-            }
-        }
-    }
-
-    /** Standard <Recursive> Merge Sort for reference. */
-    public static void MergeSort(int[] a, int left, int right) {
-        if (left < right) {
-            int mid = (left + right) / 2;
-            MergeSort(a, left, mid);
-            MergeSort(a, mid + 1, right);
-            merge(a, left, mid, right);
-        }
-    }
-
-    // 不管是递归还是迭代都要用merge方法
-    private static void merge(int[] a, int left, int mid, int right) {
-        int[] temp = new int[right - left + 1];
-        int i = left;
-        int j = mid + 1;
-        int idx = 0;
-        while (i <= mid || j <= right) {
-            int l, r;
-            if (i <= mid) l = a[i];
-            else l = Integer.MAX_VALUE;
-            if (j <= right) r = a[j];
-            else r = Integer.MAX_VALUE;
-            temp[idx++] = Math.min(l, r);
-            if (l < r) i++;
-            else j++;
-        }
-        for (i = 0; i < temp.length; i++)
-            a[i + left] = temp[i];
-    }
-}
-
-class ListNode {
-    int val;
-    ListNode next;
-    ListNode(int x) { val = x; }
-
-    // Generate a LinkedList from a given array
-    static ListNode Generator(int[] array) {
-        ListNode head = new ListNode(array[0]);
-        ListNode pointer = head;
-        for (int i = 1; i < array.length; i++) {
-            pointer.next = new ListNode(array[i]);
-            pointer = pointer.next;
-        }
-        return head;
-    }
 }
