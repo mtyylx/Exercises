@@ -6,25 +6,26 @@ package com.leetcode.linkedlist;
  *
  * Function Signature:
  * public ListNode sort(ListNode head) {...}
+ *
+ * <Tags>
+ * - Merge Sort: 链表的归并与数组归并不同。
+ *
  */
 public class M148_Merge_Sort_Linked_List {
     public static void main(String[] args) {
-        ListNode head = ListNode.Generator(new int[]{9, 7, 5, 6});
-        head = sort(head);
-        while (head != null) {
-            System.out.print(head.val + ", ");
-            head = head.next;
-        }
+        sort(ListNode.Generator(new int[] {4, 5, 3, 2, 1, 0})).print();
+        sort(ListNode.Generator(new int[] {4, 5, 3, 2, 1, 0})).print();
     }
 
-    // 由于要求Space - o(1)，因此不考虑将链表转化为数组排序，不考虑使用Counting Sort / Bucket Sort / QuickSort
-    // 由于要求Time - o(nlogn)，因此不考虑使用Insertion Sort，Selection Sort
-    // 由于单链表的单向访问特性，使用Heap Sort将需要遍历链表非常多次来构造最大堆，使用QuickSort双指针相向移动实现起来很复杂
-    // 因此最可能成功的方法只剩下了Merge Sort. 可是Merge Sort由于需要额外的空间进行merge，所以空间复杂度也是o(n)啊？
-    // 看了别人的解法以后恍然大悟，没想到链表虽然有很多不方便的地方，但是在归并两个已排序链表的问题上，却比归并两个已排序数组的操作简单的多！
-    // 这也是为什么虽然Merge Sort用在数组上很难做到o(1)空间复杂度，但是如果用在链表上，竟然就很容易的原因。
-    // 疑问：如果相邻的两个节点的值顺序相反，与其交换两个节点位置，为什么不直接交换两个节点的内容呢？这不是更简单些么？
-    // 这么做是可以，但是这就相当于将链表最重要的性质弃之不顾了，没有利用上链表的长项。
+    /** 思路分析：Time - o(nlogn), Space - o(1) 的链表排序为什么必须用归并排序？ */
+    // Space - o(1)意味着不能将链表转化为数组排序，也不考虑Counting Sort / Bucket Sort / QuickSort这些需要额外空间的排序算法
+    // Time - o(nlogn)意味着不考虑Insertion Sort / Selection Sort这些需要o(n^2)时间的排序算法
+    // 再加上单链表的单向访问特性，用Heap Sort将会遍历链表很多次来构造最大堆
+    // 最后让我们再来看看Merge Sort。众所周知，归并排序分为两部分：分解和合并。通常认为合并部分的操作需要额外的空间才能完成。
+    // 但实际上，上面的结论仅仅适用于数组排序。
+    // 按顺序合并两个数组，如果想要在o(n)时间内完成，就一定需要o(n)的额外空间。
+    // 按顺序合并两个链表，如果想要在o(n)时间内完成，却只需要o(1)的额外空间。
+    // 尽管链表有很多弊端，但是在归并这件事上，归并链表比归并数组要更简单。
 
     /** 递归解法实现链表归并排序（而且还是原位归并）使用while循环 + 快慢指针确定链表中点，并斩断当前链表 */
     // 对于奇数个节点的链表，slow就指向中间的节点
