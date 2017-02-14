@@ -3,6 +3,7 @@ package com.leetcode.sort;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.leetcode.linkedlist.ListNode;
 
 /**
  * Created by LYuan on 2016/9/27.
@@ -32,6 +33,8 @@ public class Basic_Merge_Sort {
         int[] arr2 = {9, 8, 7, 5, 2, 4, 1, 6};
         MergeSort_Recursive(arr2);
         System.out.println(Arrays.toString(arr2));
+
+        mergeSort(ListNode.Generator(new int[] {4, 5, 3, 2, 1, 0})).print();
     }
 
     // 解法1和解法2分别使用递归和迭代的方式对数组进行分解。
@@ -127,15 +130,46 @@ public class Basic_Merge_Sort {
         }
     }
 
+    /** 扩展问题：对于链表如何进行Merge Sort？ */
+    // 关键点1：需要在分解链表的同时将链表拆分切断
+    // 关键点2：可以让合并过程达到o(1)的空间复杂度
+    static ListNode mergeSort(ListNode head) {
+        if (head == null || head.next == null) return head;   // 递归终止条件：如果当前链表为空或只有一个节点，则无需再分解。
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) { // 倍速双指针：确保slow会提前停在中点（奇数）或中点左侧（偶数）
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode right = slow.next;                           // 缓存右半部起点
+        slow.next = null;                                     // 将链表从中点位置拆分。
+        head = mergeSort(head);                               // 递归左半部，并记录返回的新表头
+        right = mergeSort(right);                             // 递归右半部，并记录返回的新表头
+        return merge(head, right);                            // 根据新表头进行合并
+    }
+
+    // 将两个链表按大小顺序一个一个的迁移至Dummy节点引领的新链表上（原位操作），这也是区别于数组归并排序的关键之一。
+    static ListNode merge(ListNode left, ListNode right) {
+        ListNode dummy = new ListNode(0);
+        ListNode curr = dummy;
+        while (left != null && right != null) {         // 只需将其中一个链表扫描完成即可，无需两个链表全扫完
+            if (left.val < right.val) { curr.next = left; left = left.next; }
+            else                      { curr.next = right; right = right.next; }
+            curr = curr.next;
+        }
+        if (left == null) curr.next = right;            // 收尾工作：如果其中一个链表尚未扫完，就直接把curr.next接在这个链表上即可
+        else              curr.next = left;
+        return dummy.next;
+    }
+
     /** 扩展问题：对于数组如何做到o(1)空间复杂度的合并过程？ */
-    // 上面的两种解法又是递归又是迭代，看上去很不同，但是实际上用的是相同的合并算法(merge方法)，而该合并算法的空间复杂度是o(n)。
-    // 那么问题就来了，如何做到o(1)空间复杂度的合并呢？
+    // 对于数组的两种归并排序解法又是递归又是迭代，看上去很不同，但是实际上用的是相同的合并算法(merge方法)，而该合并算法的空间复杂度是o(n)。
+    // 那么问题就来了，对于数组，是否可以做到o(1)空间复杂度的合并呢？
     // 可以看到其时间复杂度已经最优，即左右部分的所有元素扫描完就合并完成了，不可能比这个复杂度更低了，因为你必须扫描每个元素，不可能不扫描人家就自动排好。
     // 但是其空间复杂度是o(n + m)，依然需要额外的空间才能完成，是否可以优化至o(1)即Constant Space呢。这是个非常有意思的问题。
-    // 因此进一步的问题是：是否可以In-place的进行数组合并呢？
     // 下面就提供一个In-place的数组合并解法，不过需要注意的是，为了做到In-place Merge，我们不得不提高了时间复杂度至o(n * m)
     // 这就是典型的<Time / Space Trade-off>，要不然用时间复杂度换空间复杂度，要不然用空间换时间，你终归需要付出才有回报。
-    // 那么新问题是：是否可以Constant Space且Linear Time的进行数组合并呢？
+    // 那么新问题是：对于数组，是否可以在保持Time - o(n)的前提下做到Space - o(1)的合并呢？
     // 答案是肯定存在，只不过达到这个标准的解法通常都太过复杂，以至于一般人不可能在面试时临时创造出来。
 
     /** 首先解决：对<两个独立数组>进行In-place排序：Time - o(n^2), Space - o(1) */
