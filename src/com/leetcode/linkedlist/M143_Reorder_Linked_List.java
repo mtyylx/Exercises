@@ -3,7 +3,8 @@ package com.leetcode.linkedlist;
 /**
  * Created by Michael on 2017/2/15.
  *
- * Given a singly linked list L: L0→L1→…→Ln-1→Ln, reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+ * Given a singly linked list L: L0 → L1 → … → Ln-1 → Ln,
+ * reorder it to: L0 → Ln → L1 → Ln-1 → L2 → Ln-2 → …
  * You must do this in-place without altering the nodes' values.
  *
  * For example,
@@ -12,6 +13,12 @@ package com.leetcode.linkedlist;
  *
  * Function Signature:
  * public void reorderList(ListNode head) {...}
+ *
+ * <Tags>
+ * - Two Pointers：快慢指针同向扫描（倍速双指针）定位链表中点。
+ * - <链表拆分切断>：将链表拆分为两个独立的链表，为之后的操作提供方便。拆分的好处是可以避免在修改链表结构的过程中相互影响。
+ * - <链表反转>：根据题目要求进行局部链表反转。
+ * - <链表合并>
  *
  */
 public class M143_Reorder_Linked_List {
