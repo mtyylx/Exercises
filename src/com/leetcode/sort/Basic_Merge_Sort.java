@@ -10,16 +10,19 @@ import com.leetcode.linkedlist.ListNode;
  *
  * Basic Algorithm: Merge Sort
  *
+ * <Core Mechanism>
+ * Divide + Merge
+ *
  * <For Array>
- * - Time: o(n * log n) 划分的过程是二分法，因此为logn，合并的过程为n，因此整体时间复杂度是n＊logn.
+ * - Time: o(n * log n) 原本复杂度是 <n分解 * n合并>。其中分解部分本质上是二分法，因此整体复杂度降至 log n * n。
  * - Space: o(n)        对于数组，归并排序的合并部分操作如果想要在o(n)时间内完成，必须用额外空间。
  *
  * <For Linked List>
- * - Time: o(n * log n)
+ * - Time: o(n * log n) 同数组
  * - Space: o(1)        对于链表，归并排序的合并部分操作可以在o(1)n内完成。
  *
  * <Tags>
- * - 二分法：将问题规模分解，使得时间复杂度从 n * n 降至 n * logn.
+ * - 二分法：将问题规模分解，使得时间复杂度从 n * n 降至 n * log n.
  * - 递归：利用逆序递归对数组进行分解
  * - Sentinel卫兵：同步扫描两个序列时经常用到
  *
