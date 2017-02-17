@@ -27,21 +27,26 @@ import java.util.List;
  * - Early Detection：为了检测并及时提前插入节点，需要检测curr.next而不是curr。
  *
  */
-public class Basic_Insertion_Sort {
+public class Basic_Insertion_Sort extends SortMethod {
     public static void main(String[] args) {
         // For Array
-        int[] a = {4, 5, 3, 2, 1, 0};
+        int[] a = {0, 0, 1, 0};
         InsertionSort1(a);
         System.out.println(Arrays.toString(a));
         int[] b = {4, 5, 3, 2, 1, 0};
         InsertionSort2(b);
         System.out.println(Arrays.toString(b));
+
         // For Linked List
         InsertionSort_LinkedList(ListNode.Generator(new int[] {4, 5, 3, 2, 1, 0})).print();
+
         // For ArrayList
         List<Integer> list = new ArrayList<>(Arrays.asList(4, 5, 3, 2, 1, 0));
         InsertionSort_ArrayList(list);
         System.out.println(list);
+
+        // Bulk Test
+        SortUtility.VerifySortAlgorithm("insertion");
     }
 
     /** 插入排序的思想：外循环扫描整个数组，内循环扫描已排序区间并对相邻元素进行平移，最后将未排序元素插入已排序区间的合适位置。*/
@@ -170,35 +175,9 @@ public class Basic_Insertion_Sort {
         }
     }
 
-    public static void bulkTest() {
-        for (int j = 2; j < 100; j += 2) {
-            for (int i = 1; i < 100; i++) {
-                int[] x = randGen(i, j);
-                System.out.println("Original: " + Arrays.toString(x));
-
-                if (!isSorted(x)) {
-                    System.out.println("Failed at: " + Arrays.toString(x));
-                    return;
-                }
-                else System.out.println("Passed at: " + Arrays.toString(x));
-            }
-        }
-        System.out.println("Passed.");
-    }
-
-    public static boolean isSorted(int[] a) {
-        if (a == null || a.length < 2) return true;
-        for (int i = 1; i < a.length; i++) {
-            if (a[i] < a[i - 1]) return false;
-        }
-        return true;
-    }
-
-    private static int[] randGen(int len, int range) {
-        int[] a = new int[len];
-        for (int i = 0; i < a.length; i++)
-            a[i] = (int) (range * Math.random());
-        return a;
+    @Override
+    public void sort(int[] a) {
+        InsertionSort1(a);
     }
 
 }
