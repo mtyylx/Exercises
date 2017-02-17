@@ -39,7 +39,7 @@ public class SortUtility {
                 else System.out.println("Passed  : " + Arrays.toString(x));
             }
         }
-        System.out.println("Passed.");
+        System.out.println("--------------------------- All Test Cases Passed! ---------------------------");
     }
 }
 
