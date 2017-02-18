@@ -31,6 +31,10 @@ public class SortUtility {
                 System.out.println("Original: " + Arrays.toString(x));
                 SortMethod sm = new SortMethod();
                 SortMethod method = sm.getSortMethod(methodName);
+                if (method == null) {
+                    System.out.println("Invalid Method Name!");
+                    return;
+                }
                 method.sort(x);                                           // 利用多态，动态绑定method的实际对象所具有的方法
                 if (!isSorted(x)) {
                     System.out.println("Failed  : " + Arrays.toString(x));
@@ -58,6 +62,8 @@ class SortMethod {
             case "insertion": sm = new Basic_Insertion_Sort();
                               break;
             case "selection": sm = new Basic_Selection_Sort();
+                              break;
+            case "merge"    : sm = new Basic_Merge_Sort();
                               break;
             default: sm = null;
         }

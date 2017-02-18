@@ -25,10 +25,14 @@ import com.leetcode.linkedlist.ListNode;
  * - 二分法：将问题规模分解，使得时间复杂度从 n * n 降至 n * log n.
  * - 递归：利用逆序递归对数组进行分解
  * - Sentinel卫兵：同步扫描两个序列时经常用到
+ * - Two Pointers: 快慢指针（倍速双指针）同向扫描定位链表中点。[ slow → ... fast → → ... ]
+ * - Dummy节点：链表迁移法
+ * - 链表拆分（切断）：在修改链表结构的同时切断原有链表，可以有助于简化操作。
  *
  */
-public class Basic_Merge_Sort {
+public class Basic_Merge_Sort extends SortMethod {
     public static void main(String[] args) {
+        // For Arrays
         int[] arr = {9, 8, 7, 5, 2, 4, 1, 6};
         MergeSort_Iterative(arr);
         System.out.println(Arrays.toString(arr));
@@ -37,13 +41,17 @@ public class Basic_Merge_Sort {
         MergeSort_Recursive(arr2);
         System.out.println(Arrays.toString(arr2));
 
+        // For LinkedList
         mergeSort(ListNode.Generator(new int[] {4, 5, 3, 2, 1, 0})).print();
+
+        // Bulk Test
+        SortUtility.VerifySortAlgorithm("merge");
     }
 
     // 解法1和解法2分别使用递归和迭代的方式对数组进行分解。
     // 解法1和解法2使用相同的合并方式对分解的数组区间进行合并。
 
-    /** 解法2：<分解过程>用迭代实现，<合并过程>同样需要额外空间。Time - o(nlogn), Space - o(n). */
+    /** 数组迭代解法：<分解过程>用迭代实现，<合并过程>同样需要额外空间。Time - o(nlogn), Space - o(n). */
     // 与解法1共享合并过程的算法，唯一区别在于分解的过程是直接访问的，省略了递归方法不断除二分解将数组分段的过程。
     // Bottom-Up Iterative：直接指定最小比较区段就是1，1比完了比2，2比完了比4，一直比到数组长度N
     /** 循环指针含义 */
@@ -91,12 +99,12 @@ public class Basic_Merge_Sort {
         }
     }
 
-    /** 解法1：<分解过程>用递归实现，<合并过程>需要使用额外空间。Time - o(nlogn), Space - o(n). */
+    /** 数组递归解法：<分解过程>用递归实现，<合并过程>需要使用额外空间。Time - o(nlogn), Space - o(n). */
     // Top-down Recursive: 逆序递归，即先递归至终点，再在返回的过程中进行Conquer
     // 用三层结构实现：
-    // 1. 最外层：Wrapper
-    // 2. 中间层：将数组按二分法进行划分至最小单位（逆序递归中的“先递归”）
-    // 3. 最内层：将划分完的数组区间按顺序进行合并（逆序递归中的“后干活”）
+    // 1. 最外层(Wrapper)
+    // 2. 中间层(Split)：将数组按二分法进行划分至最小单位（逆序递归中的“先递归”）
+    // 3. 最内层(Merge)：将划分完的数组区间按顺序进行合并（逆序递归中的“后干活”）
     // 从整体可以看到实际上这里递归的唯一目的就是对数组区间进行了划分，划分完了之后就可以依次合并排序了。
     // 使用ArrayList实现merge功能，双指针同时扫描两段，并存入ArrayList，最后由ArrayList覆盖当前区间
     // 使用卫兵：用极大值保护先扫完的部分，直至左右两部分都扫完。
@@ -108,12 +116,11 @@ public class Basic_Merge_Sort {
     }
 
     static void split(int[] a, int left, int right) {                       // 中间层：二分法划分数组
-        if (left < right) {
-            int mid = (left + right) / 2;
-            split(a, left, mid);
-            split(a, mid + 1, right);
-            merge(a, left, mid, right);
-        }
+        if (left == right) return;
+        int mid = left + (right - left) / 2;                                // 对于奇数长度数组，mid会指向中间元素
+        split(a, left, mid);                                                // 对于偶数长度数组，mid会指向中间的左侧元素
+        split(a, mid + 1, right);
+        merge(a, left, mid, right);
     }
 
     static void merge(int[] a, int left, int mid, int right) {              // 最内层：对已划分区间进行合并
@@ -133,9 +140,18 @@ public class Basic_Merge_Sort {
         }
     }
 
-    /** 扩展问题：对于链表如何进行Merge Sort？ */
-    // 关键点1：需要在分解链表的同时将链表拆分切断
-    // 关键点2：可以让合并过程达到o(1)的空间复杂度
+    @Override
+    public void sort(int[] a) {
+        MergeSort_Recursive(a);
+    }
+
+    /** 链表递归解法：双指针（快慢指针）进行链表分解切断 + 链表合并。Time - o(nlogn), Space - o(1). */
+    // 详见M148的分析示例。
+    // 链表的归并排序和数组一样分为<分解>和<合并>两个过程。但链表和数组在这两个过程的具体操作上是完全不同的。
+    // <链表分解>核心思路：利用快慢指针（倍速）寻找链表中点，当fast抵达右侧边界时，slow所在位置就是中点。
+    // 关键点1：奇偶长度下，中点应该停留在中间节点（奇数情况）或中间的左侧节点（偶数情况）。
+    // 关键点2：每次分解都需要从中点将链表直接切断。
+    // <链表合并>核心思路：利用Dummy节点的链表迁移法，将节点按顺序组装至Dummy节点所引领的新链表。
     static ListNode mergeSort(ListNode head) {
         if (head == null || head.next == null) return head;   // 递归终止条件：如果当前链表为空或只有一个节点，则无需再分解。
         ListNode slow = head;
@@ -151,7 +167,7 @@ public class Basic_Merge_Sort {
         return merge(head, right);                            // 根据新表头进行合并
     }
 
-    // 将两个链表按大小顺序一个一个的迁移至Dummy节点引领的新链表上（原位操作），这也是区别于数组归并排序的关键之一。
+    // 将两个链表进行原位合并
     static ListNode merge(ListNode left, ListNode right) {
         ListNode dummy = new ListNode(0);
         ListNode curr = dummy;
@@ -175,7 +191,7 @@ public class Basic_Merge_Sort {
     // 那么新问题是：对于数组，是否可以在保持Time - o(n)的前提下做到Space - o(1)的合并呢？
     // 答案是肯定存在，只不过达到这个标准的解法通常都太过复杂，以至于一般人不可能在面试时临时创造出来。
 
-    /** 首先解决：对<两个独立数组>进行In-place排序：Time - o(n^2), Space - o(1) */
+    /** 对<两个独立数组>进行原位排序：Time - o(n^2), Space - o(1) */
     // 其本质是插入排序。
     // 将问题抽象为对两个独立的数组进行merge，使得merge完成后a连接b也是已排序的
     // a = {1, 5, 9, 10, 15, 20}
@@ -197,7 +213,7 @@ public class Basic_Merge_Sort {
         }
     }
 
-    /** 然后解决：对<一个数组指定区间内的左右两部分>进行In-place排序：Time - o(n^2), Space - o(1) */
+    /** 对<一个数组指定区间内的左右两部分>进行原位排序：Time - o(n^2), Space - o(1) */
     // 在merge2()方法的基础上修改，得到了可以用与Merge Sort的原位merge方法
     // 需要注意j和x的下限应该相应的改为mid + 1和left。
     static void merge_inplace2(int[] a, int left, int mid, int right) {
