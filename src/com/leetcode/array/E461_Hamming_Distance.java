@@ -17,10 +17,14 @@ package com.leetcode.array;
  * Function Signature:
  * public int hammingDistance(int x, int y) {...}
  *
+ * <系列问题>
+ * - E191 Hamming Weight  : 给定一个无符号数，返回该数值二进制形式1bit的个数。
+ * - E461 Hamming Distance: 给定两个数值，返回两个数值二进制形式不同的比特个数。（本质上就是求两个数值异或值的Hamming Weight）
+ *
  * <Tags>
  * - Bit Manipulation: XOR with ^ operator.
  * - Bit Manipulation: Bit Mask with & operator.
- * - Bit Manipulation: x ^ (x - 1) to cleanup the lowest 1 bit.
+ * - Bit Manipulation: x & (x - 1) to cleanup the lowest 1 bit.
  *
  */
 public class E461_Hamming_Distance {
@@ -46,7 +50,7 @@ public class E461_Hamming_Distance {
         int xor = x ^ y;                // 首先获得两个数值二进制不同位构成的数值
         int count = 0;
         while (xor > 0) {               // 然后提取这个数值中为1的比特个数
-            xor ^= xor - 1;             // 每异或一次相邻值，xor中最低位的1比特就会被清理为0.
+            xor &= xor - 1;             // 每对相邻值进行一次与运算，xor中最低位的1比特就会被清理为0.
             count++;
         }
         return count;
