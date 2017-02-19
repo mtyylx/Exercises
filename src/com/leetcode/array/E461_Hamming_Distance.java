@@ -46,6 +46,13 @@ public class E461_Hamming_Distance {
     }
 
     /** 解法2：异或 + 最低位1比特清零法。 */
+    //                      最低位1比特
+    //                          ↓
+    //  x           = 1 0 1 0 0 1 0 0
+    //  x - 1       = 1 0 1 0 0 0 1 1
+    //  x & (x - 1) = 1 0 1 0 0 0 0 0
+    //                          ↑
+    //                    最低位1比特被清理
     static int hammingDistance2(int x, int y) {
         int xor = x ^ y;                // 首先获得两个数值二进制不同位构成的数值
         int count = 0;

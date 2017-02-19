@@ -56,7 +56,7 @@ public class E191_Hamming_Weight {
     // n不断被右移直至全0。注意这里使用的是逻辑右移，而不是算数右移，因为这里n是无符号数。
     // 逻辑右移 >>> 最高位强制补0
     // 算数右移 >> 最高位保留当前值的符号
-    static int hammingWeight2(int n) {
+    static int hammingWeight(int n) {
         int count = 0;
         while (n != 0) {
             count += n & 1;     // 检查最低位是1还是0
@@ -73,7 +73,7 @@ public class E191_Hamming_Weight {
     // 只需要构造一个只有1位是1的bitmask，然后将数与这个bitmask求与运算，即可知道是否这一位是1，而完全不用关心这时候这个值溢出成了什么。
     // 00000000001011
     // 00000000000001  <- bitmask不断向左平移。
-    static int hammingWeight(int n) {
+    static int hammingWeight2(int n) {
         int mask = 1;
         int count = 0;
         while (mask != 0) {
@@ -92,8 +92,8 @@ public class E191_Hamming_Weight {
     static int hammingWeight3(int n) {
         int count = 0;
         while (n != 0) {
-            count++;
             n = n & (n - 1);
+            count++;
         }
         return count;
     }
