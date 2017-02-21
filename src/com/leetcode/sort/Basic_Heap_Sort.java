@@ -11,20 +11,35 @@ import java.util.Arrays;
  */
 public class Basic_Heap_Sort {
     public static void main(String[] args) {
-        int[] a = new int[100];
-        randGen(a);
-        HeapSort(a);
-        System.out.println(Arrays.toString(a));
-
         int[] b = {9, 8, 7, 6, 56, 4, 3, 2, 1};
         HeapSort(b);
         System.out.println(Arrays.toString(b));
     }
 
-    private static void randGen(int[] a) {
-        for (int i = 0; i < a.length; i++)
-            a[i] = (int) (1000 * Math.random());
+    static void HeapSort(int[] a) {
+        if (a == null || a.length < 2) return;
+        maxHeapify(a, a.length);
+        for (int range = a.length - 1; range > 0; range--) {
+            swap(a, 0, range);
+            maxHeapify(a, range);
+        }
     }
+
+    static void maxHeapify(int[] a, int range) {
+        for (int i = range / 2 - 1; i >= 0; i--) {
+            int left = a[i * 2 + 1];
+            int right = i * 2 + 2 < range ? a[i * 2 + 2] : Integer.MIN_VALUE;
+            int max = Math.max(left, right);
+            if (a[i] < max) swap(a, i, max == left ? i * 2 + 1 : i * 2 + 2);
+        }
+    }
+
+    static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
 
     // 看到Heap Sort我完全想不起来到底跟Heap有什么关系
     // 在复习算法的时候我发现一个特别有意思的现象，就是之前学会了这个算法之后，往往已经忘记了最初接触时候的那些最根本的疑问，
@@ -67,7 +82,7 @@ public class Basic_Heap_Sort {
     // 例如五层31个数进行最大堆化：最坏情况一共15个数需要下降，这15个数中，8个下降1层，4个下降2层，2个下降3层，1个下降4层，总下降数26.
     // 时间复杂度之堆排序的第二步：不断取根节点，时间复杂度为o(nlogn)
     // 因为要提取n次根节点，每次从根节点最大堆化是logn（这个似乎是从主定理证明的）
-    static void HeapSort(int[] a) {
+    static void HeapSortx(int[] a) {
         for (int i = a.length / 2 - 1; i >= 0; i--)
             maxHeapify_Iterative(a, i, a.length);
 
