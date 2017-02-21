@@ -22,22 +22,33 @@ public class E69_Square_Root {
 
     /** 解法1：Binary Search分段扫描。Time - o(logN), Space - o(1). */
     // 难点1：避免整形溢出。使用 mid <= x / mid 而不是 mid * mid <= x，因为后者会出现整形溢出。
-    // 难点2：开平方应该向下取整。24虽然已经离25很近了，但是开平方依然应该得到4而不是5。
-    //
+    // 难点2：开平方应该向下取整。8虽然已经离9很近了，但是开平方依然应该得到2而不是3。
+    // 1  2  3  4  5  6  7  8  9    mid = 4 > 8 / 4, right = mid - 1 = 3
+    // ↑        ↑           ↑
+    // l        m           r
+    // 1  2  3  4  5  6  7  8  9    mid = 2 < 8 / 2, left = mid + 1 = 3, res = 2
+    // ↑  ↑  ↑
+    // l  m  r
+    // 1  2  3  4  5  6  7  8  9    mid = 3 > 8 / 3, right = mid - 1 = 2
+    //       ↑
+    //     l,m,r
+    // 1  2  3  4  5  6  7  8  9    left > right 结束循环.
+    //    ↑  ↑
+    //    r  l
     static int sqrt(int x) {
         if (x <= 0) return 0;
         int left = 1;
         int right = x;
-        int ans = 0;
+        int res = 0;
         while (left <= right) {
             int mid = left + (right - left) / 2;
-            if (mid <= x / mid) {                   // 避免整形溢出
+            if (mid <= x / mid) {                   // 从左侧逐渐逼近时，实时记录当前中点值
                 left = mid + 1;
-                ans = mid;                          // 记忆下限
+                res = mid;                          // 记忆
             }
-            else right = mid - 1;
+            else right = mid - 1;                   // 从右侧逐渐逼近时，不实时记录。因为开平方应该向下（从左侧）取整而不是向上（从右侧）取整
         }
-        return ans;
+        return res;
     }
 
     /** 解法2：常规线性扫描。Time - o(n), Space - o(1). */
