@@ -6,16 +6,63 @@ import java.util.Arrays;
  * Created by LYuan on 2016/9/27.
  *
  * Basic Algorithm: Heap Sort
- * Time - o(n * log n)
- * Space - o(1)
+ *
+ * <Core Mechanism>
+ * Max Heapify + Extract Root Node + Maintain Max Heap.
+ *
+ * - Time - o(n * log n)
+ * - Space - o(1)
+ *
+ * <Tags>
+ * - Heap Data Structure: MaxHeapify
+ * - Sentinel卫兵：保护可能的出现非法值
+ *
  */
-public class Basic_Heap_Sort {
+public class Basic_Heap_Sort extends SortMethod {
     public static void main(String[] args) {
         int[] b = {9, 8, 7, 6, 56, 4, 3, 2, 1};
         HeapSort(b);
         System.out.println(Arrays.toString(b));
+
+        // Bulk Test
+        SortUtility.VerifySortAlgorithm("heap");
     }
 
+    /** 数组迭代解法：最大堆化 + 提取树根并最大堆化。Time - o(n * logn), Space - o(1) */
+    /** 关键点1：堆排序的<堆>指的是什么 */
+    // 首先要明确“堆”的概念：堆这个名词具有双重含义。在数据结构中，堆指的是一类特殊的树。在程序内存中，堆指的是一块专门放对象的动态内存空间。
+    // 这里堆排序的“堆”指的是前者，一类特殊的树。
+    // 其特殊的地方在于这个树的所有节点都符合相同的父子大小关系，要不然父节点大于所有子节点（最大堆），要不然小于所有子节点（最小堆）
+    // 堆其实和BST有相似之处，堆中节点的大小顺序是<按照上下划分>的，而BST中节点的大小顺序是<按照左右划分>的。
+    // 最大堆只能保证节点在自己做树根的子树上的所有层最大，但不保证节点的值比自己之下所有层的值都大。
+    // 例如节点4在其子树上的确是最大的，但是节点4（位于level1）并没有比level2上的所有节点都大。
+    //             8        level 0
+    //           /   \
+    //          4     7     level 1
+    //         / \   / \
+    //        3   1  6  5   level 2
+    /** 关键点2：如何将二叉树变为最大堆 */
+    // 由于二叉树的自相似性，只需要<自底向上>的对每个节点引领的树进行最大堆化，最后得到的整体一定就是最大堆。
+    // 又由于只有那些有子节点的节点才需要最大堆化，因此实际的扫描过程只需要从最后一个非叶子节点开始即可。
+    // 对于一个真的树，可以用DFS + 栈的方式实现这个扫描过程，也可以用BFS + 队列的方式实现。
+    // 对于一个映射为数组的树，则需要关键点3的索引值关系来做到。
+    /** 关键点3：堆映射至数组时，节点的索引值之间有什么特性 */
+    // 1. 通过父节点索引定位子节点
+    // 父节点索引值为 i
+    // 左儿子索引为 i * 2 + 1
+    // 右儿子索引为 i * 2 + 2
+    // 2. 定位最后一个有子节点的节点
+    // 如果数组有效长度为 N，则最后一个有子节点的节点索引为 N / 2 - 1.
+    // 例如 {8, 4, 7, 3}中，节点4是最后一个有子节点的，其索引为 4 / 2 - 1 = 1.
+    //            8
+    //           / \
+    //          4   7
+    //         /
+    //        3
+    /** 关键点4：最大堆化之后，如何进行排序 */
+    // 由于最大堆的特性，即使最大堆化完成之后，我们唯一能确定的就是这时候整个树的树根一定是全局的最大值，其他节点我们都不确定。
+    // 因此我们只需要把树根保存下来，让剩下的节点再进行最大堆化，每次确定一个最大值，直至所有节点都排序完成。
+    // 由于这里将最大堆映射到的数组进行操作，因此需要注意动态缩小数组的有效范围。
     static void HeapSort(int[] a) {
         if (a == null || a.length < 2) return;
         maxHeapify(a, a.length);
@@ -26,11 +73,11 @@ public class Basic_Heap_Sort {
     }
 
     static void maxHeapify(int[] a, int range) {
-        for (int i = range / 2 - 1; i >= 0; i--) {
-            int left = a[i * 2 + 1];
-            int right = i * 2 + 2 < range ? a[i * 2 + 2] : Integer.MIN_VALUE;
-            int max = Math.max(left, right);
-            if (a[i] < max) swap(a, i, max == left ? i * 2 + 1 : i * 2 + 2);
+        for (int i = range / 2 - 1; i >= 0; i--) {                                          // 从最后一个有子节点的元素开始，自下而上进行最大堆化
+            int lChild = i * 2 + 1;                                                         // 左儿子（一定存在）
+            int rChild = i * 2 + 2;                                                         // 右儿子（不一定存在）
+            int max = Math.max(a[lChild], rChild < range ? a[rChild] : Integer.MIN_VALUE);  // 确定两者的最大值（使用卫兵保护右儿子）
+            if (a[i] < max) swap(a, i, max == a[lChild] ? lChild : rChild);                 // 如果有交换的必要，就将父节点与最大子节点交换
         }
     }
 
@@ -40,6 +87,9 @@ public class Basic_Heap_Sort {
         a[j] = temp;
     }
 
+    public void sort(int[] a) {
+        HeapSort(a);
+    }
 
     // 看到Heap Sort我完全想不起来到底跟Heap有什么关系
     // 在复习算法的时候我发现一个特别有意思的现象，就是之前学会了这个算法之后，往往已经忘记了最初接触时候的那些最根本的疑问，

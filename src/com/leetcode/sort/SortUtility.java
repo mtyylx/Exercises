@@ -65,6 +65,8 @@ class SortMethod {
                               break;
             case "merge"    : sm = new Basic_Merge_Sort();
                               break;
+            case "heap"    : sm = new Basic_Heap_Sort();
+                              break;
             default: sm = null;
         }
         return sm;
