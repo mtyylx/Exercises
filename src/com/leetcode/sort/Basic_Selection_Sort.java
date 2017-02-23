@@ -33,7 +33,8 @@ public class Basic_Selection_Sort extends SortMethod {
         SelectionSort_LinkedList(ListNode.Generator(new int[] {4, 5, 3, 2, 1})).print();
 
         // Bulk Test
-        //SortUtility.VerifySortAlgorithm("selection");
+        SortUtility.VerifySortAlgorithm("selection");
+        SortUtility.TestPerformance("selection", 100000);       // 4000ms per 10,0000 elements
     }
 
     /** 数组解法：双指针同向扫描。Time - o(n^2), Space - o(1). */

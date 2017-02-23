@@ -47,6 +47,7 @@ public class Basic_Insertion_Sort extends SortMethod {
 
         // Bulk Test
         SortUtility.VerifySortAlgorithm("insertion");
+        SortUtility.TestPerformance("insertion", 100000);       // 2000ms per 10,0000 elements
     }
 
     /** 插入排序的思想：外循环扫描整个数组，内循环扫描已排序区间并对相邻元素进行平移，最后将未排序元素插入已排序区间的合适位置。*/

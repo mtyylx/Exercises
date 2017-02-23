@@ -23,6 +23,7 @@ public class SortUtility {
         return a;
     }
 
+    /** Verify the correctness of given sorting algorithm with various range and length of test arrays. */
     public static void VerifySortAlgorithm(String methodName) {
         // j 控制取值范围    i 控制序列长度
         for (int range = 2; range < 100; range += 5) {
@@ -44,6 +45,23 @@ public class SortUtility {
             }
         }
         System.out.println("--------------------------- All Test Cases Passed! ---------------------------");
+    }
+
+    /** Evaluate the performance of given sorting algorithm for comparison purposes. */
+    public static void TestPerformance(String methodName, int scale) {
+        int[] x = randGen(scale, scale);
+        SortMethod sm = new SortMethod();
+        SortMethod method = sm.getSortMethod(methodName);
+        if (method == null) {
+            System.out.println("Invalid Method Name!");
+            return;
+        }
+        long start = System.nanoTime();
+        method.sort(x);
+        long end = System.nanoTime();
+        System.out.println("Time Spent: " + (end - start) / 1000000 + " ms");
+        if (!isSorted(x)) System.out.println("Failed!");
+        else System.out.println("Passed!");
     }
 }
 

@@ -46,6 +46,7 @@ public class Basic_Merge_Sort extends SortMethod {
 
         // Bulk Test
         SortUtility.VerifySortAlgorithm("merge");
+        SortUtility.TestPerformance("merge", 100000);       // 40ms per 10,0000 elements
     }
 
 
