@@ -13,7 +13,10 @@ public class Basic_Radix_Sort {
         int[] a = {18, 16};
         RadixSort2(a);
         System.out.println(Arrays.toString(a));
-        bulkTest();
+
+        // Bulk Test
+        SortUtility.VerifySortAlgorithm("radix");
+        SortUtility.TestPerformance("radix", 100000);
     }
 
     // Radix Sort的核心在于对数值类型元素的每一位进行排序。
@@ -73,35 +76,8 @@ public class Basic_Radix_Sort {
         return count;
     }
 
-    public static void bulkTest() {
-        for (int j = 2; j < 20; j += 2) {
-            for (int i = 1; i < 10; i++) {
-                int[] x = randGen(i, j);
-                System.out.println("Original: " + Arrays.toString(x));
-                RadixSort2(x);
-                if (!isSorted(x)) {
-                    System.out.println("Failed at: " + Arrays.toString(x));
-                    return;
-                }
-                else System.out.println("Passed at: " + Arrays.toString(x));
-            }
-        }
-        System.out.println("Passed.");
-    }
+    public void sort(int[] a) {
 
-    public static boolean isSorted(int[] a) {
-        if (a == null || a.length < 2) return true;
-        for (int i = 1; i < a.length; i++) {
-            if (a[i] < a[i - 1]) return false;
-        }
-        return true;
-    }
-
-    private static int[] randGen(int len, int range) {
-        int[] a = new int[len];
-        for (int i = 0; i < a.length; i++)
-            a[i] = (int) (range * Math.random());
-        return a;
     }
 
 }

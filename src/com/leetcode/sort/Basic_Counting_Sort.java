@@ -21,7 +21,10 @@ public class Basic_Counting_Sort {
     public static void main(String[] args) {
         int[] a = {-5, -3, -5, -3, 1, 1, -2};
         System.out.println(Arrays.toString(CountingSort2(a)));
-        bulkTest();
+
+        // Bulk Test
+        SortUtility.VerifySortAlgorithm("counting");
+        SortUtility.TestPerformance("counting", 100000);
     }
 
     /** Counting Sort的核心思路：<Value-As—Index> */
@@ -120,35 +123,8 @@ public class Basic_Counting_Sort {
         return c;
     }
 
-    public static void bulkTest() {
-        for (int j = 2; j < 1000; j += 2) {
-            for (int i = 1; i < 100; i++) {
-                int[] x = randGen(i, j);
-                System.out.println("Original: " + Arrays.toString(x));
-                CountingSort(x);
-                if (!isSorted(x)) {
-                    System.out.println("Failed at: " + Arrays.toString(x));
-                    return;
-                }
-                else System.out.println("Passed at: " + Arrays.toString(x));
-            }
-        }
-        System.out.println("Passed.");
-    }
+    public void sort(int[] a) {
 
-    public static boolean isSorted(int[] a) {
-        if (a == null || a.length < 2) return true;
-        for (int i = 1; i < a.length; i++) {
-            if (a[i] < a[i - 1]) return false;
-        }
-        return true;
-    }
-
-    private static int[] randGen(int len, int range) {
-        int[] a = new int[len];
-        for (int i = 0; i < a.length; i++)
-            a[i] = (int) (range * Math.random());
-        return a;
     }
 
 }

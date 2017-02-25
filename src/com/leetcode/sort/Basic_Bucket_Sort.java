@@ -12,12 +12,15 @@ import java.util.*;
  * Space - o(n)
  *
  */
-public class Basic_Bucket_Sort {
+public class Basic_Bucket_Sort extends SortMethod {
     public static void main(String[] args) {
         float[] a = {1, 7, -88, 44, 22, 77};
         BucketSort2(a, 100);
         System.out.println(Arrays.toString(a));
-        bulkTest();
+
+        // Bulk Test
+        SortUtility.VerifySortAlgorithm("bucket");
+        SortUtility.TestPerformance("bucket", 100000);
     }
 
     // Bucket Sort的核心思路
@@ -110,35 +113,8 @@ public class Basic_Bucket_Sort {
         }
     }
 
-    public static void bulkTest() {
-        for (int j = 2; j < 50; j += 2) {
-            for (int i = 1; i < 50; i++) {
-                float[] x = randGen(i, j);
-                System.out.println("Original: " + Arrays.toString(x));
-                BucketSort(x, x.length);
-                if (!isSorted(x)) {
-                    System.out.println("Failed at: " + Arrays.toString(x));
-                    return;
-                }
-                else System.out.println("Passed at: " + Arrays.toString(x));
-            }
-        }
-        System.out.println("Passed.");
-    }
+    public void sort(int[] a) {
 
-    public static boolean isSorted(float[] a) {
-        if (a == null || a.length < 2) return true;
-        for (int i = 1; i < a.length; i++) {
-            if (a[i] < a[i - 1]) return false;
-        }
-        return true;
-    }
-
-    private static float[] randGen(int len, int range) {
-        float[] a = new float[len];
-        for (int i = 0; i < a.length; i++)
-            a[i] = (float) (range * Math.random());
-        return a;
     }
 
 }

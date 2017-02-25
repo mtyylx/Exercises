@@ -87,6 +87,12 @@ class SortMethod {
                               break;
             case "quick"    : sm = new Basic_Quick_Sort();
                               break;
+            case "bucket"   : sm = new Basic_Quick_Sort();
+                              break;
+            case "counting" : sm = new Basic_Quick_Sort();
+                              break;
+            case "radix"    : sm = new Basic_Quick_Sort();
+                              break;
             default: sm = null;
         }
         return sm;

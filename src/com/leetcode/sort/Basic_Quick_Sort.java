@@ -23,7 +23,7 @@ public class Basic_Quick_Sort extends SortMethod {
 
         // Bulk Test
         SortUtility.VerifySortAlgorithm("quick");
-        SortUtility.TestPerformance("heap", 100000);
+        SortUtility.TestPerformance("quick", 100000);
     }
 
     // 基本思路是Top-down，不断的分解问题，在分解的过程中原位的对元素顺序进行调换，分解完成时（即递归到头时），整个数组已经完全有序，任务也就完成了，
