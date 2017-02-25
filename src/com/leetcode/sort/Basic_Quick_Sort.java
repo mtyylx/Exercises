@@ -14,44 +14,16 @@ import java.util.*;
  * 如果使用递归实现，这个分界点位置被隐式的使用在函数堆栈上，
  * 如果使用迭代实现，则分界点位置必须使用栈自己存储起来，因此不管使用递归还是迭代，快排都需要o(logn)额外空间，无法做到o(1)。
  */
-public class Basic_Quick_Sort {
+public class Basic_Quick_Sort extends SortMethod {
     public static void main(String[] args) {
         int[] a = {1, 0, 1};
         QuickSort_Iterative(a);
         QuickSort_Randomized(a);
         System.out.println(Arrays.toString(a));
-        bulkTest();
-    }
 
-    public static void bulkTest() {
-        for (int j = 2; j < 1000; j += 2) {
-            for (int i = 1; i < 100; i++) {
-                int[] x = randGen(i, j);
-                System.out.println("Original: " + Arrays.toString(x));
-                QuickSort_Randomized(x);
-                if (!isSorted(x)) {
-                    System.out.println("Failed at: " + Arrays.toString(x));
-                    return;
-                }
-                else System.out.println("Passed at: " + Arrays.toString(x));
-            }
-        }
-        System.out.println("Passed.");
-    }
-
-    public static boolean isSorted(int[] a) {
-        if (a == null || a.length < 2) return true;
-        for (int i = 1; i < a.length; i++) {
-            if (a[i] < a[i - 1]) return false;
-        }
-        return true;
-    }
-
-    private static int[] randGen(int len, int range) {
-        int[] a = new int[len];
-        for (int i = 0; i < a.length; i++)
-            a[i] = (int) (range * Math.random());
-        return a;
+        // Bulk Test
+        SortUtility.VerifySortAlgorithm("quick");
+        SortUtility.TestPerformance("heap", 100000);
     }
 
     // 基本思路是Top-down，不断的分解问题，在分解的过程中原位的对元素顺序进行调换，分解完成时（即递归到头时），整个数组已经完全有序，任务也就完成了，
@@ -269,6 +241,10 @@ public class Basic_Quick_Sort {
         }
         Partition(a, left, j);          // 为什么用j而不是i：因为不论任何情况，j最后停止的位置，一定是最后一个小于pivot的位置
         Partition(a, j + 1, right);     // 也就是说j的位置就是左侧分区的最后一个元素，因此可以安全的划分为left~j，以及j+1~right区间
+    }
+
+    public void sort(int[] a) {
+        QuickSort_Iterative(a);
     }
 }
 
