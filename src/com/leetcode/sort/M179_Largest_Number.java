@@ -25,6 +25,7 @@ public class M179_Largest_Number {
 
         System.out.println(largestNumber(a));       // slow
         System.out.println(largestNumber2(a));      // fast
+        System.out.println(largestNumber3(a));      // fast
     }
 
     /** 解法2：重写Arrays.sort所使用的compare方法，自定义比较逻辑. */
@@ -32,21 +33,35 @@ public class M179_Largest_Number {
     // 关键点1：对比机制的自定义
     // 关键点2：排序算法
     // 关键点3：特例边界情况处理
-    static String largestNumber(int[] a) {
+    static String largestNumber2(int[] a) {
         String[] s = new String[a.length];
         for (int i = 0; i < a.length; i++)                          // 全部转换为字符串数组操作，以避免重复转换
             s[i] = String.valueOf(a[i]);
-
-        Comparator<String> comparator = new Comparator<String>() {  // 定义一个实现Comparator接口的匿名类，并赋予compare方法新的逻辑：组合数大才算大
+        // Create a new Object of a Anonymous Class that implements the "Comparator" Interface.
+        Comparator<String> comparator = new Comparator<String>() {  // 定义并实例化一个实现Comparator接口的匿名类的对象，该匿名类赋予了compare方法新的逻辑：组合数大才算大
             @Override
-            public int compare(String str1, String str2) {
-                String comb1 = str1 + str2;
-                String comb2 = str2 + str1;
-                return comb2.compareTo(comb1);                      // 内部再调用String类实现的compareTo方法，比较两个字符串字典排序顺序
+            public int compare(String x, String y) {
+                return (y + x).compareTo(x + y);        // 内部再调用String类实现的compareTo方法，比较两个字符串字典排序顺序
             }
         };
 
         Arrays.sort(s, comparator);                                 // 将重写compare方法的类对象传入Arrays.sort方法
+        if(s[0].charAt(0) == '0') return "0";                       // 需要考虑数组全为0的特例，特殊处理
+        StringBuilder sb = new StringBuilder();
+        for (String i : s) sb.append(i);
+        return sb.toString();
+    }
+
+    /** 解法3：Lambda表达式写法，更为简洁。 */
+    static String largestNumber3(int[] a) {
+        String[] s = new String[a.length];
+        for (int i = 0; i < a.length; i++)                          // 全部转换为字符串数组操作，以避免重复转换
+            s[i] = String.valueOf(a[i]);
+
+        Arrays.sort(s, (x, y) -> {                                  // 使用Lambda表达式定义compare
+            return (y + x).compareTo(x + y);
+        });
+
         if(s[0].charAt(0) == '0') return "0";                       // 需要考虑数组全为0的特例，特殊处理
         StringBuilder sb = new StringBuilder();
         for (String i : s) sb.append(i);
@@ -65,7 +80,7 @@ public class M179_Largest_Number {
     // 于是我们的排序原则需要变成：a和b谁在先组合在一起的值更大，就让他排在前面。例如 9 50 59 应该排序为 9 59 50 才对。
     // <容易疏忽的点> 当数组元素并非全0时，无需担心是否需要清理格式，因为此时非0值一定会被放在组合数的最前面，此时的0元素都是非常有用的。
     // 但如果数组元素是全0时，那么此时组合数将是一个形如"00000...000"的无效字符串，不符合数值的格式，因此需要单独处理为数值0本身。
-    static String largestNumber2(int[] a) {
+    static String largestNumber(int[] a) {
         for (int i = 1; i < a.length; i++) {                    // 标准的插入排序双指针解法
             int j = i - 1;
             int temp = a[i];
