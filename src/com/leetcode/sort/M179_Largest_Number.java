@@ -22,10 +22,9 @@ import java.util.Comparator;
 public class M179_Largest_Number {
     public static void main(String[] args) {
         int[] a = {99, 88, 77, 66, 5, 50};
-        int[] b = {0, 0};
 
-        System.out.println(largestNumber(a));
-        System.out.println(largestNumber2(a));
+        System.out.println(largestNumber(a));       // slow
+        System.out.println(largestNumber2(a));      // fast
     }
 
     /** 解法2：重写Arrays.sort所使用的compare方法，自定义比较逻辑. */
@@ -38,16 +37,16 @@ public class M179_Largest_Number {
         for (int i = 0; i < a.length; i++)                          // 全部转换为字符串数组操作，以避免重复转换
             s[i] = String.valueOf(a[i]);
 
-        Comparator<String> comparator = new Comparator<String>() {  // 定义匿名类，重写compare方法
+        Comparator<String> comparator = new Comparator<String>() {  // 定义一个实现Comparator接口的匿名类，并赋予compare方法新的逻辑：组合数大才算大
             @Override
             public int compare(String str1, String str2) {
                 String comb1 = str1 + str2;
                 String comb2 = str2 + str1;
-                return comb2.compareTo(comb1);                      // compareTo方法比较两个字符串按字典排序的先后顺序
+                return comb2.compareTo(comb1);                      // 内部再调用String类实现的compareTo方法，比较两个字符串字典排序顺序
             }
         };
 
-        Arrays.sort(s, comparator);                                 // Arrays.sort指定排序机制的用法，可以指定自定义的大小关系
+        Arrays.sort(s, comparator);                                 // 将重写compare方法的类对象传入Arrays.sort方法
         if(s[0].charAt(0) == '0') return "0";                       // 需要考虑数组全为0的特例，特殊处理
         StringBuilder sb = new StringBuilder();
         for (String i : s) sb.append(i);
@@ -55,36 +54,39 @@ public class M179_Largest_Number {
     }
 
     /** 解法1：插入排序 + 字符串比较。Time - o(n^2), Space - o(n) */
-    // 数组a的元素本身可以直接比较，但是拼接以后的数值不一定在int范围之内。
-    // 最稳妥、永远不会发生溢出情况的比较方法是按照字母顺序比较字符串大小。
+    // 其实这里使用什么排序算法都可以。这里只是用插入排序实现，可以像解法2一样使用性能更好的排序算法。
+    // 这个问题的特点在于要以字符串相连的方式比较组合数的大小。
+    // <关键点1> 相连后的新数可能会超过整型范围，此时如何比较大小 -> 使用字符ASCII值比较字典顺序。
+    // 这里既可以使用String类库直接实现的来自Comparable接口的compareTo方法来比较大小，也可以自己动手写一个同样逻辑的方法。
+    // <关键点2> 相比于普通按元素数值大小排序的算法，这里需要自定义“数值大小”这个概念。
+    // 普通的比较排序算法只需要按照两个元素值的大小来排序。例如 9 50 59 排序为 9 50 59
+    // 但是在这道题中，我们如果还按照上面的逻辑，将无法得到最大的组合数，因为升序排列的元素组合在一起并不一定是最小或最大的。
+    // 考虑这两个相悖的例子：10 50 组合最大值应该是5010。 9 10 组合最大值应该是910。
+    // 于是我们的排序原则需要变成：a和b谁在先组合在一起的值更大，就让他排在前面。例如 9 50 59 应该排序为 9 59 50 才对。
+    // <容易疏忽的点> 当数组元素并非全0时，无需担心是否需要清理格式，因为此时非0值一定会被放在组合数的最前面，此时的0元素都是非常有用的。
+    // 但如果数组元素是全0时，那么此时组合数将是一个形如"00000...000"的无效字符串，不符合数值的格式，因此需要单独处理为数值0本身。
     static String largestNumber2(int[] a) {
-        for (int i = 1; i < a.length; i++) {
+        for (int i = 1; i < a.length; i++) {                    // 标准的插入排序双指针解法
             int j = i - 1;
             int temp = a[i];
-            for (; j >= 0 && larger(a[j], temp); j--)
+            for (; j >= 0 && larger(a[j], temp); j--)           // 只有当前已排序元素比temp大（两者组合起来应该让已排序元素在前面） 才继续
                 a[j + 1] = a[j];
             a[j + 1] = temp;
         }
-        if (a[a.length - 1] == 0) return "0";
+        if (a[a.length - 1] == 0) return "0";                   // 需要特殊处理全部元素都是0的情况，因为此时会组合出来一个全是0的结果，不符合数值格式
         StringBuilder sb = new StringBuilder();
-        for (int i = a.length - 1; i >= 0; i--)
+        for (int i = a.length - 1; i >= 0; i--)                 // 逆序依次相连所有元素的文本
             sb.append(String.valueOf(a[i]));
         return sb.toString();
     }
 
-    // 比较两个数字正反组合后哪个更大，作为我们希望的顺序进行排列
-    // 可能会出现数值大的元素放在前面组合的值更大的情况
-    // 例如 10 和 50，如果按照一般的数值大小排序，那么显然应该是10在50之前
-    // 但是为了让两个数值组合后的值更大，由于5010大于1050，所以应该让50在10之前排列
-    static boolean larger(int a, int b) {
+    static boolean larger(int a, int b) {                       // 自定义两个整型元素的大小判断逻辑，相当于重写的“大于号”本身的含义
         String x = String.valueOf(a);
         String y = String.valueOf(b);
-        String ab = x + y;
-        String ba = y + x;
-        return strcmp(ab, ba);
+        return strcmp(x + y, y + x);                       // 不再直接比较元素值本身的大小关系，而是按照那种组合方式的顺序更大来判断
     }
 
-    static boolean strcmp(String a, String b) {
+    static boolean strcmp(String a, String b) {                 // 实现了String对象具有的compareTo()方法，当a>=b时返回true
         if (a.length() > b.length()) return true;
         if (a.length() < b.length()) return false;
         for (int i = 0; i < a.length(); i++) {
