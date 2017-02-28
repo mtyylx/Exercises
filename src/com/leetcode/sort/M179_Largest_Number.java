@@ -26,9 +26,26 @@ public class M179_Largest_Number {
         System.out.println(largestNumber(a));       // slow
         System.out.println(largestNumber2(a));      // fast
         System.out.println(largestNumber3(a));      // fast
+        System.out.println(largestNumberx(a));      // fast
     }
 
-    /** 解法2：重写Arrays.sort所使用的compare方法，自定义比较逻辑. */
+    /** 解法3：Lambda表达式。更为简洁。 */
+    static String largestNumber3(int[] a) {
+        String[] s = new String[a.length];
+        for (int i = 0; i < a.length; i++)                          // 全部转换为字符串数组操作，以避免重复转换
+            s[i] = String.valueOf(a[i]);
+
+        Arrays.sort(s, (String x, String y) -> {                    // 使用Lambda表达式隐式重写compare方法（实现Comparator接口）
+            return (y + x).compareTo(x + y);
+        });
+
+        if(s[0].charAt(0) == '0') return "0";                       // 需要考虑数组全为0的特例，特殊处理
+        StringBuilder sb = new StringBuilder();
+        for (String i : s) sb.append(i);
+        return sb.toString();
+    }
+
+    /** 解法2：匿名类 + 重写Arrays.sort所使用的compare方法，自定义比较逻辑. */
     // 由于仅仅修改了元素大小的概念，排序算法用的还是库函数，因此可以确保性能最优（用的应该是快速排序的变体）
     // 关键点1：对比机制的自定义
     // 关键点2：排序算法
@@ -51,15 +68,17 @@ public class M179_Largest_Number {
         for (String i : s) sb.append(i);
         return sb.toString();
     }
-
-    /** 解法3：Lambda表达式写法，更为简洁。 */
-    static String largestNumber3(int[] a) {
+    // 简化写法
+    static String largestNumberx(int[] a) {
         String[] s = new String[a.length];
         for (int i = 0; i < a.length; i++)                          // 全部转换为字符串数组操作，以避免重复转换
             s[i] = String.valueOf(a[i]);
 
-        Arrays.sort(s, (x, y) -> {                                  // 使用Lambda表达式定义compare
-            return (y + x).compareTo(x + y);
+        Arrays.sort(s, new Comparator<String>() {                   // 注意这里的语法是匿名类的语法：new Comparator()并不是要实例化接口
+            @Override                                               // 而是定义了一个实现接口的类，并在大括号中重写了接口的抽象方法compare
+            public int compare(String x, String y) {
+                return (y + x).compareTo(x + y);
+            }
         });
 
         if(s[0].charAt(0) == '0') return "0";                       // 需要考虑数组全为0的特例，特殊处理
@@ -67,6 +86,7 @@ public class M179_Largest_Number {
         for (String i : s) sb.append(i);
         return sb.toString();
     }
+
 
     /** 解法1：插入排序 + 字符串比较。Time - o(n^2), Space - o(n) */
     // 其实这里使用什么排序算法都可以。这里只是用插入排序实现，可以像解法2一样使用性能更好的排序算法。
