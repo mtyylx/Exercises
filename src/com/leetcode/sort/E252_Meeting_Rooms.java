@@ -11,13 +11,12 @@ import java.util.Comparator;
  * For example, Given [[0, 30],[5, 10],[15, 20]], return false.
  *
  * Function Signature:
- * Definition for an interval.
- * public class Interval {
- *     int start;
- *     int end;
- *     Interval() { start = 0; end = 0; }
- *     Interval(int s, int e) { start = s; end = e; }
- * }
+ * public boolean hasNoConflict(Interval[] a) {...}
+ *
+ * <Tags>
+ * - 使用Arrays.sort(T array, Comparator<T> comparator)进行自定义规则的对象数组排序。
+ * - 使用匿名类或Lambda表达式
+ *
  */
 public class E252_Meeting_Rooms {
     public static void main(String[] args) {
@@ -29,34 +28,34 @@ public class E252_Meeting_Rooms {
     // 思路1：可以直接尝试分别用Counting Sort和Insertion Sort来排序。
     // 思路2：直接修改Interval类，使其实现Comparable接口以直接使用Arrays.sort方法
     // 思路3：由于可以确保每个interval都是有效的，因此可以对interval数组的所有start和end单独排序，无需按interval对象分析了。
-    static boolean canAttendAllMeetings4(Interval[] intervals) {
-        int[] start = new int[intervals.length];
-        int[] end = new int[intervals.length];
-        for (int i = 0; i < intervals.length; i++) {
-            start[i] = intervals[i].start;
-            end[i] = intervals[i].end;
+    static boolean canAttendAllMeetings4(Interval[] a) {
+        int[] start = new int[a.length];
+        int[] end = new int[a.length];
+        for (int i = 0; i < a.length; i++) {
+            start[i] = a[i].start;
+            end[i] = a[i].end;
         }
         Arrays.sort(start);
         Arrays.sort(end);
-        for (int i = 1; i < intervals.length; i++)
+        for (int i = 1; i < a.length; i++)
             if (start[i] < end[i - 1]) return false;
         return true;
     }
 
     // Counting Sort解法: Get Max -> Get Histo -> Get Accumulative Histo -> Sorted -> Check Validity
     // Time - o(n), space - o(n)
-    static boolean canAttendAllMeetings(Interval[] intervals) {
+    static boolean canAttendAllMeetings(Interval[] a) {
         int max = 0;
-        for (Interval i : intervals)
+        for (Interval i : a)
             max = Math.max(max, i.start);
         int[] b = new int[max + 1];
-        for (Interval i : intervals)
+        for (Interval i : a)
             b[i.start]++;
         for (int i = 1; i < b.length; i++)
             b[i] += b[i - 1];
-        Interval[] c = new Interval[intervals.length];
-        for (int i = intervals.length - 1; i >= 0; i--) {
-            c[--b[intervals[i].start]] = intervals[i];
+        Interval[] c = new Interval[a.length];
+        for (int i = a.length - 1; i >= 0; i--) {
+            c[--b[a[i].start]] = a[i];
         }
         for (int i = 1; i < c.length; i++)
             if (c[i].start < c[i - 1].end) return false;
@@ -65,25 +64,33 @@ public class E252_Meeting_Rooms {
 
     // Insertion Sort解法：
     // Time - o(n^2), Space - o(1)
-    static boolean canAttendAllMeetings2(Interval[] intervals) {
+    static boolean canAttendAllMeetings2(Interval[] a) {
         int i, j;
         Interval current;
-        for (i = 0; i < intervals.length; i++) {
-            current = intervals[i];
-            for (j = i - 1; j >= 0 && intervals[j].start >= current.start; j--)
-                intervals[j + 1] = intervals[j];
-            intervals[j + 1] = current;
+        for (i = 0; i < a.length; i++) {
+            current = a[i];
+            for (j = i - 1; j >= 0 && a[j].start >= current.start; j--)
+                a[j + 1] = a[j];
+            a[j + 1] = current;
         }
-        for (i = 1; i < intervals.length; i++)
-            if (intervals[i].start < intervals[i - 1].end) return false;
+        for (i = 1; i < a.length; i++)
+            if (a[i].start < a[i - 1].end) return false;
         return true;
     }
 
     // 直接使用Arrays.sort方法比较任何的Interval对象
-    static boolean canAttendAllMeetings3(Interval[] intervals) {
-        Arrays.sort(intervals);
-        for (int i = 1; i < intervals.length; i++)
-            if (intervals[i].start < intervals[i - 1].end) return false;
+    static boolean canAttendAllMeetings3(Interval[] a) {
+        Arrays.sort(a);
+        for (int i = 1; i < a.length; i++)
+            if (a[i].start < a[i - 1].end) return false;
+        return true;
+    }
+
+    /** 解法1：使用Lambda表达式重写compare方法。 */
+    static boolean hasNoConflict(Interval[] a) {
+        Arrays.sort(a, (Interval i1, Interval i2) -> { return i1.start - i2.start;});
+        for (int i = 1; i < a.length; i++)
+            if (a[i].start <= a[i - 1].end) return false;
         return true;
     }
 }
@@ -91,10 +98,6 @@ public class E252_Meeting_Rooms {
 class Interval implements Comparable<Interval> {
     int start;
     int end;
-    Interval() {
-        start = 0;
-        end = 0;
-    }
     Interval(int s, int e) {
         start = s;
         end = e;
@@ -104,7 +107,7 @@ class Interval implements Comparable<Interval> {
     // 只要声明Interval类实现了Comparable规范，并提供compareTo方法（其实就是比较两个Interval对象的start成员变量值）
     // 就可以使用Arrays.sort方法对任意的Interval数组进行排序了，是不是爽到飞起？！
     @Override
-    public int compareTo(Interval o) {
-        return start - o.start;
+    public int compareTo(Interval anotherInterval) {
+        return this.start - anotherInterval.start;
     }
 }
