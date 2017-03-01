@@ -20,15 +20,25 @@ import java.util.Comparator;
  */
 public class E252_Meeting_Rooms {
     public static void main(String[] args) {
-        Interval[] intervals = new Interval[] {new Interval(5, 8), new Interval(6, 8)};
-        System.out.println(canAttendAllMeetings4(intervals));
+        Interval[] intervals = {new Interval(15, 20), new Interval(20, 25), new Interval(5, 10)};
+        Interval[] intervals2 = {new Interval(15, 25), new Interval(20, 25), new Interval(5, 10)};
+        System.out.println(hasNoConflict(intervals));
+        System.out.println(hasNoConflict2(intervals));
+        System.out.println(hasNoConflict3(intervals));
+        System.out.println(hasNoConflict4(intervals));
+        System.out.println(hasNoConflict5(intervals));
+        System.out.println(hasNoConflict(intervals2));
+        System.out.println(hasNoConflict2(intervals2));
+        System.out.println(hasNoConflict3(intervals2));
+        System.out.println(hasNoConflict4(intervals2));
+        System.out.println(hasNoConflict5(intervals2));
     }
 
-    // 此题的关键在于要按照start成员变量值对interval对象排序，再依次判断每个interval对象的end成员变量值是否交叉。
-    // 思路1：可以直接尝试分别用Counting Sort和Insertion Sort来排序。
-    // 思路2：直接修改Interval类，使其实现Comparable接口以直接使用Arrays.sort方法
-    // 思路3：由于可以确保每个interval都是有效的，因此可以对interval数组的所有start和end单独排序，无需按interval对象分析了。
-    static boolean canAttendAllMeetings4(Interval[] a) {
+    // 此题的关键在于先按start的大小对数组对象排序，再顺序扫描数组的每两个相邻的Interval对象的start和end是否交叉，如果交叉就说明时间冲突。
+
+    /** 解法5：将start和end分别拷贝至新的数组进行排序。 */
+    // 注意这么做的前提是给出的每一个Interval对象的start都是小于end的。
+    static boolean hasNoConflict5(Interval[] a) {
         int[] start = new int[a.length];
         int[] end = new int[a.length];
         for (int i = 0; i < a.length; i++) {
@@ -42,9 +52,9 @@ public class E252_Meeting_Rooms {
         return true;
     }
 
-    // Counting Sort解法: Get Max -> Get Histo -> Get Accumulative Histo -> Sorted -> Check Validity
-    // Time - o(n), space - o(n)
-    static boolean canAttendAllMeetings(Interval[] a) {
+    /** 解法4：转化为一般数组排序问题（对Interval对象的start成员变量值进行计数排序。Time - o(n), Space - o(n). */
+    // Get Max -> Get Histo -> Get Accumulative Histo -> Sorted -> Check Validity
+    static boolean hasNoConflict4(Interval[] a) {
         int max = 0;
         for (Interval i : a)
             max = Math.max(max, i.start);
@@ -54,26 +64,23 @@ public class E252_Meeting_Rooms {
         for (int i = 1; i < b.length; i++)
             b[i] += b[i - 1];
         Interval[] c = new Interval[a.length];
-        for (int i = a.length - 1; i >= 0; i--) {
+        for (int i = a.length - 1; i >= 0; i--)
             c[--b[a[i].start]] = a[i];
-        }
         for (int i = 1; i < c.length; i++)
             if (c[i].start < c[i - 1].end) return false;
         return true;
     }
 
-    // Insertion Sort解法：
-    // Time - o(n^2), Space - o(1)
-    static boolean canAttendAllMeetings2(Interval[] a) {
-        int i, j;
-        Interval current;
-        for (i = 0; i < a.length; i++) {
-            current = a[i];
+    /** 解法3：转化为一般数组排序问题（对Interval对象的start成员变量值进行插入排序）。Time - o(n^2), Space - o(1). */
+    static boolean hasNoConflict3(Interval[] a) {
+        for (int i = 0; i < a.length; i++) {
+            Interval current = a[i];
+            int j;
             for (j = i - 1; j >= 0 && a[j].start >= current.start; j--)
                 a[j + 1] = a[j];
             a[j + 1] = current;
         }
-        for (i = 1; i < a.length; i++)
+        for (int i = 1; i < a.length; i++)
             if (a[i].start < a[i - 1].end) return false;
         return true;
     }
@@ -88,9 +95,9 @@ public class E252_Meeting_Rooms {
 
     /** 解法1：使用Lambda表达式重写compare方法，只比较每个Interval对象的start成员属性值。 */
     static boolean hasNoConflict(Interval[] a) {
-        Arrays.sort(a, (Interval i1, Interval i2) -> { return i1.start - i2.start;});
+        Arrays.sort(a, (Interval i1, Interval i2) -> { return i1.start - i2.start; });
         for (int i = 1; i < a.length; i++)
-            if (a[i].start <= a[i - 1].end) return false;
+            if (a[i].start < a[i - 1].end) return false;
         return true;
     }
 }
