@@ -78,15 +78,15 @@ public class E252_Meeting_Rooms {
         return true;
     }
 
-    // 直接使用Arrays.sort方法比较任何的Interval对象
-    static boolean canAttendAllMeetings3(Interval[] a) {
+    /** 解法2：直接在Interval类内实现Comparable接口，重写compare方法。更为简洁。 */
+    static boolean hasNoConflict2(Interval[] a) {
         Arrays.sort(a);
         for (int i = 1; i < a.length; i++)
             if (a[i].start < a[i - 1].end) return false;
         return true;
     }
 
-    /** 解法1：使用Lambda表达式重写compare方法。 */
+    /** 解法1：使用Lambda表达式重写compare方法，只比较每个Interval对象的start成员属性值。 */
     static boolean hasNoConflict(Interval[] a) {
         Arrays.sort(a, (Interval i1, Interval i2) -> { return i1.start - i2.start;});
         for (int i = 1; i < a.length; i++)
@@ -103,9 +103,8 @@ class Interval implements Comparable<Interval> {
         end = e;
     }
 
-    // 这是我加的偷懒方法，当然实际题目中是不允许你修改Interval类本身的。
-    // 只要声明Interval类实现了Comparable规范，并提供compareTo方法（其实就是比较两个Interval对象的start成员变量值）
-    // 就可以使用Arrays.sort方法对任意的Interval数组进行排序了，是不是爽到飞起？！
+    // 让Interval类实现Comparable接口，并重写compare方法，使其只比较两个Interval对象的start成员变量值）
+    // 就可以使用Arrays.sort()方法对任意的Interval数组进行排序了，是不是爽到飞起？！
     @Override
     public int compareTo(Interval anotherInterval) {
         return this.start - anotherInterval.start;
