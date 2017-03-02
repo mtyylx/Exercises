@@ -12,12 +12,21 @@ import java.util.*;
  * Function Signature:
  * public List<Interval> mergeInterval(List<Interval> a) {...}
  *
+ * <区间集合 系列问题>
+ * E252 Meeting Rooms  : 给定一个时间区间集合，判断是否存在区间交叉的情况。
+ * M56  Merge Intervals: 给定一个时间区间集合，合并所有存在交叉的区间并返回。
+ *
+ * <Tags>
+ * - 使用匿名类、Lambda表达式自定义排序逻辑。
+ * - Two Pointers: 快慢指针同向扫描。[ slow -> ... fast -> -> ... ]
  *
  */
 public class M56_Merge_Intervals {
     public static void main(String[] args) {
         List<Interval> list = new ArrayList<>(Arrays.asList(new Interval(0, 3), new Interval(1, 2)));
         List<Interval> result = mergeIntervals(list);
+        List<Interval> list2 = new ArrayList<>(Arrays.asList(new Interval(0, 3), new Interval(1, 2)));
+        List<Interval> result2 = mergeIntervals2(list2);
     }
 
     /** 解法1：Lambda表达式重写compare准则 + 双指针（快慢指针）扫描合并。Time - o(nlogn), Space - o(1). */
@@ -46,4 +55,25 @@ public class M56_Merge_Intervals {
         }
         return result;
     }
+    // 另一种写法，用iterator遍历ArrayList
+    static List<Interval> mergeIntervals2(List<Interval> a) {
+        if (a == null || a.size() < 2) return a;
+        a.sort(Comparator.comparingInt(i -> i.start));
+        List<Interval> result = new ArrayList<>();
+        int start = a.get(0).start;
+        int end = a.get(0).end;
+        for (Interval item : a) {
+            if (item.start <= end)
+                end = Math.max(end, item.end);
+            else {
+                result.add(new Interval(start, end));
+                start = item.start;
+                end = item.end;
+            }
+        }
+        result.add(new Interval(start, end));
+        return result;
+    }
+
+
 }
