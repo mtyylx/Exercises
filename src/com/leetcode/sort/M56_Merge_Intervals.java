@@ -1,0 +1,49 @@
+package com.leetcode.sort;
+
+import java.util.*;
+
+/**
+ * Created by Michael on 2017/3/2.
+ * Given a collection of intervals, merge all overlapping intervals.
+ *
+ * For example,
+ * Given [1,3],[2,6],[8,10],[15,18], return [1,6],[8,10],[15,18].
+ *
+ * Function Signature:
+ * public List<Interval> mergeInterval(List<Interval> a) {...}
+ *
+ *
+ */
+public class M56_Merge_Intervals {
+    public static void main(String[] args) {
+        List<Interval> list = new ArrayList<>(Arrays.asList(new Interval(0, 3), new Interval(1, 2)));
+        List<Interval> result = mergeIntervals(list);
+    }
+
+    /** 解法1：Lambda表达式重写compare准则 + 双指针（快慢指针）扫描合并。Time - o(nlogn), Space - o(1). */
+    // 首先一上来肯定按照Interval的start属性对Interval对象进行排序。
+    // 具体的写法很灵活：
+    // 方法1：可以直接让Interval实现Comparator接口的compare方法。
+    // 方法2：直接用匿名类重写compare方法
+    // 方法3：直接用Lambda表达式 Collections.sort(a, (Interval i1, Interval i2) -> i1.start - i2.start);
+    // 方法4：用Lambda表达式 + Comparator.compareInt(i -> i.start)，意思是告诉大家我比较的是对象的start这个属性。
+    // 另外对于指定Comparator的情况，对ArrayList进行排序可以有两种写法：Collections.sort(a, comparator) 或 listObj.sort(comparator)
+    // 然后就在于如何谨慎的用双指针处理各种边界情况。
+    // 例如 {0, 5} {1, 2} {3, 4}，可以看到后面两个区间其实是第一个区间的完全子集。end的值需要向变大这个方向更新。
+    // 保持快指针移动的条件并不是相邻节点的起始点重合，而是快指针节点是否完全脱离了当前的{start, end}区间，脱离了才说明是分离区间。
+    static List<Interval> mergeIntervals(List<Interval> a) {
+        if (a == null || a.size() < 2) return a;
+        a.sort(Comparator.comparingInt(i -> i.start));          // 定义一个只比较整型数值的comparator，关注的是每个元素的start属性
+        List<Interval> result = new ArrayList<>();
+        int slow = 0, fast = 0;                                 // 快慢指针初始状态是重合的
+        while (slow < a.size()) {                               // 注意这里的循环终止条件是慢指针扫描到头，而不是快指针，这么做的原因是保证扫描完整
+            int start = a.get(slow).start;                      // 珍惜当下：首先缓存慢指针所指对象的属性，以备不时之需。
+            int end = a.get(slow).end;
+            while (fast < a.size() && a.get(fast).start <= end) // 只要节点的起点在取值范围内，就可以融合
+                end = Math.max(end, a.get(fast++).end);         // 融合注意让end保持最大（因为有可能后者是前者的完全子集）
+            result.add(new Interval(start, end));
+            slow = fast;                                        // 让快慢指针再次重合，供下个循环使用
+        }
+        return result;
+    }
+}
