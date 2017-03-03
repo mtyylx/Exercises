@@ -38,7 +38,10 @@ public class M56_Merge_Intervals {
     // 方法4：用Lambda表达式 + Comparator.compareInt(i -> i.start)，意思是告诉大家我比较的是对象的start这个属性。
     // 另外对于指定Comparator的情况，对ArrayList进行排序可以有两种写法：Collections.sort(a, comparator) 或 listObj.sort(comparator)
     // 然后就在于如何谨慎的用双指针处理各种边界情况。
-    // 例如 {0, 5} {1, 2} {3, 4}，可以看到后面两个区间其实是第一个区间的完全子集。end的值需要向变大这个方向更新。
+    // 例如 {0, 5} {1, 2} {3, 4}，
+    // 0------------5
+    //   1--2 3--4
+    // 可以看到后面两个区间其实是第一个区间的完全子集。end的值需要向变大这个方向更新。
     // 保持快指针移动的条件并不是相邻节点的起始点重合，而是快指针节点是否完全脱离了当前的{start, end}区间，脱离了才说明是分离区间。
     static List<Interval> mergeIntervals(List<Interval> a) {
         if (a == null || a.size() < 2) return a;
@@ -56,24 +59,55 @@ public class M56_Merge_Intervals {
         return result;
     }
     // 另一种写法，用iterator遍历ArrayList
-    static List<Interval> mergeIntervals2(List<Interval> a) {
+    static List<Interval> mergeIntervalsx(List<Interval> a) {
         if (a == null || a.size() < 2) return a;
         a.sort(Comparator.comparingInt(i -> i.start));
         List<Interval> result = new ArrayList<>();
         int start = a.get(0).start;
         int end = a.get(0).end;
         for (Interval item : a) {
-            if (item.start <= end)
+            if (item.start <= end)                      // 使用于item是第一个对象的时候，以及存在交集的区间之间
                 end = Math.max(end, item.end);
             else {
-                result.add(new Interval(start, end));
+                result.add(new Interval(start, end));   // 说明当前item和缓存的item没有交集，需要将缓存item入库
                 start = item.start;
                 end = item.end;
             }
         }
-        result.add(new Interval(start, end));
+        result.add(new Interval(start, end));           // 处理最后一个缓存item（与一般处理方法不同，这里最后一段区间一定需要单独处理）
         return result;
     }
 
+
+    /** 解法2：分别对两个属性排序 + 双指针（快慢指针）合并区间。用空间换时间。Time - o(nlogn), Space - o(n). */
+    // 分别排序的好处是能将完全子集进行解耦。
+    //  原区间            解耦区间
+    //  0, 5             0, 2
+    //  1, 2       →     1, 4
+    //  3, 4             3, 5
+    //  |----------|    |----|
+    //    |--|             |----|
+    //         |--|           |----|
+    // 虽然解耦会完全失去原有的区间含义，但是实际上这时候我们已经不关心这个大区间内部是如何分段重合的，我们的任务只是尽可能的合并区间。
+    static List<Interval> mergeIntervals2(List<Interval> a) {
+        if (a == null || a.size() < 2) return a;
+        int[] start = new int[a.size()];
+        int[] end = new int[a.size()];
+        for (int i = 0; i < a.size(); i++) {
+            start[i] = a.get(i).start;
+            end[i] = a.get(i).end;
+        }
+        Arrays.sort(start);
+        Arrays.sort(end);
+        List<Interval> result = new ArrayList<>();
+
+        for (int fast = 0, slow = 0; fast < start.length; fast++) {             // 慢指针停留在最近的待合并区间，快指针遍历整个数组
+            if (fast == start.length - 1 || start[fast + 1] > end[fast]) {      // 可以合并时合并
+                result.add(new Interval(start[slow], end[fast]));
+                slow = fast + 1;
+            }
+        }
+        return result;
+    }
 
 }
