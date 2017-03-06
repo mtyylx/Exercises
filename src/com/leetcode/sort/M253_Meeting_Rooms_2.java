@@ -1,7 +1,7 @@
 package com.leetcode.sort;
 
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.PriorityQueue;
 
 /**
  * Created by Michael on 2017/3/3.
@@ -22,21 +22,35 @@ public class M253_Meeting_Rooms_2 {
     }
 
     static int roomsRequired(Interval[] a) {
-        if (a == null || a.length < 1) return 0;
-        int count = 0;
-        Arrays.sort(a, Comparator.comparingInt(i -> i.start));
-        int fast = 0;
-        int slow = 0;
-        while (slow < a.length) {
-            int end = a[slow].end;
-            int i = 0;
-            while (fast < a.length && a[fast].start <= end) {
-                end = Math.max(end, a[fast++].end);
-                i++;
+        if (a == null || a.length == 0)
+            return 0;
+
+        // Sort the intervals by start time
+        Arrays.sort(a, (x, y) -> (x.start - y.start));
+
+        // Use a min heap to track the minimum end time of merged intervals
+        PriorityQueue<Interval> heap = new PriorityQueue<>(a.length, (x, y) -> (x.end - y.end));
+
+        // start with the first meeting, put it to a meeting room
+        heap.offer(a[0]);
+
+        for (int i = 1; i < a.length; i++) {
+            // get the meeting room that finishes earliest
+            Interval interval = heap.poll();
+
+            if (a[i].start >= interval.end) {
+                // if the current meeting starts right after
+                // there's no need for a new room, merge the interval
+                interval.end = a[i].end;
+            } else {
+                // otherwise, this meeting needs a new room
+                heap.offer(a[i]);
             }
-            slow = fast;
-            count = Math.max(count, i);
+
+            // don't forget to put the meeting room back
+            heap.offer(interval);
         }
-        return count;
+
+        return heap.size();
     }
 }
