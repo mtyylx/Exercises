@@ -16,6 +16,7 @@ import java.util.Comparator;
  * <区间集合 系列问题>
  * E252 Meeting Rooms  : 给定一个时间区间集合，判断是否存在区间交叉的情况。
  * M56  Merge Intervals: 给定一个时间区间集合，合并所有存在交叉的区间并返回。
+ * M253 Meeting Rooms 2: 给定一个时间区间集合，判断最多需要多少个并行的线程可以无冲突执行所有时间区间。
  *
  * <Tags>
  * - 使用Arrays.sort(T array, Comparator<T> comparator)进行自定义规则的对象数组排序。
