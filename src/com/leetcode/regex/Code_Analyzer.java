@@ -10,6 +10,16 @@ import java.util.*;
  * Scan and analyze java source files, and provide basic statistics of the source code.
  * Including: total lines, total source code lines, total comments lines, avg/min/max lines per files.
  *
+ * Update 3.8  （六个月，终于到达<一万行代码>！已经完成深度重温的部分：array / hashtable / linkedlist / sort，共计100个问题。）
+ * 来自196个文件的代码统计信息：
+ * 1. 总行数：17920,
+ * 2. 代码行数：10053,
+ * 3. 注释行数：7867,
+ * 4. 单文件最大行数：292,
+ * 5. 单文件最小行数：29,
+ * 6. 文件平均行数：91,
+ * 7. 总字符数：606697.
+ *
  * Update 12.19 （四个月，8000行代码。接下来进入重温模式，对已经完成的156道题进行复习总结。）
  * 来自171个文件的代码统计信息：
  * 1. 总行数：13724,
@@ -20,7 +30,7 @@ import java.util.*;
  * 6. 文件平均行数：80,
  * 7. 总字符数：430489.
  *
- * 当前运行结果：（两个月不间断的努力劳动果实，平均每天150行。还是很有成就感滴！）
+ * Original 10.21 （两个月不间断的努力劳动果实，平均每天150行。还是很有成就感滴！）
  * 1. 总行数：8965,
  * 2. 代码行数：5506,
  * 3. 注释行数：3459,
