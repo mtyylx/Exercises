@@ -21,6 +21,7 @@ import java.util.Comparator;
  * <Tags>
  * - 使用Arrays.sort(T array, Comparator<T> comparator)进行自定义规则的对象数组排序。
  * - 使用匿名类或Lambda表达式
+ * - 对对象的两个属性分别排序
  *
  */
 public class E252_Meeting_Rooms {

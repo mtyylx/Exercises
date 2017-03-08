@@ -24,6 +24,8 @@ import java.util.PriorityQueue;
  * - Min Heap
  * - 使用Arrays.sort(T array, Comparator<T> comparator)进行自定义规则的对象数组排序。
  * - 使用匿名类或Lambda表达式
+ * - 对对象的两个属性分别排序
+ *
  */
 public class M253_Meeting_Rooms_2 {
     public static void main(String[] args) {
@@ -56,5 +58,24 @@ public class M253_Meeting_Rooms_2 {
             heap.offer(early);                                          // 恢复结束最早的会议
         }
         return heap.size();
+    }
+
+
+    /** 解法2：对Interval对象的两个属性分别排序。 */
+    // 与解法1利用最小堆的思路一致，都是判断新的会议区间是否能够与最早结束的会议进行合并，如果冲突，就要扩展。
+    static int roomsRequired2(Interval[] a) {
+        int len = a.length;
+        int firstEnd = 0;
+        int[] start = new int[len];
+        int[] end = new int[len];
+        for (int i = 0; i < len; i++) {
+            start[i] = a[i].start;
+            end[i] = a[i].end;
+        }
+        Arrays.sort(start);
+        Arrays.sort(end);
+        for (int i = 0; i < len; i++)
+            if (start[i] >= end[firstEnd]) firstEnd++;          // 只要不冲突，就说明无需扩张会议室个数
+        return len - firstEnd;
     }
 }
