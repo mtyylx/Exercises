@@ -24,15 +24,18 @@ public class ListNode {
         return dummy.next;
     }
 
-    // 打印任何非空ListNode节点及其子节点
+    // 打印任何非空ListNode节点及其子节点。增加对循环链表的打印支持。
     public void print() {
         StringBuilder sb = new StringBuilder();
+        ListNode head = this;
         ListNode current = this;
         while (current != null) {
             sb.append(current.val).append(" -> ");
             current = current.next;
+            if (current == head) break;
         }
-        sb.append("null");
+        if (current != head) sb.append("null");
+        else sb.append("(loop)");
         System.out.println(sb.toString());
     }
 }
