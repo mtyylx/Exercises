@@ -7,10 +7,12 @@ import java.util.Arrays;
 /**
  * Created by Michael on 2017/3/9.
  * The basic implementation of <Queue> Data Structure.
+ * 队列的两种实现方式：链表和数组。
  *
  * <Tags>
  * - Implement Queue using Linkedlist.
- * - Two Pointers: front (head) and rear (tail).
+ * - Implement Queue using Array.
+ * - Two Pointers: head and tail [ head -> ... -> ... -> tail -> ]
  *
  */
 public class Basic_Queue {
@@ -32,11 +34,11 @@ public class Basic_Queue {
     // 方式2：设置一个flag指示队列当前是否为空。队列空和队列满的时候都有head == tail，但是可以通过flag状态区分是队列空还是队列满。
     // 通常使用方式1。
 
-    /** 队列基本操作的时间复杂度：
-     *  1.入队：o(1)
-     *  2.出队：o(1)
-     *  3.队首：o(1)
-     */
+    /** 队列基本操作的时间复杂度 */
+    //  1.入队：o(1)
+    //  2.出队：o(1)
+    //  3.队首：o(1)
+
     //  Designed Capacity = 5
     //  True Capacity = 6
     //  0 -> 0 -> 0 -> 0 -> 0 -> 0 -> (loop)  head == tail 队列空
@@ -99,11 +101,9 @@ public class Basic_Queue {
 }
 
 /** 使用<链表>实现队列 */
+// 判断队列满的条件：tail.next == head
+// 判断队列空的条件：head == tail
 class Queue_LinkedList {
-    // 为了避免无法区分队列空和队列满这两种情况，需要额外的机制：
-    // 运行方式1：将队列最大长度限制为实际容量减1，使得队列空时head == tail，队列满时tail.next == head。
-    // 运行方式2：设置一个flag指示队列当前是否为空。队列空和队列满的时候都有head == tail，但是可以通过flag状态区分是队列空还是队列满。
-    // 队列的实现通常使用第一种机制。
     private ListNode queue;
     private ListNode head;
     private ListNode tail;
@@ -161,6 +161,20 @@ class Queue_LinkedList {
     }
 }
 
+/** 使用<数组>实现队列 */
+// 判断队列满的条件：(tail + 1) % len == head 其含义是：tail的下个元素就是head（这里“下个元素”的概念是循环长度的下个元素，因此需要使用模运算实现）
+// 判断队列空的条件：head == tail
+
+// 示例：
+// 队列满的情况1
+// [1, 2, 3, 4, 5, 0]
+//  ↑              ↑
+//  head           tail    tail的循环下个元素就是head
+
+// 队列满的情况2
+// [4, 5, 0, 1, 2, 3]
+//        ↑  ↑
+//      tail head          tail的下个元素是head
 class Queue_Array {
     int[] queue;
     private int head;
