@@ -14,6 +14,16 @@ public class Basic_Stack {
         myStack.add(4);
         myStack.add(5);
         myStack.add(6);
+        myStack.peek();
+        myStack.remove();
+        myStack.remove();
+        myStack.add(7);
+        myStack.remove();
+        myStack.remove();
+        myStack.remove();
+        myStack.remove();
+        myStack.remove();
+        myStack.peek();
     }
 }
 
@@ -32,13 +42,13 @@ class Stack_Array {
     }
 
     public void remove() {
-        if (ptr == 0) System.out.println("Stack is Empty");
+        if (ptr == 0) System.out.println("Stack is Empty.");
         else stack[--ptr] = 0;
     }
 
     public int peek() {
         if (ptr != 0) return stack[ptr - 1];
-        System.out.println("Stack is Empty");
+        System.out.println("Stack is Empty.");
         return -1;
     }
 }
