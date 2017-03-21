@@ -10,6 +10,8 @@ import com.leetcode.linkedlist.ListNode;
 public class Basic_Stack {
 
     /** 栈的两种实现媒介：<数组>和<链表> */
+    // 数组实现方式：尾部追加。不能做到o(1)的无限追加，因为数组长度需要扩容（涉及到拷贝原数组至新数组）
+    // 链表实现方式：头部插入。可以做到o(1)的无限追加。
 
     public static void main(String[] args) {
         Stack_Array myStack = new Stack_Array();
@@ -75,7 +77,9 @@ class Stack_Array {
 }
 
 /** <链表>实现栈 */
-// 随着压栈的操作，链表的生长方式是不断的将节点插入头节点之前。区别于数组实现方式的追加，链表实现方式用的是插入。
+// 使用Dummy表头节点，确保在任何压栈和出栈操作时都有回旋余地。
+// 压栈：将新节点插入链表头之前
+// 出栈：将链表头跳过，返回表头节点值
 class Stack_LinkedList {
     private ListNode head;
     private int length;
