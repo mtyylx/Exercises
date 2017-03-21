@@ -6,12 +6,20 @@ import com.leetcode.linkedlist.ListNode;
  * Created by Michael on 2017/3/13.
  * The basic implementation of <Stack> Data Structure.
  * Busy Working on trip planning and hotel booking these days. Really tired.
+ *
+ * <Tags>
+ * - Implement <Stack> using <Linkedlist>.
+ * - Implement <Stack> using <Array>.
+ * - Dummy Node: 给你充足的回旋余地
+ *
  */
 public class Basic_Stack {
 
     /** 栈的两种实现媒介：<数组>和<链表> */
-    // 数组实现方式：尾部追加。不能做到o(1)的无限追加，因为数组长度需要扩容（涉及到拷贝原数组至新数组）
+    // 数组实现方式：尾部追加。不能做到o(1)的无限追加，因为数组长度需要扩容（涉及到阶段性的拷贝原数组至新数组）
     // 链表实现方式：头部插入。可以做到o(1)的无限追加。
+    // 通常情况下，链表相比数组的主要缺陷是无法做到o(1)随机访问。
+    // 但是在这里，由于栈这种数据结构的特性，我们并不关心栈里面某一个位置的数据，我们只关心栈顶，也只操作栈顶，因此链表的实现方式在这里更胜一筹。
 
     public static void main(String[] args) {
         Stack_Array myStack = new Stack_Array();
