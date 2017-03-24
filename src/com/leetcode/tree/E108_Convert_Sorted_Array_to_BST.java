@@ -1,5 +1,8 @@
 package com.leetcode.tree;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * Created by Michael on 2017/3/23.
  *
@@ -14,6 +17,8 @@ public class E108_Convert_Sorted_Array_to_BST {
     public static void main(String[] args) {
         int[] a = {1, 2, 3, 4, 5};
         TreeNode res = array2BST(a);
+
+        TreeNode res2 = array2BST2(a);
     }
 
     /** 解法1：递归解法。Time - o(n), Space - o(n). */
@@ -50,5 +55,41 @@ public class E108_Convert_Sorted_Array_to_BST {
         root.left = array2BST(a, left, mid - 1);
         root.right = array2BST(a, mid + 1, right);
         return root;
+    }
+
+    /** 解法2：迭代解法 + 栈。Time - o(n), Space - o(logn) */
+    // 本质上完全等效于递归解法，这里只不过将递归的函数栈显式的定义出来称为一个对象压入栈中而已。
+    static TreeNode array2BST2(int[] a) {
+        if (a == null || a.length == 0) return null;
+        Deque<BinaryTreeNode> stack = new ArrayDeque<>();
+        BinaryTreeNode root = new BinaryTreeNode(0, a.length - 1, new TreeNode(0));
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            BinaryTreeNode curr = stack.pop();
+            int mid = curr.lower + (curr.upper - curr.lower) / 2;
+            curr.root.val = a[mid];
+            if (curr.lower < mid) {
+                TreeNode x = new TreeNode(0);
+                curr.root.left = x;
+                stack.push(new BinaryTreeNode(curr.lower, mid - 1, x));
+            }
+            if (curr.upper > mid) {
+                TreeNode y = new TreeNode(0);
+                curr.root.right = y;
+                stack.push(new BinaryTreeNode(mid + 1, curr.upper, y));
+            }
+        }
+        return root.root;
+    }
+}
+
+class BinaryTreeNode {
+    int lower;
+    int upper;
+    TreeNode root;
+    public BinaryTreeNode(int l, int r, TreeNode n) {
+        lower = l;
+        upper = r;
+        root = n;
     }
 }
