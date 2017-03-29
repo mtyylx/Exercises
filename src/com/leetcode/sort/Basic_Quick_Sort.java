@@ -1,24 +1,28 @@
 package com.leetcode.sort;
 
-import com.sun.xml.internal.bind.v2.model.annotation.Quick;
-
 import java.util.*;
 
 /**
  * Created by Michael on 2016/9/28.
  *
  * Basic Algorithm: Quick Sort
+ *
+ * <Core Mechanism>
+ * Divide + Conquer + Merge
+ *
+ * <Performance>
  * Time - o(n * log n), worst o(n^2)
  * Space - o(logn)
+ *
  * 快排的空间复杂度始终是o(logn)，这是因为快排必须要使用额外的空间存储每次分区的分界点位置。
- * 如果使用递归实现，这个分界点位置被隐式的使用在函数堆栈上，
+ * 如果使用递归实现，则分界点位置是隐式的存储在函数堆栈上
  * 如果使用迭代实现，则分界点位置必须使用栈自己存储起来，因此不管使用递归还是迭代，快排都需要o(logn)额外空间，无法做到o(1)。
+ *
  */
 public class Basic_Quick_Sort extends SortMethod {
     public static void main(String[] args) {
         int[] a = {1, 0, 1};
         QuickSort_Iterative(a);
-        QuickSort_Randomized(a);
         System.out.println(Arrays.toString(a));
 
         // Bulk Test
@@ -227,10 +231,10 @@ public class Basic_Quick_Sort extends SortMethod {
         int pivot = a[left];
         int i = left;
         int j = right;
-        while (true) {              // 为什么是无限循环而不直接用i < j做终止条件，因为需要让最后退出时的指针有一个能永远确保分区正确。
+        while (true) {                  // 为什么是无限循环而不直接用i < j做终止条件，因为需要让最后退出时的指针有一个能永远确保分区正确。
             while (a[i] < pivot) i++;   // 为什么是小于而不是小于等于，为了把pivot放在右侧分区。经过了这个while，i的位置一定是一个大于等于pivot的元素。
             while (a[j] > pivot) j--;   // 为什么i和j永远不会越界：因为每次通过交换纠正首尾两个数的值可以充当sentinel以确保i和j在越界前停下来。
-            if (i < j) {            // 只有i在j前才交换，如果已经交叉就直接结束，说明分区点找到了。
+            if (i < j) {                // 只有i在j前才交换，如果已经交叉就直接结束，说明分区点找到了。
                 int temp = a[i];
                 a[i] = a[j];
                 a[j] = temp;
