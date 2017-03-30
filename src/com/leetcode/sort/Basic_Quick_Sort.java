@@ -8,7 +8,7 @@ import java.util.*;
  * Basic Algorithm: Quick Sort
  *
  * <Core Mechanism>
- * Divide + Conquer + Merge
+ * Recursive Partition (Split + Reorder). No need to merge.
  *
  * <Performance>
  * Time - o(n * log n), worst o(n^2)
@@ -17,6 +17,9 @@ import java.util.*;
  * 快排的空间复杂度始终是o(logn)，这是因为快排必须要使用额外的空间存储每次分区的分界点位置。
  * 如果使用递归实现，则分界点位置是隐式的存储在函数堆栈上
  * 如果使用迭代实现，则分界点位置必须使用栈自己存储起来，因此不管使用递归还是迭代，快排都需要o(logn)额外空间，无法做到o(1)。
+ *
+ * <Tags>
+ * - Two Pointers: 双指针首尾包围扫描。[left → → → ... | ... ← ← ← right ]
  *
  */
 public class Basic_Quick_Sort extends SortMethod {
@@ -27,8 +30,120 @@ public class Basic_Quick_Sort extends SortMethod {
 
         // Bulk Test
         SortUtility.VerifySortAlgorithm("quick");
-        SortUtility.TestPerformance("quick", 100000);
+        SortUtility.TestPerformance("quick", 100000);       // 7ms per 10,0000 elements
     }
+
+    /** <Quick Sort> vs <Merge Sort> */
+    // 1. 虽然两者都会递归分解数组，但是Merge Sort是先分解再排序（逆序递归），而Quick Sort则是边排序边分解（正序递归/尾递归）
+    // 2. 虽然两者都会用分解来减小问题规模，但是Merge Sort的分解操作本身并不会修改元素的顺序，而Quick Sort的分解过程本身就是对数组元素进行粗略排序的过程。
+    // 3. 虽然两者都会使用额外空间，但是Merge Sort是非原位修改，必须借助额外空间才能完成合并操作，而Quick Sort是原位修改，分区完成之后无需合并。
+
+    /** 快排的直觉思路 Intuitive Explanation */
+    // 按照基准值（pivot）对数组进行划分，而且划分的同时还顺便调整那些明显位置不合适的元素，把他们放到相对于基准值来说合适的位置。
+    // 这样每次划分之后，都可以确保整个区间按照基准值已经有序，直至最后划分的区间长度小于2。
+
+    /** 快排标准递归写法：以<左指针>停止位置作为分界点<右侧>的起始边界。需要将pivot选在靠左的位置，不能是最后一个元素。 */
+    // 注意：pivot位置的选择会影响分区的边界选择。
+    // 如果pivot选择靠左（无论是中点偏左还是干脆最左侧元素），那么分区点要选left，并且left属于右侧分区的起始位置。
+    // 如果pivot选择靠右（无论是中间偏右还是干脆最右侧元素），那么分区点要选right，并且right属于左侧分区的终止位置。
+    static void QuickSort_Std(int[] a) {
+        divide(a, 0, a.length - 1);
+    }
+
+    // 虽然也是divide，但是这里是先划分左右分区并同时排序之后，再递归各个分区。而Merge Sort是先分区，直到分到不能再分时，在合并的时候再排序。
+    static void divide(int[] a, int start, int end) {
+        if (start >= end) return;                           // 递归终止条件：当前区间长度小于2（起点start和终点end已经重合或者交叉）
+        int pivot = a[start + (end - start) / 2];           // 选择pivot值：这里选择的方式是数组中间位置的元素（有些类似Merge Sort）
+        int split = partition(a, start, end, pivot);        // 按照所选的pivot对当前区间[start, end]进行划分，划分之后的左半部全小于pivot，右半部全大于等于pivot，获得分区点
+        divide(a, start, split - 1);                   // 对左右分区递归的进一步划分并排序，直至区间长度小于2
+        divide(a, split, end);
+    }
+
+    static int partition(int[] a, int left, int right, int pivot) {
+        while (left <= right) {                             // 交换的终止条件：左右指针交叉
+            while (a[left] < pivot) left++;                 // 左指针会停在第一个 >= pivot的元素 (因为这是一个misplaced element)
+            while (a[right] > pivot) right--;               // 右指针会停在第一个 <= pivot的元素 (因为这是一个misplaced element)
+            if (left <= right) swap(a, left++, right--);    // 如果此时左右指针还未交叉，就交换这两个元素（一口气让两个元素进入相对合适的位置）
+        }
+        return left;        // 很关键：最后返回的分界点是left，且left所指元素本身应该属于右半部份。即分区应为[start ~ split - 1], [split ~ end]
+    }
+
+    static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    // [3, 4, 1, 0, 2, 5, 7, 6]   select pivot = 0
+    //  ↓                    ↓
+    // [3, 4, 1, 0, 2, 5, 7, 6]   记住，左指针会停在第一个 >= pivot的地方 (misplaced element)
+    //  ↑l       ↑r                    右指针会停在第一个 <= pivot的地方 (misplaced element)
+    //
+    // [0, 4, 1, 3, 2, 5, 7, 6]
+    //  ↑r ↑l                      这里右指针最后会因为碰到pivot自己而停止下来，不会越界，很巧妙（因为分界点左边一定有小于pivot的元素，能够让右指针停下来）
+    //     ↑split                  反之亦然，分界点右边一定有大于pivot的元素，能够让左指针停下来。
+    //
+    // [0] [4, 1, 3, 2, 5, 7, 6]
+    // -----↓-----------------↓--------------------
+    //     [4, 1, 3, 2, 5, 7, 6]  select pivot = 2
+    //      ↑l       ↑r
+    //
+    //     [2, 1, 3, 4, 5, 7, 6]
+    //         ↑r ↑l
+    //            ↑split
+    //
+    //     [2, 1] [3, 4, 5, 7, 6]
+    // -----↓--↓---↓-----------↓-------------------
+    //     [2, 1]  ↓           ↓   select pivot = 2
+    //      ↑l ↑r  ↓           ↓
+    //             ↓           ↓
+    //     [1, 2]  ↓           ↓
+    //      ↑r ↑l  ↓           ↓
+    // ------------↓-----------↓-------------------
+    //            [3, 4, 5, 7, 6]  select pivot = 5
+    //                   ↑l,r
+    //
+    //            [3, 4, 5, 7, 6]
+    //                ↑r    ↑l
+    //                      ↑split
+    //
+    //            [3, 4, 5] [7, 6]
+    // ------------↓-----↓---↓--↓------------------
+    //            [3, 4, 5]  ↓  ↓  select pivot = 4
+    //                ↑l,r   ↓  ↓
+    //            [3, 4] [5] ↓  ↓
+    //            [3] [4]    ↓  ↓
+    // ----------------------↓--↓------------------
+    //                      [7, 6] select pivot = 7
+    //                       ↑l ↑r
+    //
+    //                      [6, 7]
+    //                       ↑r ↑l
+    // [0] [1] [2] [3] [4] [5] [6] [7]
+
+    /** 快排标准递归写法：以<右指针>停止位置作为分界点<左侧>的终止边界。需要将pivot选在靠右的位置，不能是第一个元素。 */
+    static void QuickSort_Std2(int[] a) {
+        divide2(a, 0, a.length - 1);
+    }
+
+    // 虽然也是divide，但是这里是先划分左右分区并同时排序之后，再递归各个分区。而Merge Sort是先分区，直到分到不能再分时，在合并的时候再排序。
+    static void divide2(int[] a, int start, int end) {
+        if (start >= end) return;                           // 递归终止条件：当前区间长度小于2（起点start和终点end已经重合或者交叉）
+        int pivot = a[end];                                 // 选择pivot值：选择偏右，因此分界点也应该返回右指针
+        int split = partition2(a, start, end, pivot);       // 按照所选的pivot对当前区间[start, end]进行划分，划分之后的左半部全小于pivot，右半部全大于等于pivot，获得分区点
+        divide2(a, start, split);                           // 对左右分区递归的进一步划分并排序，直至区间长度小于2
+        divide2(a, split + 1, end);
+    }
+
+    static int partition2(int[] a, int left, int right, int pivot) {
+        while (left <= right) {                             // 交换的终止条件：左右指针交叉
+            while (a[left] < pivot) left++;                 // 左指针会停在第一个 >= pivot的元素 (因为这是一个misplaced element)
+            while (a[right] > pivot) right--;               // 右指针会停在第一个 <= pivot的元素 (因为这是一个misplaced element)
+            if (left <= right) swap(a, left++, right--);    // 如果此时左右指针还未交叉，就交换这两个元素（一口气让两个元素进入相对合适的位置）
+        }
+        return right;        // 很关键：由于基准偏右，因此分界点返回right，且是左分区的终止位置。即分区应为[start ~ split], [split + 1 ~ end]
+    }
+
 
     // 基本思路是Top-down，不断的分解问题，在分解的过程中原位的对元素顺序进行调换，分解完成时（即递归到头时），整个数组已经完全有序，任务也就完成了，
     // 写成递归的话，是正序递归。先选基准元素，然后双指针同时首尾扫描，互换位置不对的元素，
@@ -212,11 +327,7 @@ public class Basic_Quick_Sort extends SortMethod {
         QuickSort5(a, j + 1, right);
     }
 
-    static void swap(int[] a, int i, int j) {
-        int temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
-    }
+
 
     /** Quick Sort递归解法细节分析：为什么要这么写，而不是那么写。 */
     // 为什么没有看到对i和j的越界保护却可以做到永远不会越界：每次交换完的值隐式的确保了i和j一定会在越界前停下来。
@@ -235,20 +346,20 @@ public class Basic_Quick_Sort extends SortMethod {
             while (a[i] < pivot) i++;   // 为什么是小于而不是小于等于，为了把pivot放在右侧分区。经过了这个while，i的位置一定是一个大于等于pivot的元素。
             while (a[j] > pivot) j--;   // 为什么i和j永远不会越界：因为每次通过交换纠正首尾两个数的值可以充当sentinel以确保i和j在越界前停下来。
             if (i < j) {                // 只有i在j前才交换，如果已经交叉就直接结束，说明分区点找到了。
-                int temp = a[i];
-                a[i] = a[j];
-                a[j] = temp;
-                i++;        // 交换完必须手动将两个指针相向移动一步，否则将可能死循环。
-                j--;        // 即使移动完之后交叉了，下个循环的双while依然会确保让指针移动到正确的边界位置。
+                swap(a, i, j);
+                i++;                    // 交换完必须手动将两个指针相向移动一步，否则将可能死循环。
+                j--;                    // 即使移动完之后交叉了，下个循环的双while依然会确保让指针移动到正确的边界位置。
             }
             else break;     // 如果i已经在j后，就直接终止。
         }
         Partition(a, left, j);          // 为什么用j而不是i：因为不论任何情况，j最后停止的位置，一定是最后一个小于pivot的位置
-        Partition(a, j + 1, right);     // 也就是说j的位置就是左侧分区的最后一个元素，因此可以安全的划分为left~j，以及j+1~right区间
+        Partition(a, j + 1, right); // 也就是说j的位置就是左侧分区的最后一个元素，因此可以安全的划分为left~j，以及j+1~right区间
     }
 
+
+
     public void sort(int[] a) {
-        QuickSort_Iterative(a);
+        QuickSort_Std(a);
     }
 }
 
