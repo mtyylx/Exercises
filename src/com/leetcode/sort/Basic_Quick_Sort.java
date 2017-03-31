@@ -11,8 +11,8 @@ import java.util.*;
  * Recursive Partition (Split + Reorder). No need to merge.
  *
  * <Performance>
- * Time - o(n * log n), worst o(n^2)
- * Space - o(logn)
+ * Time - AVG o(n * log n), WORST o(n^2)
+ * Space - o(logn) 相比于Merge Sort的o(n)空间复杂度已经小了很多。
  *
  * 快排的空间复杂度始终是o(logn)，这是因为快排必须要使用额外的空间存储每次分区的分界点位置。
  * 如果使用递归实现，则分界点位置是隐式的存储在函数堆栈上
@@ -20,6 +20,7 @@ import java.util.*;
  *
  * <Tags>
  * - Two Pointers: 双指针首尾包围扫描。[left → → → ... | ... ← ← ← right ]
+ * - Divide and Conquer Simultaneously.
  *
  */
 public class Basic_Quick_Sort extends SortMethod {
@@ -50,6 +51,11 @@ public class Basic_Quick_Sort extends SortMethod {
         QuickSort_Iterative(e);
         System.out.println(Arrays.toString(e));
 
+        /** Worst Case Scenario */
+        int[] f = {1, 2, 3, 4, 5, 6, 7};
+        QuickSort_Std2(f);
+        System.out.println(Arrays.toString(f));
+
         /** Bulk Test */
         SortUtility.VerifySortAlgorithm("quick");
         SortUtility.TestPerformance("quick", 100000);       // 7ms per 10,0000 elements
@@ -64,11 +70,24 @@ public class Basic_Quick_Sort extends SortMethod {
     // 按照基准值（pivot）对数组进行划分，而且划分的同时还顺便调整那些明显位置不合适的元素，把他们放到相对于基准值来说合适的位置。
     // 这样每次划分之后，都可以确保整个区间按照基准值已经有序，直至最后划分的区间长度小于2。
 
-    /** pivot位置的选择会影响分区的边界选择 */
-    // 如果pivot选择靠左（例如区间第一个元素 / 区间中间偏左元素），那么分区点要选left指针停止位置，并且left属于右侧分区的起始位置。
+    /** pivot位置的选择方式会影响分区的边界选择：偏左还是偏右 */
+    /** 方式一：pivot偏左 */
+    // 如果pivot选择靠左（例如区间第一个元素 / 区间中间偏左元素），则分区点必须选left指针的停止位置，left指针本身属于右侧分区的起始位置。
+    // 因此左右区间划分应该为：[start, split - 1], [split, end]
     // pivot = a[start] 或 pivot = a[start + (end - start) / 2]
-    // 如果pivot选择靠右（例如区间最后一个元素 / 区间中间偏右元素），那么分区点要选right指针停止位置，并且right属于左侧分区的终止位置。
+    /** 方式二：pivot偏右 */
+    // 如果pivot选择靠右（例如区间最后一个元素 / 区间中间偏右元素），则分区点必须选right指针的停止位置，right指针本身属于左侧分区的终止位置。
+    // 因此左右区间划分应该为：[start, split], [split + 1, end]
     // pivot = a[end] 或 pivot = (end - start) % 2 == 0 ? start + (end - start) / 2 : start + (end - start) / 2 + 1
+
+    /** pivot选择方式决定快排的运算性能：最坏情况和风险均摊 */
+    // 如果pivot选择区间首元素，那么对于一个完全逆序的数组，其时间复杂度会恶化为o(n * n). 因为每个循环只能将问题规模降低o(1).
+    // 同样的，如果pivot选择区间尾元素，那么对于一个完全正序的数组，其时间复杂度同样会恶化为o(n * n).
+    // 上面这两种情况就是快排的最坏情况。
+    // 那么如何选择pivot才能够尽可能避免最坏情况，让快排的<平均>时间复杂度达到o(n * logn)呢？
+    // 显然最优的pivot应该是数组元素的中位数元素，这样我们每次分区都能将数组分为长度相等的两半，真正达到二分法的o(logn)复杂度。
+    // 但是为了获得中位数的信息，我们不可能不完整扫描整个区间，因此复杂度反而会回到o(n * n)，得不偿失。
+    // 因此实际使用中，我们选择将风险均摊，通过随机的选取pivot，来减少出现最坏情况的可能性，因此做到<平均>时间复杂度为o(n * logn)
 
     /** 示例分析 */
     // [3, 4, 1, 0, 2, 5, 7, 6]   select pivot = 0
