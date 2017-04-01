@@ -58,7 +58,7 @@ public class E252_Meeting_Rooms {
         return true;
     }
 
-    /** 解法4：转化为一般数组排序问题（对Interval对象的start成员变量值进行计数排序。Time - o(n), Space - o(n). */
+    /** 解法4：转化为一般数组排序问题（对Interval对象的start成员变量值进行计数排序。Time - O(n), Space - O(n). */
     // Get Max -> Get Histo -> Get Accumulative Histo -> Sorted -> Check Validity
     static boolean hasNoConflict4(Interval[] a) {
         int max = 0;
@@ -77,7 +77,7 @@ public class E252_Meeting_Rooms {
         return true;
     }
 
-    /** 解法3：转化为一般数组排序问题（对Interval对象的start成员变量值进行插入排序）。Time - o(n^2), Space - o(1). */
+    /** 解法3：转化为一般数组排序问题（对Interval对象的start成员变量值进行插入排序）。Time - O(n^2), Space - O(1). */
     static boolean hasNoConflict3(Interval[] a) {
         for (int i = 0; i < a.length; i++) {
             Interval current = a[i];

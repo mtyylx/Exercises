@@ -11,12 +11,12 @@ import java.util.*;
  * Recursive Partition (Split + Reorder). No need to merge.
  *
  * <Performance>
- * Time - AVG o(n * log n), WORST o(n^2)
- * Space - o(logn) 相比于Merge Sort的o(n)空间复杂度已经小了很多。
+ * Time - AVG O(n * log n), WORST O(n^2)
+ * Space - O(logn) 相比于Merge Sort的O(n)空间复杂度已经小了很多。
  *
- * 快排的空间复杂度始终是o(logn)，这是因为快排必须要使用额外的空间存储每次分区的分界点位置。
+ * 快排的空间复杂度始终是O(logn)，这是因为快排必须要使用额外的空间存储每次分区的分界点位置。
  * 如果使用递归实现，则分界点位置是隐式的存储在函数堆栈上
- * 如果使用迭代实现，则分界点位置必须使用栈自己存储起来，因此不管使用递归还是迭代，快排都需要o(logn)额外空间，无法做到o(1)。
+ * 如果使用迭代实现，则分界点位置必须使用栈自己存储起来，因此不管使用递归还是迭代，快排都需要O(logn)额外空间，无法做到O(1)。
  *
  * <Tags>
  * - Two Pointers: 双指针首尾包围扫描。[left → → → ... | ... ← ← ← right ]
@@ -66,9 +66,10 @@ public class Basic_Quick_Sort extends SortMethod {
     // 2. 虽然两者都会用分解来减小问题规模，但是Merge Sort的分解操作本身并不会修改元素的顺序，而Quick Sort的分解过程本身就是对数组元素进行粗略排序的过程。
     // 3. 虽然两者都会使用额外空间，但是Merge Sort是非原位修改，必须借助额外空间才能完成合并操作，而Quick Sort是原位修改，分区完成之后无需合并。
 
-    /** 快排的直觉思路 Intuitive Explanation：选取基准值构造虚拟分界点 */
+    /** 快排的直觉思想 Intuitive Explanation：选取基准值构造虚拟分界点 */
     // 按照基准值（pivot）对数组进行划分，而且划分的同时还顺便调整那些明显位置不合适的元素，把他们放到相对于基准值来说合适的位置。
-    // 这样每次划分之后，都可以确保整个区间按照基准值已经有序，直至最后划分的区间长度小于2。
+    // 这样每次划分之后，都可以确保整个区间按照基准值已经有序，左右分区的元素不再需要调换，需要调换的局限于各自分区内部的元素。
+    // 重复这种“分区+调换”的过程，直至最后划分的区间长度小于2。
 
     /** pivot位置的选择方式会影响分区的边界选择：偏左还是偏右 */
     /** 方式一：pivot偏左 */
@@ -81,13 +82,13 @@ public class Basic_Quick_Sort extends SortMethod {
     // pivot = a[end] 或 pivot = (end - start) % 2 == 0 ? start + (end - start) / 2 : start + (end - start) / 2 + 1
 
     /** pivot选择方式决定快排的运算性能：最坏情况和风险均摊 */
-    // 如果pivot选择区间首元素，那么对于一个完全逆序的数组，其时间复杂度会恶化为o(n * n). 因为每个循环只能将问题规模降低o(1).
-    // 同样的，如果pivot选择区间尾元素，那么对于一个完全正序的数组，其时间复杂度同样会恶化为o(n * n).
+    // 如果pivot选择区间首元素，那么对于一个完全逆序的数组，其时间复杂度会恶化为O(n * n). 因为每个循环只能将问题规模降低O(1).
+    // 同样的，如果pivot选择区间尾元素，那么对于一个完全正序的数组，其时间复杂度同样会恶化为O(n * n).
     // 上面这两种情况就是快排的最坏情况。
-    // 那么如何选择pivot才能够尽可能避免最坏情况，让快排的<平均>时间复杂度达到o(n * logn)呢？
-    // 显然最优的pivot应该是数组元素的中位数元素，这样我们每次分区都能将数组分为长度相等的两半，真正达到二分法的o(logn)复杂度。
-    // 但是为了获得中位数的信息，我们不可能不完整扫描整个区间，因此复杂度反而会回到o(n * n)，得不偿失。
-    // 因此实际使用中，我们选择将风险均摊，通过随机的选取pivot，来减少出现最坏情况的可能性，因此做到<平均>时间复杂度为o(n * logn)
+    // 那么如何选择pivot才能够尽可能避免最坏情况，让快排的<平均>时间复杂度达到O(n * logn)呢？
+    // 显然最优的pivot应该是数组元素的中位数元素，这样我们每次分区都能将数组分为长度相等的两半，真正达到二分法的O(logn)复杂度。
+    // 但是为了获得中位数的信息，我们不可能不完整扫描整个区间，因此复杂度反而会回到O(n * n)，得不偿失。
+    // 因此实际使用中，我们选择将风险均摊，通过随机的选取pivot，来减少出现最坏情况的可能性，因此做到<平均>时间复杂度为O(n * logn)
 
     /** 示例分析 */
     // [3, 4, 1, 0, 2, 5, 7, 6]   select pivot = 0
@@ -194,7 +195,8 @@ public class Basic_Quick_Sort extends SortMethod {
 
     /** 快排标准写法3：pivot<随机选取>
      *  本质上就是写法1加上了随机pivot而已：首先选择随机的元素，然后把它与第一个元素交换，就可以确保pivot处于区间偏左的位置，满足写法1的要求。*/
-    // 随机数对象在外面生成，这样每次调用nextInt才是随机的。
+    // 随机数对象在外面生成，这样每次调用nextInt才是随机的
+    // 注意rand.nextInt(range)生成的随机数取值范围为[0, range - 1]. 其最大值无限接近range但是不会等于range。
     static Random rand = new Random();
     static void QuickSort_Std3(int[] a) {
         divide3(a, 0, a.length - 1);
@@ -202,7 +204,7 @@ public class Basic_Quick_Sort extends SortMethod {
 
     static void divide3(int[] a, int start, int end) {
         if (start >= end) return;
-        int randi = rand.nextInt(end - start + 1) + start;      // 选取区间内的任意元素
+        int randi = rand.nextInt(end - start + 1) + start;      // 选取区间内的任意元素索引，取值范围为[start, end]
         swap(a, start, randi);                                        // 将该元素与首元素交换
         int pivot = a[start];                                         // 按照老套路选择第一个元素作为pivot
         int split = partition3(a, start, end, pivot);

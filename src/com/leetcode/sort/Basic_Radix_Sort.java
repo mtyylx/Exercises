@@ -5,8 +5,8 @@ import java.util.Arrays;
 /**
  * Created by Michael on 2016/10/6.
  * Basic Algorithm: Radix Sort.
- * Time - o(n)
- * Space - o(n)
+ * Time - O(n)
+ * Space - O(n)
  */
 public class Basic_Radix_Sort {
     public static void main(String[] args) {

@@ -14,12 +14,12 @@ import com.leetcode.linkedlist.ListNode;
  * Divide + Merge
  *
  * <For Array>
- * - Time: o(n * log n) 原本复杂度是 <n分解 * n合并>。其中分解部分本质上是二分法，因此整体复杂度降至 log n * n。
- * - Space: o(n)        对于数组，归并排序的合并部分操作如果想要在o(n)时间内完成，必须用额外空间。
+ * - Time: O(n * log n) 原本复杂度是 <n分解 * n合并>。其中分解部分本质上是二分法，因此整体复杂度降至 log n * n。
+ * - Space: O(n)        对于数组，归并排序的合并部分操作如果想要在O(n)时间内完成，必须用额外空间。
  *
  * <For Linked List>
- * - Time: o(n * log n) 同数组
- * - Space: o(1)        对于链表，归并排序的合并部分操作可以在o(1)n内完成。
+ * - Time: O(n * log n) 同数组
+ * - Space: O(1)        对于链表，归并排序的合并部分操作可以在O(1)n内完成。
  *
  * <Tags>
  * - 二分法：将问题规模分解，使得时间复杂度从 n * n 降至 n * log n.
@@ -50,7 +50,7 @@ public class Basic_Merge_Sort extends SortMethod {
     }
 
 
-    /** 数组迭代解法：<分解过程>用迭代实现，<合并过程>与递归解法完全一样。Time - o(nlogn), Space - o(n). */
+    /** 数组迭代解法：<分解过程>用迭代实现，<合并过程>与递归解法完全一样。Time - O(nlogn), Space - O(n). */
     // 与递归解法共享合并过程，区别仅在于分解过程，省略了递归方法不断除二分解将数组分段的过程。
     // 该解法又称为Bottom-Up，这是因为相比与Top-Down的不断分解方法，Bottom-Up直接就从最小分段开始入手。
     //             Top-Down                       Bottom-Up
@@ -107,7 +107,7 @@ public class Basic_Merge_Sort extends SortMethod {
         }
     }
 
-    /** 数组递归解法：<分解过程>用递归实现，<合并过程>需要使用额外空间。Time - o(nlogn), Space - o(n). */
+    /** 数组递归解法：<分解过程>用递归实现，<合并过程>需要使用额外空间。Time - O(nlogn), Space - O(n). */
     // Top-down Recursive: 逆序递归，即先递归至终点，再在返回的过程中进行Conquer
     // 用三层结构实现：
     // 1. 最外层(Wrapper)
@@ -156,7 +156,7 @@ public class Basic_Merge_Sort extends SortMethod {
         MergeSort_Recursive(a);
     }
 
-    /** 链表递归解法：双指针（快慢指针）进行链表分解切断 + 链表合并。Time - o(nlogn), Space - o(1). */
+    /** 链表递归解法：双指针（快慢指针）进行链表分解切断 + 链表合并。Time - O(nlogn), Space - O(1). */
     // 详见M148的分析示例。
     // 链表的归并排序和数组一样分为<分解>和<合并>两个过程。但链表和数组在这两个过程的具体操作上是完全不同的。
     // <链表分解>核心思路：利用快慢指针（倍速）寻找链表中点，当fast抵达右侧边界时，slow所在位置就是中点。
@@ -192,17 +192,17 @@ public class Basic_Merge_Sort extends SortMethod {
         return dummy.next;
     }
 
-    /** 扩展问题：对于数组如何做到o(1)空间复杂度的合并过程？ */
-    // 对于数组的两种归并排序解法又是递归又是迭代，看上去很不同，但是实际上用的是相同的合并算法(merge方法)，而该合并算法的空间复杂度是o(n)。
-    // 那么问题就来了，对于数组，是否可以做到o(1)空间复杂度的合并呢？
+    /** 扩展问题：对于数组如何做到O(1)空间复杂度的合并过程？ */
+    // 对于数组的两种归并排序解法又是递归又是迭代，看上去很不同，但是实际上用的是相同的合并算法(merge方法)，而该合并算法的空间复杂度是O(n)。
+    // 那么问题就来了，对于数组，是否可以做到O(1)空间复杂度的合并呢？
     // 可以看到其时间复杂度已经最优，即左右部分的所有元素扫描完就合并完成了，不可能比这个复杂度更低了，因为你必须扫描每个元素，不可能不扫描人家就自动排好。
-    // 但是其空间复杂度是o(n + m)，依然需要额外的空间才能完成，是否可以优化至o(1)即Constant Space呢。这是个非常有意思的问题。
-    // 下面就提供一个In-place的数组合并解法，不过需要注意的是，为了做到In-place Merge，我们不得不提高了时间复杂度至o(n * m)
+    // 但是其空间复杂度是O(n + m)，依然需要额外的空间才能完成，是否可以优化至O(1)即Constant Space呢。这是个非常有意思的问题。
+    // 下面就提供一个In-place的数组合并解法，不过需要注意的是，为了做到In-place Merge，我们不得不提高了时间复杂度至O(n * m)
     // 这就是典型的<Time / Space Trade-off>，要不然用时间复杂度换空间复杂度，要不然用空间换时间，你终归需要付出才有回报。
-    // 那么新问题是：对于数组，是否可以在保持Time - o(n)的前提下做到Space - o(1)的合并呢？
+    // 那么新问题是：对于数组，是否可以在保持Time - O(n)的前提下做到Space - O(1)的合并呢？
     // 答案是肯定存在，只不过达到这个标准的解法通常都太过复杂，以至于一般人不可能在面试时临时创造出来。
 
-    /** 对<两个独立数组>进行原位排序：Time - o(n^2), Space - o(1) */
+    /** 对<两个独立数组>进行原位排序：Time - O(n^2), Space - O(1) */
     // 其本质是插入排序。
     // 将问题抽象为对两个独立的数组进行merge，使得merge完成后a连接b也是已排序的
     // a = {1, 5, 9, 10, 15, 20}
@@ -224,7 +224,7 @@ public class Basic_Merge_Sort extends SortMethod {
         }
     }
 
-    /** 对<一个数组指定区间内的左右两部分>进行原位排序：Time - o(n^2), Space - o(1) */
+    /** 对<一个数组指定区间内的左右两部分>进行原位排序：Time - O(n^2), Space - O(1) */
     // 在merge2()方法的基础上修改，得到了可以用与Merge Sort的原位merge方法
     // 需要注意j和x的下限应该相应的改为mid + 1和left。
     static void merge_inplace2(int[] a, int left, int mid, int right) {

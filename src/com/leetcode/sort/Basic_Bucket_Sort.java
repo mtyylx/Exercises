@@ -8,8 +8,8 @@ import java.util.*;
  *
  * Basic Algorithm: Bucket Sort, aka. Bin Sort
  * 适用条件：数组元素值均匀分布在一个区间内 (Uniformly distributed)
- * Time - o(n), worse o(n^2)
- * Space - o(n)
+ * Time - O(n), worse O(n^2)
+ * Space - O(n)
  *
  */
 public class Basic_Bucket_Sort extends SortMethod {
@@ -32,12 +32,12 @@ public class Basic_Bucket_Sort extends SortMethod {
     /** 难点1：到底应该用多少个桶来排序 */
     // 桶的个数越多，每个bucket里面装的元素个数就会越少，当桶的个数多到使得每个桶里面只有相同值元素的时候，其实此时的Bucket Sort就是Counting Sort（只不过实现方式更复杂些）
     // 桶的个数越少，每个bucket里面装的元素个数就会越多，当只有1个桶的时候，此时的Bucket Sort就等效于其内部对每个桶排序的那个排序算法。
-    // 比如只有一个桶，且桶内部使用插入排序，则桶排序的性能就是插入排序的性能。这就是为什么说Bucket Sort的Worse Time - o(n^2)
+    // 比如只有一个桶，且桶内部使用插入排序，则桶排序的性能就是插入排序的性能。这就是为什么说Bucket Sort的Worse Time - O(n^2)
     //
     /** 难点2：如何计算每个元素应该放在哪个桶里 */
     // 对于[0, max]取值范围的数组，计算元素所属桶的索引号 = 元素值 / 区间长度 = 元素值 / (取值范围 / 桶个数) = 元素值 * 桶个数 / 取值范围
     // 对于取值范围为实数的数组，桶索引号计算需要偏移，即: (a[i] - min) * n / (max - min + 1)
-    // 特别的，如果使用链表来实现桶，可以将第二和第三步合并为一步，无需插入排序，加入桶中的合适位置仅需要o(1)
+    // 特别的，如果使用链表来实现桶，可以将第二和第三步合并为一步，无需插入排序，加入桶中的合适位置仅需要O(1)
     // 由于这里的桶必须具备动态扩容的功能（因为一般并不知道取值分布情况），因此不可避免的需要使用ArrayList或者LinkedList来实现桶。
 
     // 支持对包含小数或负数的数组排序，bucket使用List<List<Float>>实现

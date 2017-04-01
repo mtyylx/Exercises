@@ -10,8 +10,8 @@ import java.util.Arrays;
  * <Core Mechanism>
  * Max Heapify + Extract Root Node + Maintain Max Heap.
  *
- * - Time - o(n * log n)
- * - Space - o(1)
+ * - Time - O(n * log n)
+ * - Space - O(1)
  *
  * <Tags>
  * - Heap Data Structure
@@ -99,7 +99,7 @@ public class Basic_Heap_Sort extends SortMethod {
     // 第二阶段提取根节点：自顶向下
 
 
-    /** 数组堆排序标准<递归>解法：建堆 + 提取根节点维持最大堆性质。Time - o(nlogn), Space - o(logn) */
+    /** 数组堆排序标准<递归>解法：建堆 + 提取根节点维持最大堆性质。Time - O(nlogn), Space - O(logn) */
     // 正序递归，不过由于使用递归，因此需要额外的空间，空间复杂度与堆的高度相关。
     static void HeapSort1(int[] a) {
         for (int i = a.length / 2 - 1; i >= 0; i--)                     // 建堆：从最后一个非叶子节点开始，逆序扫描至树根
@@ -123,7 +123,7 @@ public class Basic_Heap_Sort extends SortMethod {
 
 
 
-    /** 数组堆排序标准<迭代>解法：建堆 + 提取根节点维持最大堆性质。Time - o(nlogn), Space - o(1) */
+    /** 数组堆排序标准<迭代>解法：建堆 + 提取根节点维持最大堆性质。Time - O(nlogn), Space - O(1) */
     // 相比于解法1，具有更低的空间复杂度。实际使用中推荐这种解法。
     static void HeapSort2(int[] a) {
         for (int i = a.length / 2 - 1; i >= 0; i--)
@@ -154,7 +154,7 @@ public class Basic_Heap_Sort extends SortMethod {
 
 
 
-    /** 错误解法：虽然可以正确排序，但是构造的是“准最大堆”，并不是严格的最大堆。因此时间复杂度是o(n^2)而不是o(nlogn) */
+    /** 错误解法：虽然可以正确排序，但是构造的是“准最大堆”，并不是严格的最大堆。因此时间复杂度是O(n^2)而不是O(nlogn) */
     // 问题有两个。
     // 问题1：建堆方法中，在发生父子交换后，没有递归的检查交换的子节点分支是否最大堆化。这导致构造出的树并不是严格的最大堆。
     // 问题2：在提取根节点的时候，没有采取只更新发生交换的分支的原则，而是每次都从头逆序扫描一遍。存在双for循环。堆排序的最大优势被抹杀了。
@@ -163,7 +163,7 @@ public class Basic_Heap_Sort extends SortMethod {
         maxHeapify(a, a.length);
         for (int range = a.length - 1; range > 0; range--) {
             swap(a, 0, range);
-            maxHeapify(a, range);           // 这是一个双for循环，因此时间复杂度回到了o(n^2)
+            maxHeapify(a, range);           // 这是一个双for循环，因此时间复杂度回到了O(n^2)
         }
     }
 
@@ -184,10 +184,10 @@ public class Basic_Heap_Sort extends SortMethod {
 
     // 时间复杂度计算和最坏情况性能推导
     // 堆排序比较蛋疼的的一点在于如果数组是已排序的，那么他还是会傻傻的把已经升序的数组先修改成最大堆，然后再修改回来，简直是南辕北辙。
-    // 时间复杂度之堆排序的第一步：将数组最大堆化，时间复杂度为o(n)。
+    // 时间复杂度之堆排序的第一步：将数组最大堆化，时间复杂度为O(n)。
     // 例如四层15个数进行最大堆化：最坏情况一共7个数需要下降，这7个数中，4个下降1层，2个下降2层，1个下降3层，总下降数11.
     // 例如五层31个数进行最大堆化：最坏情况一共15个数需要下降，这15个数中，8个下降1层，4个下降2层，2个下降3层，1个下降4层，总下降数26.
-    // 时间复杂度之堆排序的第二步：不断取根节点，时间复杂度为o(nlogn)
+    // 时间复杂度之堆排序的第二步：不断取根节点，时间复杂度为O(nlogn)
     // 因为要提取n次根节点，每次从根节点最大堆化是logn（从主定理证明）
 
     public void sort(int[] a) {

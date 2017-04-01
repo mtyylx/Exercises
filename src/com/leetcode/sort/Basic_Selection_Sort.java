@@ -12,8 +12,8 @@ import java.util.Arrays;
  * <Core Mechanism>
  * Scan unsorted + Find min index + Swap with the first element in the unsorted part.
  *
- * Time - o(n^2)
- * Space - o(1)
+ * Time - O(n^2)
+ * Space - O(1)
  *
  * <Tags>
  * - Two Pointers: 双指针同向扫描。[ i → → → ... j → → → ... ].
@@ -37,7 +37,7 @@ public class Basic_Selection_Sort extends SortMethod {
         SortUtility.TestPerformance("selection", 100000);       // 4000ms per 10,0000 elements
     }
 
-    /** 数组解法：双指针同向扫描。Time - o(n^2), Space - o(1). */
+    /** 数组解法：双指针同向扫描。Time - O(n^2), Space - O(1). */
     // 外循环指针用来限定未排序数组的起始位置，并随着元素的排序，该区间逐渐收缩
     // 内循环正序扫描以外循环指针为起点的未排序数组区间，并记录该区间中数值最小的元素索引
     // 内循环结束后，将该区间内的最小元素与外循环指针元素交换，并将外循环指针后移（已排序区间壮大，未排序区间缩小）
@@ -71,7 +71,7 @@ public class Basic_Selection_Sort extends SortMethod {
         }
     }
 
-    /** 链表解法：Dummy节点迁移法及动态链表头法 + Early Detection + 链表节点插入 + 链表节点删除。Time - o(n), Space - o(1). */
+    /** 链表解法：Dummy节点迁移法及动态链表头法 + Early Detection + 链表节点插入 + 链表节点删除。Time - O(n), Space - O(1). */
     // 为了避免修改链表结构导致链表断开或节点丢失，需要使用Dummy节点的迁移法，将已排序链表和未排序链表独立来开，省去不断接续的麻烦。
     // 未排序链表就是原链表本身，外循环每次都会完整的扫描一次，并记录具有最小值的节点的上一个位置（Early Detection），
     // 然后将该节点迁移至新的已排序链表：既要确保该节点接续在新链表尾部，还要确保原链表在删除该节点之后，依然能够接续。

@@ -30,7 +30,7 @@ public class M56_Merge_Intervals {
         List<Interval> result2 = mergeIntervals2(list2);
     }
 
-    /** 解法1：Lambda表达式重写compare准则 + 双指针（快慢指针）扫描合并。Time - o(nlogn), Space - o(1). */
+    /** 解法1：Lambda表达式重写compare准则 + 双指针（快慢指针）扫描合并。Time - O(nlogn), Space - O(1). */
     // 首先一上来肯定按照Interval的start属性对Interval对象进行排序。
     // 具体的写法很灵活：
     // 方法1：可以直接让Interval实现Comparator接口的compare方法。
@@ -80,7 +80,7 @@ public class M56_Merge_Intervals {
     }
 
 
-    /** 解法2：分别对两个属性排序 + 双指针（快慢指针）合并区间。用空间换时间。Time - o(nlogn), Space - o(n). */
+    /** 解法2：分别对两个属性排序 + 双指针（快慢指针）合并区间。用空间换时间。Time - O(nlogn), Space - O(n). */
     // 分别排序的好处是能将完全子集进行解耦。
     //  原区间            解耦区间
     //  0, 5             0, 2

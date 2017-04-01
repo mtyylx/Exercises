@@ -14,8 +14,8 @@ import java.util.List;
  * <Core Mechanism>
  * Scan Unsorted part + Insert each unsorted element into the correct position of Sorted part.
  *
- * - Time - o(n^2)
- * - Space - o(1)
+ * - Time - O(n^2)
+ * - Space - O(1)
  *
  * <Tags>
  * - Two Pointers: <双指针中心扩散扫描>。外循环扫描未排序元素，内循环扫描已排序元素。
@@ -129,7 +129,7 @@ public class Basic_Insertion_Sort extends SortMethod {
         }
     }
 
-    /** 链表解法：双指针（同向扫描） + Dummy节点（迁移法） + 链表节点插入。Time - o(n^2), Space - o(1). */
+    /** 链表解法：双指针（同向扫描） + Dummy节点（迁移法） + 链表节点插入。Time - O(n^2), Space - O(1). */
     // 链表的插入排序与数组差别较大。
     // 区别1：数组插入排序的全程都是在数组内部进行的，而链表插入排序则灵活的多，整个过程是未排序链表（原链表）不断变短，同时已排序链表不断变长的过程。
     // 区别2：数组插入排序由于无法将节点直接插入，需要靠平移，因此需要让双指针反向扫描。而链表则可以直接将一个节点插入已排序链表中，因此可以同向扫描。
