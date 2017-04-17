@@ -30,7 +30,7 @@ public class Basic_Grammar {
      *  7. 字符限定: Character-Matcher
      *  8. 反义: Negation
      *  TO-DO: Need to update on Back Reference and Zero-Width Assertion.
-     *
+     *  Got Back Alive! Cheers!!!
      */
 
     /** Quantifier: 数量限定符，限定前面出现的单独这个字符<允许出现的次数>。只有出现次数在规定范围内才算匹配。*/
