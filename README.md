@@ -19,9 +19,9 @@ Now in Phase II!
 | 15  | M | [Three Sum](src/com/leetcode/array/M15_Three_Sum.java) | Sort + Two Pointers | K-Sum |
 | 18  | M | [Four Sum](src/com/leetcode/array/M18_Four_Sum.java) | Sort + Two Pointers, Backtracking | K-Sum |
 | 167 | M | [Two Sum Sorted](src/com/leetcode/array/M167_Two_Sum_Sorted_2.java) | Hashmap, Sort + Two Pointers, Binary Search | K-Sum |
-| 1   | E | [Two Sum](src/com/leetcode/array/E1_Two_Sum.java) | Hashmap, Sort + Two Pointers | K-Sum |
-| 1   | E | [Two Sum](src/com/leetcode/array/E1_Two_Sum.java) | Hashmap, Sort + Two Pointers | K-Sum |
-| 1   | E | [Two Sum](src/com/leetcode/array/E1_Two_Sum.java) | Hashmap, Sort + Two Pointers | K-Sum |
+| 170 | E | [Two Sum Data Structure](src/com/leetcode/array/E170_Two_Sum_3_Data_Structure.java) | Hashmap | K-Sum |
+| 16  | M | [Three Sum Closest](src/com/leetcode/array/M16_Three_Sum_Closest.java) | Sort + Two Pointers | K-Sum |
+| 259 | M | [Three Sum Smaller](src/com/leetcode/array/M259_Three_Sum_Smaller.java) | Sort + Two Pointers | K-Sum |
 | 26  | E | [Remove Duplicates From Sorted Array](src/com/leetcode/array/E26_Remove_Duplicates_From_Sorted_Array.java) | Two Pointers | - |
 | 27  | E | [Remove Element](src/com/leetcode/array/E27_Remove_Element.java) | Two Pointers | - |
 | 66  | E | [Plus One](src/com/leetcode/array/E66_Plus_One.java) | Math: Carry | - |
