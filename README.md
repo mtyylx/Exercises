@@ -39,7 +39,7 @@ Now in Phase II!
 | 191 | E | [Hamming Weight](src/com/leetcode/array/E191_Hamming_Weight.java) | Bit Manipulation | Hamming | 
 | 461 | E | [Hamming Distance](src/com/leetcode/array/E461_Hamming_Distance.java) | Bit Manipulation | Hamming |
 | 4   | H | [Median of Two Sorted Arrays](src/com/leetcode/array/H4_Median_of_Two_Sorted_Arrays.java) | Binary Search, Two Pointers | - |
-| 33  | H | [Search Rotated Array](src/com/leetcode/array/H33_Search_Rotated_Array.java) | Binary Search, Two Pointers, Array Rotation | Rotated Sorted Array | 
-| 81  | M | [Search Rotated Array 2](src/com/leetcode/array/M81_Search_Rotated_Array_2.java) | Binary Search, Two Pointers, Array, Rotation | Rotated Sorted Array |
-| 153 | M | [Find Min in Rotated Sorted Array](src/com/leetcode/array/M153_Find_Min_Rotated_Sorted_Array.java) |  Binary Search, Two Pointers, Array, Rotation | Rotated Sorted Array |
-| 154 | H | [Find Min in Rotated Sorted Array 2](src/com/leetcode/array/H154_Find_Min_Rotated_Sorted_Array_2.java) |  Binary Search, Two Pointers, Array, Rotation | Rotated Sorted Array |
+| 33  | H | [Search Rotated Array](src/com/leetcode/array/H33_Search_Rotated_Array.java) | Binary Search, Two Pointers, Rotation | Rotated Sorted Array | 
+| 81  | M | [Search Rotated Array 2](src/com/leetcode/array/M81_Search_Rotated_Array_2.java) | Binary Search, Two Pointers, Rotation | Rotated Sorted Array |
+| 153 | M | [Find Min in Rotated Sorted Array](src/com/leetcode/array/M153_Find_Min_Rotated_Sorted_Array.java) |  Binary Search, Two Pointers, Rotation | Rotated Sorted Array |
+| 154 | H | [Find Min in Rotated Sorted Array 2](src/com/leetcode/array/H154_Find_Min_Rotate_Sorted_Array_2.java) |  Binary Search, Two Pointers, Rotation | Rotated Sorted Array |
