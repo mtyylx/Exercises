@@ -11,14 +11,16 @@ Now in Phase II!
 
 # Question Table
 
+> Updating ~~~
+
 ## 1. `array`
 
-| #   | Level  | Name | Code Tags | Groups|
-| --- | ---    | ---  | ---       | ---   |
-| 1   | E | [Two Sum](src/com/leetcode/array/E1_Two_Sum.java) | Hashmap, Sort + Two Pointers | K-Sum |
+| #   | *** | Name | Code Tags | Groups|
+| ---:| ---:| ---  | ---       | ---   |
+| 1   | E | [Two Sum](src/com/leetcode/array/E1_Two_Sum.java) | Sort + Two Pointers, Hashmap | K-Sum |
 | 15  | M | [Three Sum](src/com/leetcode/array/M15_Three_Sum.java) | Sort + Two Pointers | K-Sum |
 | 18  | M | [Four Sum](src/com/leetcode/array/M18_Four_Sum.java) | Sort + Two Pointers, Backtracking | K-Sum |
-| 167 | M | [Two Sum Sorted](src/com/leetcode/array/M167_Two_Sum_Sorted_2.java) | Hashmap, Sort + Two Pointers, Binary Search | K-Sum |
+| 167 | M | [Two Sum Sorted](src/com/leetcode/array/M167_Two_Sum_Sorted_2.java) | Sort + Two Pointers, Hashmap, Binary Search | K-Sum |
 | 170 | E | [Two Sum Data Structure](src/com/leetcode/array/E170_Two_Sum_3_Data_Structure.java) | Hashmap | K-Sum |
 | 16  | M | [Three Sum Closest](src/com/leetcode/array/M16_Three_Sum_Closest.java) | Sort + Two Pointers | K-Sum |
 | 259 | M | [Three Sum Smaller](src/com/leetcode/array/M259_Three_Sum_Smaller.java) | Sort + Two Pointers | K-Sum |
@@ -33,4 +35,11 @@ Now in Phase II!
 | 260 | M | [Single Number 3](src/com/leetcode/array/M260_Single_Number_3.java) | XOR | Single Number
 | 169 | E | [Majority Element](src/com/leetcode/array/E169_Majority_Element.java) | Moore Voting, Hashmap, Sort | Majority Element |
 | 229 | M | [Majority Element 2](src/com/leetcode/array/M229_Majority_Element_2.java) | Moore Voting, Hashmap | Majority Element |
-
+| 189 | E | [Rotate Array](src/com/leetcode/array/E189_Rotate_Array.java) | Divide & Conquer, Two Pointers | - |
+| 191 | E | [Hamming Weight](src/com/leetcode/array/E191_Hamming_Weight.java) | Bit Manipulation | Hamming | 
+| 461 | E | [Hamming Distance](src/com/leetcode/array/E461_Hamming_Distance.java) | Bit Manipulation | Hamming |
+| 4   | H | [Median of Two Sorted Arrays](src/com/leetcode/array/H4_Median_of_Two_Sorted_Arrays.java) | Binary Search, Two Pointers | - |
+| 33  | H | [Search Rotated Array](src/com/leetcode/array/H33_Search_Rotated_Array.java) | Binary Search, Two Pointers, Array Rotation | Rotated Sorted Array | 
+| 81  | M | [Search Rotated Array 2](src/com/leetcode/array/M81_Search_Rotated_Array_2.java) | Binary Search, Two Pointers, Array, Rotation | Rotated Sorted Array |
+| 153 | M | [Find Min in Rotated Sorted Array](src/com/leetcode/array/M153_Find_Min_Rotated_Sorted_Array.java) |  Binary Search, Two Pointers, Array, Rotation | Rotated Sorted Array |
+| 154 | H | [Find Min in Rotated Sorted Array 2](src/com/leetcode/array/H154_Find_Min_Rotated_Sorted_Array_2.java) |  Binary Search, Two Pointers, Array, Rotation | Rotated Sorted Array |
