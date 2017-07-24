@@ -54,4 +54,9 @@ Now in Phase II!
 | 34  | M | [Search For Range](src/com/leetcode/array/M34_Search_For_Range.java) | Binary Search, Two Pointers, Sort | Search Range |
 | 35  | M | [Search Insert Position](src/com/leetcode/array/M35_Search_Insert_Position.java) | Binary Search, Two Pointers | Search Range |
 | 278 | E | [First Bad Version](src/com/leetcode/array/E278_First_Bad_Version.java) | Binary Search | Search Range |
-| 374 | E | [Guess Number](src/com/leetcode/array/E374_Guess_Number.java) | Binary Search, Ternary Search | Search Range | 
+| 374 | E | [Guess Number](src/com/leetcode/array/E374_Guess_Number.java) | Binary Search, Ternary Search | Search Range |
+| 228 | M | [Summary Range](src/com/leetcode/array/M228_Summary_Range.java) | Two Pointers, Int2Str | - |
+| 268 | M | [Missing Number](src/com/leetcode/array/M268_Missing_Number.java) | Bit Manipulation, Binary Search | - |
+| 287 | M | [Find Duplicate Number](src/com/leetcode/array/M287_Find_the_Duplicate_Number.java) | Binary Search, Two Pointers, Hashtable, Value-as-Index, Sort | Cycle Detection
+
+## 2. `hashtable`
