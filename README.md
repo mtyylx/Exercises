@@ -60,3 +60,15 @@ Now in Phase II!
 | 287 | M | [Find Duplicate Number](src/com/leetcode/array/M287_Find_the_Duplicate_Number.java) | Binary Search, Two Pointers, Hashtable, Value-as-Index, Sort | Cycle Detection
 
 ## 2. `hashtable`
+
+| #   | *** | Name | Code Tags | Groups|
+| ---:| ---:| ---  | ---       | ---   |
+| 36  | E | [Valid Sudoku](src/com/leetcode/hashtable/E36_Valid_Sudoku.java) | HashSet, Matrix Manipulation | - |
+| 202 | E | [Happy Number](src/com/leetcode/hashtable/E202_Happy_Number.java) | HashSet, Two Pointers | - |
+| 204 | E | [Counting Prime](src/com/leetcode/hashtable/E204_Counting_Prime.java) | HashSet, Boolean Array, Math | - |
+| 205 | E | [Isomorphic String](src/com/leetcode/hashtable/E205_Isomorphic_String.java) | HashMap, Value-As-Index | Mapping |
+| 290 | E | [Word Pattern](src/com/leetcode/hashtable/E290_Word_Pattern.java) | HashMap, String.split | Mapping |
+| 242 | E | [Valid Anagram](src/com/leetcode/hashtable/E242_Valid_Anagram.java) | HashMap, Value-As-Index, Sort/Scan | Anagram |
+| 49  | M | [Group Anagram](src/com/leetcode/hashtable/M49_Group_Anagram.java) | HashMap, String Sort | Anagram |
+| 438 | E | [Find Anagram In String](src/com/leetcode/hashtable/E438_Find_Anagram_In_String.java) | Slide Window, Two Pointers, Value-As-Index | Anagram |
+
