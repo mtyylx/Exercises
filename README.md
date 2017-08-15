@@ -71,4 +71,18 @@ Now in Phase II!
 | 242 | E | [Valid Anagram](src/com/leetcode/hashtable/E242_Valid_Anagram.java) | HashMap, Value-As-Index, Sort/Scan | Anagram |
 | 49  | M | [Group Anagram](src/com/leetcode/hashtable/M49_Group_Anagram.java) | HashMap, String Sort | Anagram |
 | 438 | E | [Find Anagram In String](src/com/leetcode/hashtable/E438_Find_Anagram_In_String.java) | Slide Window, Two Pointers, Value-As-Index | Anagram |
-
+| 246 | E | [Strobogrammatic Number](src/com/leetcode/hashtable/E246_Strobogrammatic_Number.java) | HashMap, Two Pointers | - |
+| 249 | E | [Group Shifted String](src/com/leetcode/hashtable/E249_Group_Shifted_String.java) | HashMap, Math | - |
+| 266 | E | [Palindrome Permutation](src/com/leetcode/hashtable/E266_Palindrome_Permutation.java) | HashSet, Coin-Flipping, Value-As-Index | Palindrome |
+| 267 | M | [Palindrome Permutation 2](src/com/leetcode/hashtable/M267_Palindrom_Permutation_2.java) | HashMap, Value-As-Index, Backtracking | Palindrome |
+| 409 | E | [Longest Palindrome](src/com/leetcode/hashtable/E409_Longest_Palindrome.java) | HashMap, Coin-Flipping, Value-As-Index | Palindrome |
+| 288 | E | [Unique Abbreviation](src/com/leetcode/hashtable/E288_Unique_Abbreviation.java) | HashSet, HashMap | - |
+| 299 | E | [Bulls And Cows](src/com/leetcode/hashtable/E299_Bulls_And_Cows.java) | Value-As-Index, Coin-Flipping | - |
+| 349 | E | [Intersection of Arrays](src/com/leetcode/hashtable/E349_Intersection_of_Arrays.java) | Sort, Two Pointers, Binary Search, HashSet | - |
+| 350 | E | [Intersection of Arrays 2](src/com/leetcode/hashtable/E350_Intersection_of_Arrays_2.java) | Sort, HashMap | - |
+| 359 | E | [Logger Rate Limiter](src/com/leetcode/hashtable/E359_Logger_Rate_Limiter.java) | HashMap | - |
+| 389 | E | [Find String Difference](src/com/leetcode/hashtable/E389_Find_String_Difference.java) | HashMap, Bit Manipulation, Coin-Flipping | - |
+| 3   | M | [Longest Substring Without Repeating Characters](src/com/leetcode/hashtable/M3_Longest_SubString_Without_Repeating_Characters.java) | HashMap, Two Pointers, String Scan | - |
+| 187 | M | [Repeated DNA Sequences](src/com/leetcode/hashtable/M187_Repeated_DNA_Sequences.java) | HashMap, HashSet, Substring | - |
+| 347 | M | [Top K Frequent Element](src/com/leetcode/hashtable/M347_Top_K_Frequent_Element.java) | Bucket, HashMap, Generic | Frequency |
+| 451 | M | [Sort Characters By Frequency](src/com/leetcode/hashtable/M451_Sort_Characters_By_Frequency.java) | Bucket, HashMap, Value-As-Index | Frequency |
