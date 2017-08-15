@@ -69,12 +69,12 @@ Now in Phase II!
 | 205 | E | [Isomorphic String](src/com/leetcode/hashtable/E205_Isomorphic_String.java) | HashMap, Value-As-Index | Mapping |
 | 290 | E | [Word Pattern](src/com/leetcode/hashtable/E290_Word_Pattern.java) | HashMap, String.split | Mapping |
 | 242 | E | [Valid Anagram](src/com/leetcode/hashtable/E242_Valid_Anagram.java) | HashMap, Value-As-Index, Sort/Scan | Anagram |
-| 49  | M | [Group Anagram](src/com/leetcode/hashtable/M49_Group_Anagram.java) | HashMap, String Sort | Anagram |
+| 49  | M | [Group Anagrams](src/com/leetcode/hashtable/M49_Group_Anagrams.java) | HashMap, String Sort | Anagram |
 | 438 | E | [Find Anagram In String](src/com/leetcode/hashtable/E438_Find_Anagram_In_String.java) | Slide Window, Two Pointers, Value-As-Index | Anagram |
 | 246 | E | [Strobogrammatic Number](src/com/leetcode/hashtable/E246_Strobogrammatic_Number.java) | HashMap, Two Pointers | - |
 | 249 | E | [Group Shifted String](src/com/leetcode/hashtable/E249_Group_Shifted_String.java) | HashMap, Math | - |
 | 266 | E | [Palindrome Permutation](src/com/leetcode/hashtable/E266_Palindrome_Permutation.java) | HashSet, Coin-Flipping, Value-As-Index | Palindrome |
-| 267 | M | [Palindrome Permutation 2](src/com/leetcode/hashtable/M267_Palindrom_Permutation_2.java) | HashMap, Value-As-Index, Backtracking | Palindrome |
+| 267 | M | [Palindrome Permutation 2](src/com/leetcode/hashtable/M267_Palindrome_Permutation_2.java) | HashMap, Value-As-Index, Backtracking | Palindrome |
 | 409 | E | [Longest Palindrome](src/com/leetcode/hashtable/E409_Longest_Palindrome.java) | HashMap, Coin-Flipping, Value-As-Index | Palindrome |
 | 288 | E | [Unique Abbreviation](src/com/leetcode/hashtable/E288_Unique_Abbreviation.java) | HashSet, HashMap | - |
 | 299 | E | [Bulls And Cows](src/com/leetcode/hashtable/E299_Bulls_And_Cows.java) | Value-As-Index, Coin-Flipping | - |
