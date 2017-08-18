@@ -86,3 +86,21 @@ Now in Phase II!
 | 187 | M | [Repeated DNA Sequences](src/com/leetcode/hashtable/M187_Repeated_DNA_Sequences.java) | HashMap, HashSet, Substring | - |
 | 347 | M | [Top K Frequent Element](src/com/leetcode/hashtable/M347_Top_K_Frequent_Element.java) | Bucket, HashMap, Generic | Frequency |
 | 451 | M | [Sort Characters By Frequency](src/com/leetcode/hashtable/M451_Sort_Characters_By_Frequency.java) | Bucket, HashMap, Value-As-Index | Frequency |
+
+
+## 3. `linkedlist`
+
+| #   | *** | Name | Code Tags | Groups|
+| ---:| ---:| ---  | ---       | ---   |
+| 2   | E | [Add Two Numbers](src/com/leetcode/linkedlist/E2_Add_Two_Numbers.java) | Dummy Node, Two Pointers, Sentinel, Math | Add Two Num |
+| 445 | M | [Add Two Numbers 2](src/com/leetcode/linkedlist/M445_Add_Two_Numbers_2.java) | Tail Align, Dummy Node, Two Pointers, Sentinel | Add Two Num |
+| 369 | M | [Plus One (Linked List)](src/com/leetcode/linkedlist/M369_Plus_One_Linked_List.java) | Recursion, Reverse, Two Pointers | Add Two Num |
+| 19  | E | [Remove Nth From End](src/com/leetcode/linkedlist/E19_Remove_Nth_From_End.java) | Dummy Node, Recursion, Two Pointers | - |
+| 21  | E | [Merge Sorted Linked List](src/com/leetcode/linkedlist/E21_Merge_Sorted_Linked_List.java) | Dummy Node, Recursion, Sentinel | - |
+| 24  | E | [Swap Nodes in Pairs](src/com/leetcode/linkedlist/E24_Swap_Nodes_In_Pairs.java)| Dummy Node, Tri-Pointers, Recursion | - |
+| 83  | E | [Remove Duplicate Nodes](src/com/leetcode/linkedlist/E83_Remove_Duplicate_Nodes.java) | Two Pointers, Recursion | Remove Nodes |
+| 82  | M | [Remove Duplicate Nodes 2](src/com/leetcode/linkedlist/M82_Remove_Duplicate_Nodes_2.java) | Dummy Node, Two Pointers, Recursion | Remove Nodes |
+| 203 | E | [Remove Element](src/com/leetcode/linkedlist/E203_Remove_Element.java) | Node Delete, Dummy Node, Two Pointers | Remove Nodes |
+| 237 | E | [Delete Node](src/com/leetcode/linkedlist/E237_Delete_Node.java) | Node Delete | Remove Nodes |
+| 141 | E | [Linked List Cycle](src/com/leetcode/linkedlist/E141_Linked_List_Cycle.java) | Two Pointers, Floyd Loop Detection, HashSet | Cycle Detection |
+| 142 | E | [Linked List Cycle 2](src/com/leetcode/linkedlist/E142_Linked_List_Cycle_2.java) | Two Pointers, Floyd Loop Detection, HashSet | Cycle Detection |
