@@ -110,6 +110,6 @@ Now in Phase II!
 | 234 | E | [Palindrome Linked List](src/com/leetcode/linkedlist/E234_Palindrome_Linked_List.java) | Two Pointers, Dummy Node, Recursion | Linkedlist Reverse |
 | 143 | M | [Reorder Linked List](src/com/leetcode/linkedlist/M143_Reorder_Linked_List.java) | Two Pointers, Reverse | Linkedlist Reverse |
 | 61  | M | [Rotate Linked List](src/com/leetcode/linkedlist/M61_Rotate_Linked_List.java) | Two Pointers, Loop | - |
-| 147 | M | [Insertion Sort (Linked List)](src/com/leetcode/linkedlist/M147_Insertion_Sort_Linked_List.java) | Two Pointers, Dummy Node, Recursion | - |
-| 148 | M | [Merge Sort (Linked List)](src/com/leetcode/linkedlist/M148_Merge_Sort_Linked_List.java) | Two Pointers, Dummy Node, Cut | - |
-| 328 | M | [Odd Even Linked List](src/com/leetcode/linkedlist/M328_Odd_Even_Linked_List.java) | Two Pointers, Dummy Node | - |
+| 147 | M | [Implement Insertion Sort (Linked List)](src/com/leetcode/linkedlist/M147_Insertion_Sort_Linked_List.java) | Two Pointers, Dummy Node, Recursion | Sort |
+| 148 | M | [Implement Merge Sort (Linked List)](src/com/leetcode/linkedlist/M148_Merge_Sort_Linked_List.java) | Two Pointers, Dummy Node Shift, Cut | Sort |
+| 328 | M | [Odd Even Linked List](src/com/leetcode/linkedlist/M328_Odd_Even_Linked_List.java) | Two Pointers, Dummy Node Shift | - |
