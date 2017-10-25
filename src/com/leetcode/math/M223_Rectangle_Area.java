@@ -9,13 +9,14 @@ package com.leetcode.math;
  * 已知两个矩形左下角和右上角顶点坐标，求两个矩形的相交面积。
  *
  * <Tags>
- * - Math: Max of Min, Min of Max
+ * - Math: 最大最小法 (Max of Min, Min of Max)
  * - Bounding Box Calculation in Computer Vision.
  *
  */
 
 public class M223_Rectangle_Area {
     public static void main(String[] args) {
+        System.out.println(union_area(0, 0, 2, 2, 1, 0, 3, 3));
         System.out.println(intersection_area(0, 0, 2, 2, 1, 0, 3, 3));
         System.out.println(intersection_area2(0, 0, 2, 2, 1, 0, 3, 3));
         System.out.println(intersection_area3(0, 0, 2, 2, 1, 0, 3, 3));
@@ -48,10 +49,20 @@ public class M223_Rectangle_Area {
     //            B ├───┼──────── D            矩形1
     //       F ─────┼───┤ H                    矩形2
 
+    /** 交集面积：最大最小法。*/
     static int intersection_area(int A, int B, int C, int D, int E, int F, int G, int H) {
         int dx = Math.min(C, G) - Math.max(A, E);
         int dy = Math.min(D, H) - Math.max(B, F);
         return dx * dy;
+    }
+
+    /** 并集面积：两个矩形面积相加，再减去交集面积。*/
+    static int union_area(int A, int B, int C, int D, int E, int F, int G, int H) {
+        int area1 = (C - A) * (D - B);
+        int area2 = (G - E) * (H - F);
+        int dx = Math.min(C, G) - Math.max(A, E);
+        int dy = Math.min(D, H) - Math.max(B, F);
+        return area1 + area2 - dx * dy;
     }
 
     /** 扩展题1：给定两个矩形的左下右上的两个对角线顶点，判断是否存在相交区域。 */
@@ -64,8 +75,17 @@ public class M223_Rectangle_Area {
         return !(A >= G || C <= E || B >= H || D <= F);
     }
 
-    /** 扩展题2：给定两个矩形的对角线顶点，但不保证给的两个点是左下右上还是左上右下，判断是否存在相交区域。 */
-    static int intersection_area2(int A, int B, int C, int D, int E, int F, int G, int H) {
+    /** 扩展题2：给定两个矩形的左下角顶点坐标，以及长和宽，判断是否存在相交区域。 */
+    // 由于左下角坐标一定是矩形的最小值，因此只需要分别在两个维度上加上 w 和 h 就可以得到最大值了，之后就都一样了。
+    static int intersection_area2(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+        int dx = Math.min(x1 + w1, x2 + w2) - Math.max(x1, x2);
+        int dy = Math.min(y1 + h1, y2 + h2) - Math.max(y1, y2);
+        return dx * dy;
+    }
+
+    /** 扩展题3：给定两个矩形的对角线顶点，但不保证给的两个点是左下右上还是左上右下，判断是否存在相交区域。 */
+    // 还是同样的思路，确定到底 xmin, xmax, ymin, ymax 都是谁，后面就都一样了。
+    static int intersection_area3(int A, int B, int C, int D, int E, int F, int G, int H) {
         int xmin1 = Math.min(A, C);
         int xmax1 = Math.max(A, C);
         int ymin1 = Math.min(B, D);
@@ -80,14 +100,4 @@ public class M223_Rectangle_Area {
         int dy = Math.min(ymax1, ymax2) - Math.max(ymin1, ymin2);
         return dx * dy;
     }
-
-    /** 扩展题3：给定两个矩形的左下角顶点坐标，以及长和宽，判断是否存在相交区域。 */
-    static int intersection_area3(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
-        int dx = Math.min(x1 + w1, x2 + w2) - Math.max(x1, x2);
-        int dy = Math.min(y1 + h1, y2 + h2) - Math.max(y1, y2);
-        return dx * dy;
-    }
-
-
-
 }
