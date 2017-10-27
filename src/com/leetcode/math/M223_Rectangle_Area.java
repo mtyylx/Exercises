@@ -10,7 +10,11 @@ package com.leetcode.math;
  *
  * <Tags>
  * - Math: 最大最小法 (Max of Min, Min of Max. 求线段重叠部分的二维版本而已)
- * - Bounding Box Calculation in Computer Vision.
+ * - Bounding Box 面积计算：交集 / 并集 / IOU
+ *      - 中心点坐标 + height, width
+ *      - 左下角坐标 + height, width
+ *      - 左下角坐标 + 右上角坐标
+ *      - 对角线顶点坐标（不指定左上右下还是左下右上）
  *
  */
 
@@ -19,8 +23,10 @@ public class M223_Rectangle_Area {
         System.out.println(union_area(-2, -2, 2, 2, 3, 3, 4, 4));
         System.out.println(intersection_area(-2, -2, 2, 2, 3, 3, 4, 4));
         System.out.println(intersection_area2(-2, -2, 4, 4, 3, 3, 1, 1));
-        System.out.println(intersection_area3(-2, 2, 2, -2, 3, 4, 4, 3));
+        System.out.println(intersection_area3(0, 0, 4, 4, 3.5, 3.5, 1, 1));
+        System.out.println(intersection_area4(-2, 2, 2, -2, 3, 4, 4, 3));
         System.out.println(hasIntersections(0, 0, 2, 2, 1, 0, 3, 3));
+        System.out.println(iou(0, 0, 4, 4, 1, 1, 2, 2));
     }
 
 
@@ -86,7 +92,7 @@ public class M223_Rectangle_Area {
         return !(A >= G || C <= E || B >= H || D <= F);
     }
 
-    /** 扩展题2：给定两个矩形的左下角顶点坐标，以及长和宽，判断是否存在相交区域。 */
+    /** 扩展题2：给定两个矩形的左下角顶点坐标，以及长和宽，计算相交区域面积。 */
     // 由于左下角坐标一定是矩形的最小值，因此只需要分别在两个维度上加上 w 和 h 就可以得到最大值了，之后就都一样了。
     static int intersection_area2(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
         if (x1 >= x2 + w2 || x1 + w1 <= x2 || y1 >= y2 + h2 || y1 + h1 <= y2) return 0;
@@ -95,9 +101,27 @@ public class M223_Rectangle_Area {
         return dx * dy;
     }
 
-    /** 扩展题3：给定两个矩形的对角线顶点，但不保证给的两个点是左下右上还是左上右下，判断是否存在相交区域。 */
+    /** 扩展题3：给定两个矩形的中心点坐标，以及长和宽，计算相交区域面积。*/
+    static double intersection_area3(double x1, double y1, double w1, double h1, double x2, double y2, double w2, double h2) {
+        double xmin1 = x1 - w1/2;
+        double xmax1 = x1 + w1/2;
+        double ymin1 = y1 - h1/2;
+        double ymax1 = y1 + h1/2;
+
+        double xmin2 = x2 - w2/2;
+        double xmax2 = x2 + w2/2;
+        double ymin2 = y2 - h2/2;
+        double ymax2 = y2 + h2/2;
+
+        if (xmin1 >= xmax2 || xmax1 <= xmin2 || ymin1 >= ymax2 || ymax1 <= ymin2) return 0;
+        double dx = Math.min(xmax1, xmax2) - Math.max(xmin1, xmin2);
+        double dy = Math.min(ymax1, ymax2) - Math.max(ymin1, ymin2);
+        return dx * dy;
+    }
+
+    /** 扩展题4：给定两个矩形的对角线顶点，但不保证给的两个点是左下右上还是左上右下，计算相交区域面积。 */
     // 还是同样的思路，确定到底 xmin, xmax, ymin, ymax 都是谁，后面就都一样了。
-    static int intersection_area3(int A, int B, int C, int D, int E, int F, int G, int H) {
+    static int intersection_area4(int A, int B, int C, int D, int E, int F, int G, int H) {
         int xmin1 = Math.min(A, C);
         int xmax1 = Math.max(A, C);
         int ymin1 = Math.min(B, D);
@@ -113,4 +137,30 @@ public class M223_Rectangle_Area {
         int dy = Math.min(ymax1, ymax2) - Math.max(ymin1, ymin2);
         return dx * dy;
     }
+
+    /** 扩展题5：给定两个矩形的中心点坐标以及长和宽，计算IOU。*/
+    static float iou(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
+        float xmin1 = x1 - w1/2;
+        float xmax1 = x1 + w1/2;
+        float ymin1 = y1 - h1/2;
+        float ymax1 = y1 + h1/2;
+
+        float xmin2 = x2 - w2/2;
+        float xmax2 = x2 + w2/2;
+        float ymin2 = y2 - h2/2;
+        float ymax2 = y2 + h2/2;
+
+        float area1 = (xmax1 - xmin1) * (ymax1 - ymin1);
+        float area2 = (xmax2 - xmin2) * (ymax2 - ymin2);
+        if (area1 + area2 == 0) return 0;
+
+        float intersection = 0;
+        if (!(xmin1 >= xmax2 || xmax1 <= xmin2 || ymin1 >= ymax2 || ymax1 <= ymin2)) {
+            float dx = Math.min(xmax1, xmax2) - Math.max(xmin1, xmin2);
+            float dy = Math.min(ymax1, ymax2) - Math.max(ymin1, ymin2);
+            intersection = dx * dy;
+        }
+        return intersection / (area1 + area2 - intersection);
+    }
+
 }
