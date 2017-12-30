@@ -6,7 +6,7 @@ import sys
 
 
 # 用法示例：统计leetcode目录下所有 .java 为后缀的文件的字数统计
-# 可以传入后缀参数，这样会默认后缀为 .md
+# 可以省略后缀参数，默认后缀为 .md
 # >>> python summarize.py D:\JavaWorkSpace\Leetcode\src\com\leetcode .java 
 
 
