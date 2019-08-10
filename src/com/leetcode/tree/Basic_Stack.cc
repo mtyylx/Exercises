@@ -7,7 +7,10 @@
  *
  * Stack, implemented using LinkedList.
  * 基本功能：push, pop, peek, size
- *
+ * 核心思想：链表的<表头>就是<栈顶>。
+ * 入栈就是在表头起始位置插入元素。
+ * 出栈就是断开表头节点，用第二个节点做新表头。
+ * 
  */
  
 

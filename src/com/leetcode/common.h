@@ -34,8 +34,20 @@ struct ListNode {
     std::cout << "null" << std::endl;
   }
 
+  // Print current ListNode and its K descendents.
+  void print_k_nodes(int k) {
+    ListNode *curr = this;
+    for (int i = 0; i < k; i++) {
+      if (curr != nullptr) {
+        std::cout << curr->val << " -> ";
+        curr = curr->next;
+      }
+    }
+    std::cout << "null" << std::endl;
+  }
+
   // Create a new LinkedList from given array and return its head.
-  static ListNode* create(std::vector<int>& data) {
+  static ListNode* create(std::vector<int>& data, bool loop = false) {
     ListNode* dummy = new ListNode(-1);
     ListNode* curr = dummy;
     for (int i = 0; i < data.size(); i++) {
@@ -43,7 +55,13 @@ struct ListNode {
       curr = curr->next;
     }
     std::cout << "LinkedList Created: ";
-    dummy->next->print();
+    // Make the linked list loop or not.
+    if (loop) {
+      curr->next = dummy->next;
+      dummy->next->print_k_nodes(data.size());
+    } else {
+      dummy->next->print();
+    }
     return dummy->next;
   }
 };
