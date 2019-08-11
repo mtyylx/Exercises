@@ -41,11 +41,11 @@ class MyStack {
     private Deque<Integer> queue = new ArrayDeque<>();
 
     // Push: time - o(n)
-    // 入队后将队中所有之前元素逆序排列。
+    // 先入队，然后循环出队进队 size - 1 次
     public void push(int x) {
         int size = queue.size();
         queue.add(x);
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size - 1; i++)      // 注意只重复 size - 1 次，如果是 size 次相当于又回到开始状态了
             queue.add(queue.remove());
     }
 
