@@ -12,6 +12,8 @@ import java.util.*;
  *    / \     \
  *   1  2      4
  * Postorder traversal should return [1,2,3,4,5,6].
+ * 
+ * 澄清：“后”序遍历，说的是 root 在最“后”，至于两个儿子，始终是先左后右的顺序。
  *
  * Function Signature:
  * public List<Integer> postorder(TreeNode root) {...}
