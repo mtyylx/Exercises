@@ -81,3 +81,9 @@ struct TreeNode {
     right = nullptr;
   }
 };
+
+void print(std::vector<int>& vec) {
+  for (auto x : vec) 
+      std::cout << x << ", ";
+  std::cout << std::endl;
+}
