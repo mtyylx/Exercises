@@ -87,3 +87,10 @@ void print(std::vector<int>& vec) {
       std::cout << x << ", ";
   std::cout << std::endl;
 }
+
+void print2D(std::vector<std::vector<int>>& vec) {
+  std::cout << "2D Matrix: \n";
+  for (auto row : vec) 
+    print(row);
+  std::cout << std::endl;
+}
