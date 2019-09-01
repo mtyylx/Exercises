@@ -1,21 +1,54 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+using namespace std;
+/**
+ * Created by Michael on 2019/8/10.
+ * 
+ * LIS - 经典 DP
+ * 
+ * Given an unsorted array of integers, find the length of longest increasing subsequence.
+ * 
+ * Example:
+ * Input: [10,9,2,5,3,7,101,18]
+ * Output: 4 
+ * Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4. 
+ * 
+ * Note:
+ * There may be more than one LIS combination, it is only necessary for you to return the length.
+ * Your algorithm should run in O(n2) complexity.
+ * Follow up: Could you improve it to O(n log n) time complexity?
+ * 
+ * 基本思想
+ *      - 明确 Subsequence 是 Ordered Subset，并不要求连续
+ *      - 对 sub-problem 建模，当前问题如何与上一级问题联系起来
+ *      - 对最小问题建模，任何非空数组的 LIS 至少是 1，其下界情况出现在严格降序排列的数组上
+ * 
+ * 相似问题
+ *      - M1143 Longest Common Subsequence (LCS)：二维 DP
+ *      - M718 Longest Common Substring (LCS)：二维 DP
+ *      - M300 Longest Increasing Subsequence (LIS)：一维 DP
+ * 
+ */
 
-// Memo 记忆的是外循环过程中，每个时期的LIS长度
+
+// Time ~ O(n^2) 双循环 DP 解法
+// [10]
+// [10, 9]：        i = 1，由于 a[i] 并不大于 a[j]，因此不可能构造更长的 LIS，跳过 
+// [10, 9, 2]：     i = 2，由于 a[i] 比所有 a[j] 都小，因此依然不可能构造更长的 LIS，跳过 
+// [10, 9, 2, 15]： i = 3，由于 a[i] 比所有 a[j] 都大，因此 15 可以分别和 10 / 9 / 2 构成更长的 LIS，需要在这个过程中让 dp[i] 更大，即 max(dp[i], dp[j] + 1)
 int LIS(std::vector<int>& a) {
-  int len = a.size();
-  if (len == 0) return 0;
-  std::vector<int> dp(len, 1);      // Init as all-one array.
-  int res = 1;                      // LIS is at least 1 for non-empty array.
-  for (int i = 1; i < len; i++) {
-    for (int j = 0; j < i; j++) {
-        if (a[j] < a[i])
-            dp[i] = std::max(dp[i], dp[j] + 1);
+    if (a.empty()) return 0;
+    vector<int> dp(a.size(), 1);            // 初始化为全一状态，因为每个 sub-problem 的解至少是 1
+    int lis = 1;                            // 初始化一个全局状态记录变量
+    for (int i = 1; i < a.size(); i++) {    // 从第二个元素开始解决问题，i 是当前正解决的 sub-problem 规模的编号
+        for (int j = 0; j < i; j++) {       // j 负责扫描比当前问题规模小一级的数组区域中的所有元素，即 0 to (i - 1)
+            if (a[j] < a[i]) 
+                dp[i] = max(dp[i], dp[j] + 1);      // 如果 i 元素大于 j 元素，说明 i 可以插入到 j 元素后面，构成一个更长的 LIS，其长度是 dp[j] + 1，同时要比当前问题已知的最长 LIS（即 dp[i]）更长才行
+        }
+        lis = std::max(lis, dp[i]);                 // 此时已经扫描完把 i 插入 (i - 1) Sub-problem 的所有有效位置，并且得到了局部 LIS，即 dp[i]，如果有必要就更新全局 LIS。
     }
-    res = std::max(res, dp[i]);
-  }
-  return res;
+    return lis;
 }
 
 // 二分查找的主要用途是可以让 O(n) 的操作变为 O(logn)，但是使用前提是数组已排序

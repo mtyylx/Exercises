@@ -43,9 +43,9 @@ using namespace std;
  * 
  * 
  * 相似问题
- *      - Longest Common Subsequence (LCS)：二维 DP
- *      - Longest Common Substring (LCS)：二维 DP
- *      - Longest Increasing Subsequence (LIS)：一维 DP
+ *      - M1143 Longest Common Subsequence (LCS)：二维 DP
+ *      - M718 Longest Common Substring (LCS)：二维 DP
+ *      - M300 Longest Increasing Subsequence (LIS)：一维 DP
  * 
  * 思考方式
  *      - 首先明确，subsequence 问题寻找的是 ordered subset，即保持原数组或字符串顺序的前提下，取满足要求的元素子集。
@@ -93,6 +93,7 @@ using namespace std;
  *                                          体现为代码，就是 max(正上方LCS，正左方LCS)
  */
 
+// Longest Common Subsequence
 // Recursive (Top-down)
 int LCS(const string& text1, const string& text2) {
     if (text1.empty() || text2.empty()) return 0;
@@ -102,18 +103,51 @@ int LCS(const string& text1, const string& text2) {
 
 // Iterative (Bottom-Up)
 // Time ~ O(nm), Space ~ O(nm)
-int LCS2(string& text1, string& text2) {
+int LCS2(string text1, string text2) {
     int cols = text1.size() + 1;
     int rows = text2.size() + 1;
     vector<vector<int>> dp(rows, vector<int>(cols, 0));
     for (int i = 1; i < rows; i++) {                        // 搜索从坐标 (1, 1) 开始，因为矩阵的左上两条边表示与空字符串的 LCS 值，只会为 0
         for (int j = 1; j < cols; j++) {
-            if (text1[j - 1] == text2[i - 1]) dp[i][j] = 1 + dp[i - 1][j - 1];
+            if (text1[j - 1] == text2[i - 1]) dp[i][j] = 1 + dp[i - 1][j - 1];  // 注意这里 i 和 j 的索引用在字符串里面依然要从 0 开始，因此需要减一，这里容易疏忽
             else dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
         }
     }
     return dp[rows - 1][cols - 1];
 }
+
+/** Longest Common Substring
+ * Time - O(nm)
+ * Substring 的要求比 Subsequence 更为严格，如果相等的字符并不相邻，那么就应该 “立即死亡”，即 DP 值为 0，而不像 Subsequence 那样保持之前的 LCS 值
+ * 这样本质是把 Substring 问题转化为 Suffix/Prefix 问题
+ * DP 矩阵中每个元素的含义从 “当前两个 substring 的 LCS 值” 变为 “当前两个 substring 中是否一个字符串是另外一个字符串的后缀？如果是，返回后缀长度；如果不是，返回零” 
+ * 这样我们就可以得到生成 DP 表每个元素的递推公式了。
+ * 另外需要考虑到我们在生成 DP 表的时候需要时刻监视目前的最大 LCS 值
+ * 
+ * 以 “ABAB” 和 “BABA” 为例分析，绘制二维 DP 表
+ * 
+ *       ""   A    B    A    B
+ * ""    0    0    0    0    0
+ *  B    0    0    1    0    1      "A" vs "B" = 0 (非后缀), "AB" vs "B" = 1, "ABA" vs "B" = 0（非后缀）, "ABAB" vs "B" = 1
+ *  A    0    1    0    2    0      "A" vs "BA" = 1, "AB" vs "BA" = 0（非后缀）, "ABA" vs "BA" = 2, "ABAB" vs "BA" = 0（非后缀）
+ *  B    0    0    2    0    3      
+ *  A    0    1    0    3    0
+ * 
+ */
+int LCSubstring(string text1, string text2) {
+    int cols = text1.size() + 1;
+    int rows = text2.size() + 1;
+    vector<vector<int>> dp(rows, vector<int>(cols, 0));
+    int max = 0;
+    for (int r = 1; r < rows; r++) {
+        for (int c = 1; c < cols; c++) {
+            if (text1[c - 1] == text2[r - 1]) dp[r][c] = 1 + dp[r - 1][c - 1];      // 只有尾部字符相同，才有可能存在共同的 suffix，才有必要从上一阶段问题取答案 + 1，否则就是零（初始值）
+            max = std::max(max, dp[r][c]);                                          // 如果需要就更新 max
+        }
+    }
+    return max;
+}
+
 
 int main() {
 
@@ -122,5 +156,6 @@ int main() {
     cout << LCS(a, b) << endl;
     cout << LCS("ylqpejqbalahwr", "yrkzavgdmdgtqpg") << endl;
     cout << LCS2("ylqpejqbalahwr", "yrkzavgdmdgtqpg") << endl;
+    cout << LCSubstring("ABAB", "BABA") << endl;
 }
 
