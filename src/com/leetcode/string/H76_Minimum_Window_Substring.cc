@@ -86,7 +86,6 @@ string minWindow(string s, string t) {
 }
 
 
-
 // 用于暴力搜索验证每一个 window 内的子字符串能否让词频全部归零
 bool isValid(string s, vector<int> map, int count) {
     for (auto c : s) {
@@ -132,6 +131,5 @@ int main() {
     string t = "ABC";
     // cout << minWindow_Brute("bba", "ab") << endl;
     // cout << minWindowSubstring("bba", "ab") << endl;
-    cout << minWindowSubstring("acbbaca", "aba") << endl;
-    cout << minWindow("a", "a") << endl;
+    cout << minWindow(s, t) << endl;
 }
